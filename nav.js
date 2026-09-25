@@ -15,7 +15,7 @@
   var isMap = page === 'map';
   var isHome = page === 'home';
   var A = isHome ? '' : 'index.html';            // section links point at the landing sections
-  var activeKey = page === 'posts' ? 'articles' : page;
+  var activeKey = page;
 
   var CSS = ''
     + ':where(#nav,#pf-nav){position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;'
@@ -63,7 +63,7 @@
     + ':root[data-theme="light"] :where(#nav,#pf-nav) .links.open{background:rgba(246,248,252,.97);border-bottom-color:rgba(40,70,130,.16)}';
 
   var sections = [['about', 'About'], ['experience', 'Experience'], ['stack', 'Stack'],
-    ['landscape', 'Landscape'], ['articles', 'Articles'], ['tools', 'Tools'], ['contact', 'Contact']];
+    ['landscape', 'Landscape'], ['tools', 'Tools'], ['contact', 'Contact']];
   function link(href, label, key, extra) {
     var cls = [];
     if (key && key === activeKey) cls.push('active');
@@ -72,8 +72,7 @@
   }
   var linksHtml = sections.map(function (x) { return link(A + '#' + x[0], x[1], x[0]); }).join('')
     + link('terminal.html', 'Terminal', 'terminal')
-    + link('cv.html', 'CV', 'cv')
-    + link('https://franroa.github.io/ultraplatform-documentation/', 'Docs ↗', 'docs');
+    + link('cv.html', 'CV', 'cv');
   if (!isMap) linksHtml += '<a class="cta" href="ultraplatform.html"><svg class="ci" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-opacity=".4" stroke-width="1"/><g transform="rotate(-24 12 12)"><ellipse cx="12" cy="12" rx="10" ry="3.7" stroke="currentColor" stroke-width="1.2"/><circle cx="21.5" cy="12" r="1.5" fill="currentColor"/></g><path d="M12 6 17.2 9 17.2 15 12 18 6.8 15 6.8 9Z" fill="currentColor"/></svg>Access Ultraplatform <span aria-hidden="true">↗</span></a>';
 
   var nav = document.createElement('nav');
