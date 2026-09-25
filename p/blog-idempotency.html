@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<script>(function(){try{var t=localStorage.getItem('up-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme:light)').matches)?'light':'dark';document.documentElement.dataset.theme=t;}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Idempotency: declare the end state, run it twice · Francisco Roa</title>
+<meta name="description" content="The quiet property that makes a platform safe to automate: Terraform applies to the same result, Argo CD syncs on a loop, a failed pipeline is just re-run. Without it every retry is a gamble." />
+<meta name="author" content="Francisco Roa" />
+<link rel="canonical" href="https://franroa.github.io/platform-engineer/p/blog-idempotency.html" />
+<meta name="theme-color" content="#060910" data-dark="#060910" />
+<link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+<link rel="manifest" href="../manifest.webmanifest" />
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png" />
+<link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
+<script defer src="../analytics.js"></script>
+<script defer src="../theme.js"></script>
+<script defer src="../highlight.js"></script>
+<link rel="alternate" type="application/rss+xml" title="Francisco Roa — Posts" href="../feed.xml" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="Francisco Roa · Platform Engineering" />
+<meta property="og:title" content="Idempotency: declare the end state, run it twice" />
+<meta property="og:description" content="The quiet property that makes a platform safe to automate: Terraform applies to the same result, Argo CD syncs on a loop, a failed pipeline is just re-run. Without it every retry is a gamble." />
+<meta property="og:url" content="https://franroa.github.io/platform-engineer/p/blog-idempotency.html" />
+<meta property="og:image" content="https://franroa.github.io/platform-engineer/assets/og/blog-idempotency.png" />
+<meta property="article:published_time" content="2026-07-11" />
+<meta property="article:tag" content="Fundamentals" />
+<meta property="article:tag" content="IaC" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Idempotency: declare the end state, run it twice" />
+<meta name="twitter:description" content="The quiet property that makes a platform safe to automate: Terraform applies to the same result, Argo CD syncs on a loop, a failed pipeline is just re-run. Without it every retry is a gamble." />
+<meta name="twitter:image" content="https://franroa.github.io/platform-engineer/assets/og/blog-idempotency.png" />
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Idempotency: declare the end state, run it twice","description":"The quiet property that makes a platform safe to automate: Terraform applies to the same result, Argo CD syncs on a loop, a failed pipeline is just re-run. Without it every retry is a gamble.","image":"https://franroa.github.io/platform-engineer/assets/og/blog-idempotency.png","datePublished":"2026-07-11","dateModified":"2026-07-11","author":{"@type":"Person","name":"Francisco Roa","url":"https://franroa.github.io/platform-engineer/"},"publisher":{"@type":"Person","name":"Francisco Roa","url":"https://franroa.github.io/platform-engineer/"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://franroa.github.io/platform-engineer/p/blog-idempotency.html"},"keywords":"Fundamentals, IaC","url":"https://franroa.github.io/platform-engineer/p/blog-idempotency.html"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://franroa.github.io/platform-engineer/"},{"@type":"ListItem","position":2,"name":"Posts","item":"https://franroa.github.io/platform-engineer/writing.html"},{"@type":"ListItem","position":3,"name":"Idempotency: declare the end state, run it twice","item":"https://franroa.github.io/platform-engineer/p/blog-idempotency.html"}]}</script>
+<style>:root{--bg:#060910;--bg2:#0a0f1c;--line:rgba(130,160,230,.14);--fg:#e8eefc;--muted:#8b97b8;--dim:#727c9f;--cyan:#7fd4ff;--violet:#b69bff}
+:root[data-theme="light"]{--bg:#f6f8fc;--bg2:#eef2f9;--line:rgba(40,70,130,.18);--fg:#0f1a33;--muted:#54617e;--dim:#616c88;--cyan:#0e79b0;--violet:#6d4fd0;color-scheme:light}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.skip{position:absolute;left:-9999px;top:0;z-index:3000;background:var(--cyan);color:#06121f;padding:10px 16px;border-radius:0 0 10px 0;font-weight:700;text-decoration:none}
+.skip:focus{left:0}
+.topbar{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 24px;backdrop-filter:blur(12px);background:rgba(6,9,16,.82);border-bottom:1px solid var(--line);font-size:14px}
+.topbar a{color:var(--muted);text-decoration:none;transition:color .18s}
+.topbar a:hover{color:var(--fg)}
+.topbar .brand{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--fg)}
+.topbar .brand .badge{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font:700 12px/1 ui-monospace,monospace;color:#06121f;background:linear-gradient(135deg,#7fd4ff,#b69bff 60%,#ffb36b)}
+.topbar .links{display:flex;gap:22px}
+.wrap{max-width:760px;margin:0 auto;padding:40px 22px 80px}
+.crumb{font-size:13px;color:var(--dim);margin-bottom:20px}
+.crumb a{color:var(--cyan);text-decoration:none}
+.meta{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:0 0 8px;font-size:12.5px;color:var(--dim)}
+.meta .t{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--violet);border:1px solid var(--line);border-radius:6px;padding:2px 8px}
+.md h1{font-size:clamp(26px,4vw,38px);font-weight:800;letter-spacing:-.01em;line-height:1.14;margin:6px 0 20px}
+.md h2{font-size:22px;font-weight:700;margin:32px 0 12px;padding-top:14px;border-top:1px solid var(--line)}
+.md h3{font-size:17px;font-weight:700;margin:22px 0 8px;color:#cfd8f2}
+.md p{color:#c4cee6;margin:0 0 14px}
+.md a{color:var(--cyan);border-bottom:1px solid rgba(127,212,255,.3);text-decoration:none}
+.md a:hover{border-bottom-color:var(--cyan)}
+.md ul,.md ol{margin:0 0 16px 22px;color:#c4cee6}
+.md li{margin-bottom:6px}
+.md code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.9em;background:rgba(127,212,255,.1);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+.md pre{background:#0a0f1c;border:1px solid var(--line);border-radius:12px;padding:16px 18px;overflow-x:auto;margin:0 0 16px}
+.md pre code{background:none;border:0;padding:0;color:#cdd7ef}
+.md .tok-cmt{color:#6b7a99;font-style:italic}.md .tok-str{color:#9ece6a}.md .tok-num{color:#ff9e64}.md .tok-kw{color:#7aa2f7}.md .tok-lit{color:#bb9af7}
+:root[data-theme="light"] .md pre{background:#eef2f9}
+:root[data-theme="light"] .md pre code{color:#24324d}
+:root[data-theme="light"] .md .tok-cmt{color:#6a737d}:root[data-theme="light"] .md .tok-str{color:#22863a}:root[data-theme="light"] .md .tok-num{color:#b5690a}:root[data-theme="light"] .md .tok-kw{color:#0550ae}:root[data-theme="light"] .md .tok-lit{color:#6f42c1}
+/* light theme: the prose/table/quote colours below hardcode light-on-dark tones — override them for light */
+:root[data-theme="light"] .md p,:root[data-theme="light"] .md ul,:root[data-theme="light"] .md ol,:root[data-theme="light"] .md li{color:#2b3652}
+:root[data-theme="light"] .md h3{color:#16203a}
+:root[data-theme="light"] .md blockquote{color:#2b3652;background:rgba(14,121,176,.06)}
+:root[data-theme="light"] .md th,:root[data-theme="light"] .md td{color:#2b3652}
+:root[data-theme="light"] .md th{background:rgba(14,121,176,.09);color:#0f1a33}
+:root[data-theme="light"] .topbar{background:rgba(246,248,252,.85)}
+.md blockquote{border-left:3px solid var(--cyan);background:rgba(127,212,255,.05);border-radius:0 10px 10px 0;padding:12px 18px;margin:0 0 18px;color:#b9c4de}
+.md hr{border:0;border-top:1px solid var(--line);margin:26px 0}
+.md .tblwrap{overflow-x:auto;margin:0 0 16px}
+.md table{border-collapse:collapse;width:100%;font-size:14px}
+.md th,.md td{border:1px solid var(--line);padding:8px 10px;text-align:left;color:#c4cee6;vertical-align:top}
+.md th{background:rgba(127,212,255,.06);color:#e8eefc;font-weight:700;white-space:nowrap}
+.cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:40px;padding-top:24px;border-top:1px solid var(--line);font-size:14px}
+.cta a{color:var(--cyan);text-decoration:none;border:1px solid var(--line);border-radius:9px;padding:9px 15px;transition:border-color .18s}
+.cta a:hover{border-color:rgba(127,212,255,.5)}
+footer{padding:34px 24px;border-top:1px solid var(--line);text-align:center;color:var(--muted);font-size:13px}
+.rprog{position:fixed;top:0;left:0;right:0;height:3px;z-index:20;pointer-events:none}
+.rprog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--violet))}
+.md pre{position:relative}
+.copyc{position:absolute;top:8px;right:8px;font:600 11px/1 ui-monospace,monospace;color:var(--muted);background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:5px 9px;cursor:pointer;opacity:.5;transition:opacity .15s,color .15s,border-color .15s}
+.md pre:hover .copyc,.copyc:focus-visible{opacity:1}
+.copyc:hover{color:var(--fg);border-color:var(--cyan)}
+.rtoc{display:none}
+@media(min-width:1200px){
+  .rtoc{display:block;position:fixed;top:120px;left:max(16px,calc(50% - 596px));width:188px;max-height:72vh;overflow:auto;font-size:12.5px}
+  .rtoc ul{list-style:none;border-left:1px solid var(--line)}
+  .rtoc a{display:block;color:var(--dim);text-decoration:none;padding:5px 0 5px 14px;margin-left:-1px;border-left:2px solid transparent;line-height:1.35}
+  .rtoc a:hover{color:var(--fg)}
+  .rtoc a.active{color:var(--cyan);border-left-color:var(--cyan)}
+}
+@media(max-width:640px){.topbar .links{gap:14px}}
+@media print{
+  :root{--bg:#fff;--bg2:#fff;--fg:#111;--muted:#444;--dim:#555;--line:#ccc}
+  html,body{background:#fff!important;color:#111!important}
+  .topbar,.rprog,.rtoc,.copyc,.cta,footer,#theme-toggle,.crumb{display:none!important}
+  main.wrap{max-width:none;margin:0;padding:0}
+  .md{color:#111}
+  .md a{color:#111;text-decoration:underline}
+  .md h1,.md h2,.md h3{color:#000;page-break-after:avoid}
+  .md pre,.md img,.md figure,.md table{page-break-inside:avoid}
+  .md pre{background:#f4f4f4!important;border:1px solid #ddd;color:#111;white-space:pre-wrap;word-wrap:break-word}
+  .md code{color:#111}
+  .md .tok-cmt{color:#6a737d!important}.md .tok-str{color:#22863a!important}.md .tok-num{color:#b5690a!important}.md .tok-kw{color:#0550ae!important}.md .tok-lit{color:#6f42c1!important}
+  .meta{color:#444;border:0}
+  a[href]:after{content:''}
+}</style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="rprog" aria-hidden="true"><i></i></div>
+  <header class="topbar">
+    <a class="brand" href="../index.html"><span class="badge">FR</span><span>Francisco Roa</span></a>
+    <nav class="links">
+      <a href="../index.html">Home</a>
+      <a href="../writing.html">Posts</a>
+      <a href="../ultraplatform.html">Map</a>
+    </nav>
+  </header>
+  <main class="wrap" id="main">
+    <div class="crumb"><a href="../writing.html">← All posts</a></div>
+    <div class="meta"><span>Jul 12, 2026</span><span>5 min read</span><span class="t">Fundamentals</span><span class="t">IaC</span></div>
+    <article class="md">
+<h1>♻️ Idempotency: declare the end state, run it twice</h1>
+<blockquote>💡 <b>TL;DR</b> — an idempotent operation gives the same result whether you run it once or a hundred times. It's the quiet property that makes an entire platform safe to automate: Terraform <i>applies</i> the same config to the same result, Argo CD <i>syncs</i> a cluster toward a committed state on a loop, and a failed pipeline can simply be re-run. Without idempotency, every retry is a gamble. With it, "just run it again" is a valid recovery plan.</blockquote>
+<h2>1 · Imperative breaks; declarative converges</h2>
+<p>An imperative script says <i>do these steps</i>. Run it twice and step 3 ("create the resource") fails because the resource already exists — so now you're writing <code>if not exists</code> guards, and your recovery story is "figure out how far it got last time." A <b>declarative</b> system says <i>this is the end state</i>; running it again just re-checks reality against the goal and changes only the difference. <a href="blog-terraform.html">Terraform</a> is exactly this: <code>apply</code> against an unchanged config is a no-op, and against a drifted one it corrects precisely the drift. The plan <i>is</i> the diff between desired and actual.</p>
+<h2>2 · GitOps is idempotency on a loop</h2>
+<p><a href="landscape-argocd.html">Argo CD</a> takes the same idea and never stops running it. The desired state is a Git repo; a controller continuously compares it to the live cluster and reconciles the gap. Apply the manifest once or let the loop apply it a thousand times — the outcome is identical, because each pass only closes the distance to the declared state. That's why drift shows up as a <i>dashboard status</i> rather than an incident: the system is designed to be run repeatedly, so "someone changed the cluster by hand" is just the next thing the loop undoes.</p>
+<h2>3 · The property has to reach all the way down</h2>
+<p>Idempotency is only as strong as its weakest step. A pipeline that's idempotent except for one <code>curl</code> that POSTs a non-idempotent side effect is <i>not</i> safe to retry — the one imperative step poisons the whole run. So the discipline extends into the <a href="../ultraplatform.html#d=terraform-modules">Terraform modules</a> (every resource declared, none created by a provisioner script) and into the <a href="security-opa.html">policy gate</a>, which evaluates the <i>proposed end state</i> — the same input every time — rather than a sequence of mutations. Same input, same verdict: the gate is idempotent too.</p>
+<h2>4 · What idempotency buys you operationally</h2>
+<ul><li><b>Retries are free.</b> A transient failure — an API blip, a throttle — is recovered by</li></ul>
+<p>  running the job again, with no cleanup and no "did it half-apply?" archaeology.</p>
+<ul><li><b>Drift is self-healing.</b> Manual changes don't accumulate; the next reconcile erases them.</li><li><b>Disaster recovery is a re-run.</b> Rebuilding a region is <code>apply</code> against the same code, not</li></ul>
+<p>  a runbook of one-off surgeries.</p>
+<h2>5 · What I'd tell a team designing for it</h2>
+<ol><li><b>Prefer "declare the state" over "run the steps" everywhere it's an option</b> — Terraform</li></ol>
+<p>   over scripts, manifests over <code>kubectl</code> commands, config over cron.</p>
+<ol><li><b>Hunt the one non-idempotent step.</b> It's usually a provisioner, a manual <code>curl</code>, or a</li></ol>
+<p>   migration that isn't guarded — and it's the step that will burn you on retry.</p>
+<ol><li><b>Make "run it again" the first line of the runbook.</b> If that's <i>not</i> safe, you have a</li></ol>
+<p>   design bug, not an operational one.</p>
+<h2>Related</h2>
+<p><a href="blog-terraform.html">Terraform at scale</a> · <a href="landscape-argocd.html">Argo CD</a> · <a href="../ultraplatform.html#d=terraform-modules">Terraform modules</a> · <a href="security-opa.html">The OPA policy gate</a> · <a href="blog-immutability.html">Immutability &amp; no SSH</a> · <a href="../ultraplatform.html#d=blog-index">✍️ all articles</a></p>
+    </article>
+    <div class="cta">
+      <a href="../ultraplatform.html#v=blog-idempotency&amp;d=blog-idempotency">Open in the interactive 3D map ↗</a>
+      <a href="../writing.html#read=blog-idempotency">Read in the posts index ↗</a>
+    </div>
+  </main>
+  <footer>© <span id="yr"></span> Francisco Roa · Senior (AI) Platform Engineer ·
+    <a href="../ultraplatform.html" style="color:var(--muted)">explore the map ↗</a></footer>
+  <script>document.getElementById('yr').textContent=new Date().getFullYear();</script>
+  <script>(function(){
+    var PKEY="blog-idempotency";
+    var art=document.querySelector('article.md'); if(!art) return;
+    var fill=document.querySelector('.rprog i');
+    function prog(){var h=document.documentElement,mx=(h.scrollHeight-h.clientHeight)||1;if(fill)fill.style.width=Math.min(100,Math.max(0,h.scrollTop/mx*100))+'%';}
+    addEventListener('scroll',prog,{passive:true}); prog();
+    var hs=[].slice.call(art.querySelectorAll('h2'));
+    hs.forEach(function(h,i){ if(!h.id) h.id='s-'+i+'-'+((h.textContent||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40)); });
+    if(hs.length>=3){
+      var nav=document.createElement('nav'); nav.className='rtoc'; nav.setAttribute('aria-label','On this page');
+      var ul=document.createElement('ul');
+      hs.forEach(function(h){ var li=document.createElement('li'), a=document.createElement('a'); a.href='#'+h.id; a.textContent=(h.textContent||'').replace(/^\s*\d+\s*·\s*/,''); a.dataset.id=h.id; li.appendChild(a); ul.appendChild(li); });
+      nav.appendChild(ul); document.body.appendChild(nav);
+      var links=[].slice.call(nav.querySelectorAll('a'));
+      function spy(){ var cur=null; hs.forEach(function(h){ if(h.getBoundingClientRect().top<140) cur=h.id; }); links.forEach(function(a){ a.classList.toggle('active', a.dataset.id===cur); }); }
+      addEventListener('scroll',spy,{passive:true}); spy();
+    }
+    art.querySelectorAll('pre').forEach(function(pre){
+      var b=document.createElement('button'); b.className='copyc'; b.type='button'; b.textContent='Copy'; b.setAttribute('aria-label','Copy code');
+      b.addEventListener('click',function(){ var c=pre.querySelector('code')||pre; if(navigator.clipboard) navigator.clipboard.writeText(c.innerText).then(function(){ b.textContent='Copied'; setTimeout(function(){ b.textContent='Copy'; },1400); }); });
+      pre.appendChild(b);
+    });
+    var end=document.querySelector('.cta')||document.querySelector('footer');
+    if(end&&'IntersectionObserver' in window){ var io=new IntersectionObserver(function(es){ es.forEach(function(en){ if(en.isIntersecting){ if(window.upTrack) window.upTrack('post_read',{slug:PKEY}); io.disconnect(); } }); }); io.observe(end); }
+  })();</script>
+</body>
+</html>

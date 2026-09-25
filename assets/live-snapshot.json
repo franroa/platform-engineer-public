@@ -1,0 +1,2089 @@
+{
+ "group": "nimbus/ultraplatform",
+ "gitlab": "https://gitlab.example",
+ "intervalSeconds": 30,
+ "source": "files",
+ "sourceLabel": "Showcase",
+ "sourceNote": "fake platform · real live engine",
+ "drift": [
+  {
+   "region": "eu01",
+   "resource": "nsg-rule allow-mgmt-3389",
+   "kind": "added",
+   "detail": "present in Azure, not in code (manual portal change)"
+  },
+  {
+   "region": "us01",
+   "resource": "aks node_count (workload pool)",
+   "kind": "changed",
+   "detail": "deployed 6 · declared 4 (autoscaler above bound)"
+  },
+  {
+   "region": "us02",
+   "resource": "storage-account contoso-logs",
+   "kind": "removed",
+   "detail": "declared in code, missing in Azure"
+  },
+  {
+   "region": "ca01",
+   "resource": "role-assignment Reader → group ops",
+   "kind": "added",
+   "detail": "granted out-of-band, not in up-identity"
+  },
+  {
+   "region": "eu01",
+   "resource": "httproute northwind-dashboard (ns northwind)",
+   "kind": "changed",
+   "detail": "backendRef port 8080 deployed · 4180 declared — route bypasses the oauth2-proxy sidecar (kubectl edit, Argo auto-sync off)"
+  }
+ ],
+ "services": [
+  {
+   "name": "up-api",
+   "kind": "api",
+   "stage": "live",
+   "regions": [
+    "eu01"
+   ],
+   "repo": "up-api",
+   "info": "The platform's own API (portal backend) — programmatic access to platform capabilities."
+  },
+  {
+   "name": "ai-gateway (APIM)",
+   "kind": "gateway",
+   "layer": "ai",
+   "stage": "PoC · in review",
+   "regions": [
+    "eu01"
+   ],
+   "repo": "ai/ai-gateway",
+   "icon": "apim",
+   "from": "dev laptops\nClaude Code",
+   "fromVia": "personal key",
+   "to": [
+    "Claude Sonnet",
+    "GPT-5.x"
+   ],
+   "toVia": "managed identity",
+   "info": "The connector: an API Management GenAI gateway in eu01 — dev laptops → gateway → AI Foundry. STATUS: PoC in review — main is empty, the scaffold MRs are unmerged; applies are manual and torn down between sessions. The code today declares exactly ONE API: Claude (Anthropic Messages API) at path ai/claude, backed by a Foundry account in Sweden Central via managed identity plus an api.anthropic.com passthrough (fallback if subscription eligibility blocks Foundry Claude). The OpenAI-compatible /llm/v1 facade for apps is DESIGNED, not yet in code. Sandbox Basic v2 · 50k TPM; live Standard v2 VNet-integrated · 100k TPM.",
+   "statusNote": "⚠ scaffold MRs open · nothing on main — not deployed by CI yet"
+  },
+  {
+   "name": "Claude Sonnet",
+   "kind": "model",
+   "layer": "ai",
+   "stage": "PoC",
+   "repo": "ai/ai-gateway",
+   "icon": "ai-foundry",
+   "geo": {
+    "lat": 59.33,
+    "lng": 18.06,
+    "label": "Sweden Central"
+   },
+   "info": "claude-sonnet-4-6 in an AI Foundry account in Sweden Central — the agentic-dev backend the gateway fronts (declared in ai-gateway's own terraform, enable_foundry). Deliberately NOT in eu01: Claude on the Foundry only exists in two regions; Sweden keeps prompts in the EU. STATUS: PoC — stood up by manual applies during testing and torn down after; tfvars carry an enable_foundry=false fallback (anthropic passthrough only) in case subscription eligibility blocks Foundry Claude."
+  },
+  {
+   "name": "GPT-5.x",
+   "kind": "model",
+   "layer": "ai",
+   "stage": "planned",
+   "regions": [
+    "eu01"
+   ],
+   "repo": "ai/ai-foundry",
+   "icon": "ai-foundry",
+   "info": "The shared GPT-5.x Foundry workspace — six models declared in the ai-foundry scaffold's ultracore-eu01.tfvars. STATUS: planned — the scaffold MR is unmerged, nothing is deployed, and no gateway API fronts these models yet (the /llm/v1 facade is design).",
+   "linkLabel": "planned · /llm/v1"
+  }
+ ],
+ "backups": {
+  "repo": "up-backups",
+  "stage": "live",
+  "regions": [
+   "eu01",
+   "us01",
+   "us02",
+   "ca01"
+  ],
+  "vaults": "critical → GeoZone-redundant (cross-region restore) · important → Zone-redundant",
+  "enrolment": "tag-driven · data_criticality = important|critical (DINE auto-enrol + daily discovery)",
+  "info": "Two Data Protection + two Recovery Services vaults per (sector, tier, region), routed by the data_criticality tag. Critical-tier copies leave the region: eu01 geo-replicates to its cloud pair, and us01 keeps a cross-region backup in us02 — the disaster-recovery pair exercised by the scheduled restore drills. Vault is additive — built-in PITR/soft-delete stay the primary recovery path.",
+  "geo": [
+   {
+    "from": "eu01",
+    "lat": 53.35,
+    "lng": -6.26,
+    "label": "critical vault · geo-replica\n(cloud backbone → paired region)"
+   },
+   {
+    "from": "us01",
+    "toRegion": "us02",
+    "label": "cross-region backup · DR pair\n(restore drill target)"
+   }
+  ]
+ },
+ "lastSync": "2026-07-17T11:02:40.384Z",
+ "syncCount": 1,
+ "error": null,
+ "repos": [
+  {
+   "id": 1,
+   "path": "ai/ai-foundry",
+   "name": "ai-foundry",
+   "defaultBranch": "main",
+   "description": "The shared model workspace: AI account + GPT-5.x model deployments behind the AI gateway. Models are tfvars entries; deploys are manual on main.",
+   "lastActivity": "2026-07-16T18:56:39.737Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/ai/ai-foundry",
+   "features": [
+    "terraform",
+    "ci"
+   ],
+   "envs": [
+    "ultracore-live-eu01"
+   ]
+  },
+  {
+   "id": 2,
+   "path": "ai/ai-gateway",
+   "name": "ai-gateway",
+   "defaultBranch": "main",
+   "description": "The AI ingress: an API Management GenAI gateway in front of the shared model workspace — OpenAI-compatible API, per-app subscription keys, token rate limits and usage metrics. No raw model keys leave the platform.",
+   "lastActivity": "2026-07-16T18:56:21.110Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/ai/ai-gateway",
+   "features": [
+    "ci"
+   ],
+   "envs": [
+    "ultracore-live-eu01",
+    "ultracore-sandbox-eu01"
+   ]
+  },
+  {
+   "id": 3,
+   "path": "ai/ai-subscriptions",
+   "name": "ai-subscriptions",
+   "defaultBranch": "main",
+   "description": "Data-plane access to the AI layer: one gateway subscription key per consuming application, declared in a YAML manifest — the application-level counterpart to the human/group permission repos.",
+   "lastActivity": "2026-07-16T15:23:01.740Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/ai/ai-subscriptions",
+   "features": [
+    "ci"
+   ],
+   "envs": [
+    "ultracore-live-eu01"
+   ]
+  },
+  {
+   "id": 4,
+   "path": "legacy/old-watchtower",
+   "name": "old-watchtower",
+   "defaultBranch": "main",
+   "description": "A legacy monitoring stack, pre-platform. Its stray role assignments show up in the security inventory.",
+   "lastActivity": "2026-07-07T20:45:58.699Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/legacy/old-watchtower",
+   "features": [],
+   "envs": []
+  },
+  {
+   "id": 5,
+   "path": "sandbox/experiments",
+   "name": "experiments",
+   "defaultBranch": "main",
+   "description": "Throwaway experiments — deliberately ignored via the view-map overlay.",
+   "lastActivity": "2026-07-07T20:45:58.700Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/sandbox/experiments",
+   "features": [],
+   "envs": []
+  },
+  {
+   "id": 6,
+   "path": "tools/rune-scratchpad",
+   "name": "rune-scratchpad",
+   "defaultBranch": "main",
+   "description": "A scratch repo that never got mapped to a view — lives here to demo drift detection.",
+   "lastActivity": "2026-07-07T20:45:58.699Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/tools/rune-scratchpad",
+   "features": [],
+   "envs": []
+  },
+  {
+   "id": 7,
+   "path": "ultraplatform-ai",
+   "name": "ultraplatform-ai",
+   "defaultBranch": "main",
+   "description": "The AI layer: grounding assistants in the platform's own knowledge graph and live state.",
+   "lastActivity": "2026-07-10T11:12:50.061Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/ultraplatform-ai",
+   "features": [
+    "ci"
+   ],
+   "envs": []
+  },
+  {
+   "id": 8,
+   "path": "up-agents",
+   "name": "up-agents",
+   "defaultBranch": "main",
+   "description": "Agent definitions and skills that operate the platform under policy.",
+   "lastActivity": "2026-07-10T11:12:21.375Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-agents",
+   "features": [
+    "ci"
+   ],
+   "envs": []
+  },
+  {
+   "id": 9,
+   "path": "up-api",
+   "name": "up-api",
+   "defaultBranch": "main",
+   "description": "The platform's own API: programmatic access to platform capabilities — the backend behind the platform portal. Live in eu01.",
+   "lastActivity": "2026-07-16T15:23:29.883Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-api",
+   "features": [
+    "ci"
+   ],
+   "envs": [
+    "ultracore-live-eu01"
+   ]
+  },
+  {
+   "id": 10,
+   "path": "up-backups",
+   "name": "up-backups",
+   "defaultBranch": "main",
+   "description": "Backup policies as code — vaults, schedules and per-resource backup assignments.",
+   "lastActivity": "2026-07-17T06:13:59.158Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-backups",
+   "features": [],
+   "envs": [
+    "ultracore-live-eu01"
+   ]
+  },
+  {
+   "id": 11,
+   "path": "up-bootstrap",
+   "name": "up-bootstrap",
+   "defaultBranch": "main",
+   "description": "Bootstrap RBAC: the subscription owners and baseline role assignments everything else builds on.",
+   "lastActivity": "2026-07-10T11:27:46.277Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-bootstrap",
+   "features": [
+    "terraform",
+    "ci"
+   ],
+   "envs": [
+    "ultracore-live-eu01"
+   ]
+  },
+  {
+   "id": 12,
+   "path": "up-ci-components",
+   "name": "up-ci-components",
+   "defaultBranch": "main",
+   "description": "Reusable GitLab CI components: base, env-trigger and terraform-deploy used by every repo.",
+   "lastActivity": "2026-07-17T05:10:27.523Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-ci-components",
+   "features": [],
+   "envs": []
+  },
+  {
+   "id": 13,
+   "path": "up-ci-toolkit",
+   "name": "up-ci-toolkit",
+   "defaultBranch": "main",
+   "description": "Shared CI scripts and helpers consumed by the components.",
+   "lastActivity": "2026-07-07T20:45:58.699Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-ci-toolkit",
+   "features": [],
+   "envs": []
+  },
+  {
+   "id": 14,
+   "path": "up-config",
+   "name": "up-config",
+   "defaultBranch": "main",
+   "description": "The shared configuration layer: environments, regions and stage wiring every other repo consumes.",
+   "lastActivity": "2026-07-10T11:11:27.985Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-config",
+   "features": [
+    "ci"
+   ],
+   "envs": [
+    "ultracore-live-eu01"
+   ]
+  },
+  {
+   "id": 15,
+   "path": "up-crds",
+   "name": "up-crds",
+   "defaultBranch": "main",
+   "description": "Cluster-wide CRDs and their lifecycle, decoupled from application charts.",
+   "lastActivity": "2026-07-07T20:45:58.694Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-crds",
+   "features": [
+    "ci"
+   ],
+   "envs": []
+  },
+  {
+   "id": 16,
+   "path": "up-gateway",
+   "name": "up-gateway",
+   "defaultBranch": "main",
+   "description": "The shared service gateway (Traefik, ONE instance per cluster) + every tenant's HTTPRoutes and gateway-facing workloads: one repo answers 'what publishes through the gateway, and as whom'.",
+   "lastActivity": "2026-07-15T06:38:11.064Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-gateway",
+   "features": [
+    "ci"
+   ],
+   "envs": []
+  },
+  {
+   "id": 17,
+   "path": "up-gitlab",
+   "name": "up-gitlab",
+   "defaultBranch": "main",
+   "description": "GitLab runners on the clusters plus the group-level CI settings that keep pipelines secretless.",
+   "lastActivity": "2026-07-07T20:45:58.695Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-gitlab",
+   "features": [
+    "terraform",
+    "ci"
+   ],
+   "envs": [
+    "ultracore-live-eu01"
+   ]
+  },
+  {
+   "id": 18,
+   "path": "up-gitlab-tenants",
+   "name": "up-gitlab-tenants",
+   "defaultBranch": "main",
+   "description": "Manages GitLab groups, user memberships and CI runners for tenant teams.",
+   "lastActivity": "2026-07-13T05:26:34.441Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-gitlab-tenants",
+   "features": [
+    "terraform",
+    "ci"
+   ],
+   "envs": []
+  },
+  {
+   "id": 19,
+   "path": "up-gitops",
+   "name": "up-gitops",
+   "defaultBranch": "main",
+   "description": "GitOps delivery — Argo CD projects/applications per tenant; desired state pulled from Git.",
+   "lastActivity": "2026-07-16T22:07:13.732Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-gitops",
+   "features": [],
+   "envs": [
+    "ultracore-live-eu01",
+    "ultracore-sandbox-eu01"
+   ]
+  },
+  {
+   "id": 20,
+   "path": "up-grafana",
+   "name": "up-grafana",
+   "defaultBranch": "main",
+   "description": "Dashboards as code for the platform Grafana.",
+   "lastActivity": "2026-07-10T11:11:35.015Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-grafana",
+   "features": [
+    "ci"
+   ],
+   "envs": []
+  },
+  {
+   "id": 21,
+   "path": "up-grafana-tenants",
+   "name": "up-grafana-tenants",
+   "defaultBranch": "main",
+   "description": "Per-tenant Grafana orgs, folders and access, generated from the tenant configs.",
+   "lastActivity": "2026-07-10T11:11:41.514Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-grafana-tenants",
+   "features": [
+    "terraform",
+    "ci"
+   ],
+   "envs": []
+  },
+  {
+   "id": 22,
+   "path": "up-guardrails",
+   "name": "up-guardrails",
+   "defaultBranch": "main",
+   "description": "Advisory guardrail library (warn-only, never blocks): naming, cost and blast-radius nudges.",
+   "lastActivity": "2026-07-10T11:12:01.566Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-guardrails",
+   "features": [
+    "ci",
+    "opa"
+   ],
+   "envs": []
+  },
+  {
+   "id": 23,
+   "path": "up-helm-charts",
+   "name": "up-helm-charts",
+   "defaultBranch": "main",
+   "description": "Reusable Helm chart library (web-service, postgres-connection, worker) consumed as Chart.yaml dependencies.",
+   "lastActivity": "2026-07-17T10:27:20.112Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-helm-charts",
+   "features": [
+    "helm",
+    "ci"
+   ],
+   "envs": []
+  },
+  {
+   "id": 24,
+   "path": "up-identity",
+   "name": "up-identity",
+   "defaultBranch": "main",
+   "description": "Extended identity & access: Azure role assignments, PIM policies and AD groups beyond the tenant defaults.",
+   "lastActivity": "2026-07-07T20:45:58.692Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-identity",
+   "features": [
+    "terraform",
+    "ci"
+   ],
+   "envs": [
+    "ultracore-live-eu01"
+   ]
+  },
+  {
+   "id": 25,
+   "path": "up-inventory",
+   "name": "up-inventory",
+   "defaultBranch": "main",
+   "description": "Platform inventory — Terraform state index + tagged-resource snapshots for reconciliation and drift.",
+   "lastActivity": "2026-07-16T22:07:13.740Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-inventory",
+   "features": [],
+   "envs": []
+  },
+  {
+   "id": 26,
+   "path": "up-kubernetes",
+   "name": "up-kubernetes",
+   "defaultBranch": "main",
+   "description": "AKS clusters per region: control plane, cluster services (cert-manager, ALB ingress + WAF policy attach), policy add-on.",
+   "lastActivity": "2026-07-14T15:40:04.406Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-kubernetes",
+   "features": [
+    "terraform",
+    "ci"
+   ],
+   "envs": [
+    "ultracore-live-eu01",
+    "ultracore-live-us01",
+    "ultracore-live-us02",
+    "ultracore-live-ca01",
+    "ultracore-sandbox-eu01"
+   ]
+  },
+  {
+   "id": 27,
+   "path": "up-modules/azure-key-vault",
+   "name": "azure-key-vault",
+   "defaultBranch": "main",
+   "description": "Terraform module: one Key Vault per tenant per region, living in the platform RG.",
+   "lastActivity": "2026-07-07T20:45:58.698Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-modules/azure-key-vault",
+   "features": [
+    "terraform"
+   ],
+   "envs": []
+  },
+  {
+   "id": 28,
+   "path": "up-modules/postgresql-k8s",
+   "name": "postgresql-k8s",
+   "defaultBranch": "main",
+   "description": "Terraform module: PostgreSQL for cluster workloads with private networking by default.",
+   "lastActivity": "2026-07-07T20:45:58.699Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-modules/postgresql-k8s",
+   "features": [
+    "terraform"
+   ],
+   "envs": []
+  },
+  {
+   "id": 29,
+   "path": "up-multitenant",
+   "name": "up-multitenant",
+   "defaultBranch": "main",
+   "description": "The multi-tenant application platform for the apps sector: shared services with per-tenant isolation.",
+   "lastActivity": "2026-07-10T11:05:02.303Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-multitenant",
+   "features": [
+    "terraform",
+    "ci"
+   ],
+   "envs": [
+    "ultraapps-live-us01",
+    "ultraapps-live-ca01",
+    "ultraapps-sandbox-eu01",
+    "ultraapps-test"
+   ]
+  },
+  {
+   "id": 30,
+   "path": "up-namespaces",
+   "name": "up-namespaces",
+   "defaultBranch": "main",
+   "description": "Kubernetes namespaces as code: one yml per application declaring the clusters (sector-stage-region) it deploys to.",
+   "lastActivity": "2026-07-15T06:36:26.874Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-namespaces",
+   "features": [
+    "ci"
+   ],
+   "envs": []
+  },
+  {
+   "id": 31,
+   "path": "up-network",
+   "name": "up-network",
+   "defaultBranch": "main",
+   "description": "Hub-and-spoke network: VNets, subnets, firewall tiers, peerings, private DNS and flow logs for every region.",
+   "lastActivity": "2026-07-11T13:41:41.380Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-network",
+   "features": [
+    "terraform",
+    "ci"
+   ],
+   "envs": [
+    "ultracore-live-eu01",
+    "ultracore-live-us01",
+    "ultracore-live-us02",
+    "ultracore-live-ca01",
+    "ultraapps-sandbox-eu01"
+   ]
+  },
+  {
+   "id": 32,
+   "path": "up-nodepools",
+   "name": "up-nodepools",
+   "defaultBranch": "main",
+   "description": "Dedicated AKS node pools per region and workload class (system, gitlab, gen).",
+   "lastActivity": "2026-07-10T11:28:36.339Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-nodepools",
+   "features": [
+    "terraform",
+    "ci"
+   ],
+   "envs": []
+  },
+  {
+   "id": 33,
+   "path": "up-observability",
+   "name": "up-observability",
+   "defaultBranch": "main",
+   "description": "Grafana, Loki and Mimir wired as platform defaults; alerting and the shared dashboards.",
+   "lastActivity": "2026-07-10T11:06:56.851Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-observability",
+   "features": [
+    "terraform",
+    "ci"
+   ],
+   "envs": [
+    "ultracore-live-eu01"
+   ]
+  },
+  {
+   "id": 34,
+   "path": "up-policies",
+   "name": "up-policies",
+   "defaultBranch": "main",
+   "description": "OPA/rego policy packs: the plan → OPA gate → apply safety levels every terraform pipeline passes.",
+   "lastActivity": "2026-07-10T11:11:48.502Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-policies",
+   "features": [
+    "ci",
+    "opa"
+   ],
+   "envs": []
+  },
+  {
+   "id": 35,
+   "path": "up-portal",
+   "name": "up-portal",
+   "defaultBranch": "main",
+   "description": "The developer portal (IDP) — Backstage software catalog: systems, components, APIs, scorecards.",
+   "lastActivity": "2026-07-16T22:07:13.725Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-portal",
+   "features": [],
+   "envs": [
+    "ultracore-live-eu01"
+   ]
+  },
+  {
+   "id": 36,
+   "path": "up-security-policies",
+   "name": "up-security-policies",
+   "defaultBranch": "main",
+   "description": "Security baseline denies (block the apply): public exposure, encryption at rest, and the required-tag set.",
+   "lastActivity": "2026-07-10T11:11:55.202Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-security-policies",
+   "features": [
+    "ci",
+    "opa"
+   ],
+   "envs": []
+  },
+  {
+   "id": 37,
+   "path": "up-storage-proxy",
+   "name": "up-storage-proxy",
+   "defaultBranch": "main",
+   "description": "Managed-identity storage proxy: per-request scoping instead of long-lived SAS tokens; one revocation point.",
+   "lastActivity": "2026-07-10T11:28:54.523Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-storage-proxy",
+   "features": [
+    "ci"
+   ],
+   "envs": [
+    "ultracore-live-eu01"
+   ]
+  },
+  {
+   "id": 38,
+   "path": "up-tenants",
+   "name": "up-tenants",
+   "defaultBranch": "main",
+   "description": "Tenant onboarding: one config/<tenant>.yml per tenant (members, owners) creating AD groups, RGs, namespaces and default permissions.",
+   "lastActivity": "2026-07-13T10:26:37.171Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-tenants",
+   "features": [
+    "terraform",
+    "ci"
+   ],
+   "envs": [
+    "ultracore-live-eu01",
+    "ultracore-live-us01"
+   ]
+  },
+  {
+   "id": 39,
+   "path": "up-vpn",
+   "name": "up-vpn",
+   "defaultBranch": "main",
+   "description": "The single P2S VPN gateway (Entra ID auth) in the eu01 hub — the one human door into the platform.",
+   "lastActivity": "2026-07-11T13:42:05.660Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-vpn",
+   "features": [
+    "terraform",
+    "ci"
+   ],
+   "envs": [
+    "ultracore-live-eu01"
+   ]
+  },
+  {
+   "id": 40,
+   "path": "up-waf",
+   "name": "up-waf",
+   "defaultBranch": "main",
+   "description": "The WAF policies attached to ingress: managed rulesets, custom rules, per-app exclusions.",
+   "lastActivity": "2026-07-07T20:45:58.695Z",
+   "webUrl": "https://gitlab.example/nimbus/ultraplatform/up-waf",
+   "features": [
+    "terraform",
+    "ci"
+   ],
+   "envs": [
+    "ultracore-live-eu01"
+   ]
+  }
+ ],
+ "views": [
+  {
+   "view": "Identity & Access",
+   "repos": [
+    {
+     "name": "up-bootstrap",
+     "path": "up-bootstrap",
+     "found": true,
+     "features": [
+      "terraform",
+      "ci"
+     ],
+     "info": "The cloud-account setup repo — the foundational, account-level concerns everything else depends on. Three modules: rbac (global — the eight platform-team Entra groups, PIM policies, operator managed identities with OIDC-federated credentials for runners), setup (per sector-tier resource-group creation), audit (PIM-activation alerts + the central Log Analytics — the audit trail of WHO elevated and when). Team membership is one members.yml (admins/contributors/readers by email). Levels: admins → Owner (PIM, 8 h + justification), contributors → Contributor + RBAC Administrator (PIM), operators → permanent Owner (CI managed identities only, no humans), readers → permanent Reader."
+    },
+    {
+     "name": "up-identity",
+     "path": "up-identity",
+     "found": true,
+     "features": [
+      "terraform",
+      "ci"
+     ],
+     "info": "Extended, ad-hoc Entra ID groups defined in YAML — access grants beyond a tenant's defaults. This is where a user of ANOTHER tenant receives permissions (e.g. a data-qa or storage-reader group per environment): one config file per group, named {tenant}-{domain}-{purpose}, members listed by email, deployed by CI with SAST/IaC/secret scans on every MR."
+    },
+    {
+     "name": "up-tenants",
+     "path": "up-tenants",
+     "found": true,
+     "features": [
+      "terraform",
+      "ci"
+     ],
+     "info": "Defines what a TENANT gets: seven Entra groups ({tenant}-live/sandbox-admins/contributors/operators + {tenant}-readers) plus the tenant's resource groups per region, Key Vaults, Terraform state containers and {tenant}-{tier}-operator managed identities for CI. Levels: admins → Contributor + User Access Administrator + KV Secrets Officer (PIM, 8 h, justification); contributors → Contributor + KV Secrets Officer (PIM); operators → permanent (service accounts only, no humans); readers → permanent Reader, no Key Vault."
+    },
+    {
+     "name": "up-storage-proxy",
+     "path": "up-storage-proxy",
+     "found": true,
+     "features": [
+      "ci"
+     ],
+     "info": "Data-plane access instead of standing credentials: a managed-identity proxy that scopes every storage request per-call — no long-lived SAS tokens, one revocation point."
+    },
+    {
+     "name": "up-kubernetes",
+     "path": "up-kubernetes",
+     "found": true,
+     "features": [
+      "terraform",
+      "ci"
+     ],
+     "info": "A different permission plane: IN-CLUSTER Kubernetes RBAC. AKS authenticates users via Entra ID with Azure RBAC disabled — ClusterRoleBindings map the bootstrap groups onto Kubernetes roles (platform contributors → cluster-admin, platform readers → view). The cluster's own managed identity additionally gets Reader on the subscription and Network Contributor on the VNet/NSGs."
+    },
+    {
+     "name": "up-namespaces",
+     "path": "up-namespaces",
+     "found": true,
+     "features": [
+      "ci"
+     ],
+     "info": "Namespace-scoped Kubernetes RBAC + guardrails: every application namespace gets four role bindings bound to the tenant's Entra groups (admins → ClusterRole admin; contributors → custom Role, everything except RBAC; operators → admin for CI; readers → custom Role, no secrets) plus ResourceQuotas, LimitRanges and prevent_destroy. A namespace is one YAML file declaring its tenant and the clusters it deploys to — the tenant-level counterpart to up-kubernetes' cluster-wide bindings."
+    },
+    {
+     "name": "up-gitlab-tenants",
+     "path": "up-gitlab-tenants",
+     "found": true,
+     "features": [
+      "terraform",
+      "ci"
+     ],
+     "info": "GitLab-side permissions: creates each tenant's GitLab group, assigns role-based memberships for tenant owners, and — behind a per-tenant runners flag — provisions Kubernetes-native CI runners. Auth chain: runner pod → K8s ServiceAccount → workload-identity federated credential → the tenant's {tenant}-{tier}-operator identity (owned by up-tenants) → tenant resource groups. No long-lived secrets anywhere."
+    },
+    {
+     "name": "up-grafana-tenants",
+     "path": "up-grafana-tenants",
+     "found": true,
+     "features": [
+      "terraform",
+      "ci"
+     ],
+     "info": "Grafana-side permissions — one for_each over the tenant YAMLs: per tenant a team, an isolated folder and a viewer service account for tooling. Access matrix: platform team → Admin everywhere; every other team → Edit its own folder, View the rest (deliberate cross-tenant visibility). Per-tenant alerts + dashboards deploy from JSON via shared modules. Users must already exist in Grafana — no user sync."
+    }
+   ]
+  },
+  {
+   "view": "Network",
+   "repos": [
+    {
+     "name": "up-network",
+     "path": "up-network",
+     "found": true,
+     "features": [
+      "terraform",
+      "ci"
+     ],
+     "info": "Hub-and-spoke network: VNets, subnets, firewall tiers, peerings, private DNS and flow logs for every region."
+    }
+   ]
+  },
+  {
+   "view": "VPN",
+   "repos": [
+    {
+     "name": "up-vpn",
+     "path": "up-vpn",
+     "found": true,
+     "features": [
+      "terraform",
+      "ci"
+     ],
+     "info": "The single P2S VPN gateway (Entra ID auth) in the eu01 hub — the one human door into the platform."
+    }
+   ]
+  },
+  {
+   "view": "Security & OPA",
+   "repos": [
+    {
+     "name": "up-policies",
+     "path": "up-policies",
+     "found": true,
+     "features": [
+      "ci",
+      "opa"
+     ],
+     "info": "OPA/rego policy packs: the plan → OPA gate → apply safety levels every terraform pipeline passes."
+    },
+    {
+     "name": "up-security-policies",
+     "path": "up-security-policies",
+     "found": true,
+     "features": [
+      "ci",
+      "opa"
+     ],
+     "info": "Security baseline denies (block the apply): public exposure, encryption at rest, and the required-tag set."
+    },
+    {
+     "name": "up-guardrails",
+     "path": "up-guardrails",
+     "found": true,
+     "features": [
+      "ci",
+      "opa"
+     ],
+     "info": "Advisory guardrail library (warn-only, never blocks): naming, cost and blast-radius nudges."
+    }
+   ]
+  },
+  {
+   "view": "WAF",
+   "repos": [
+    {
+     "name": "up-waf",
+     "path": "up-waf",
+     "found": true,
+     "features": [
+      "terraform",
+      "ci"
+     ],
+     "info": "The WAF policies attached to ingress: managed rulesets, custom rules, per-app exclusions."
+    }
+   ]
+  },
+  {
+   "view": "Kubernetes",
+   "repos": [
+    {
+     "name": "up-kubernetes",
+     "path": "up-kubernetes",
+     "found": true,
+     "features": [
+      "terraform",
+      "ci"
+     ],
+     "info": "A different permission plane: IN-CLUSTER Kubernetes RBAC. AKS authenticates users via Entra ID with Azure RBAC disabled — ClusterRoleBindings map the bootstrap groups onto Kubernetes roles (platform contributors → cluster-admin, platform readers → view). The cluster's own managed identity additionally gets Reader on the subscription and Network Contributor on the VNet/NSGs."
+    },
+    {
+     "name": "up-nodepools",
+     "path": "up-nodepools",
+     "found": true,
+     "features": [
+      "terraform",
+      "ci"
+     ],
+     "info": "Dedicated AKS node pools per region and workload class (system, gitlab, gen)."
+    },
+    {
+     "name": "up-namespaces",
+     "path": "up-namespaces",
+     "found": true,
+     "features": [
+      "ci"
+     ],
+     "info": "Namespace-scoped Kubernetes RBAC + guardrails: every application namespace gets four role bindings bound to the tenant's Entra groups (admins → ClusterRole admin; contributors → custom Role, everything except RBAC; operators → admin for CI; readers → custom Role, no secrets) plus ResourceQuotas, LimitRanges and prevent_destroy. A namespace is one YAML file declaring its tenant and the clusters it deploys to — the tenant-level counterpart to up-kubernetes' cluster-wide bindings."
+    },
+    {
+     "name": "up-crds",
+     "path": "up-crds",
+     "found": true,
+     "features": [
+      "ci"
+     ],
+     "info": "Cluster-wide CRDs and their lifecycle, decoupled from application charts."
+    },
+    {
+     "name": "up-gateway",
+     "path": "up-gateway",
+     "found": true,
+     "features": [
+      "ci"
+     ],
+     "info": "The shared service gateway (Traefik, ONE instance per cluster) + every tenant's HTTPRoutes and gateway-facing workloads: one repo answers 'what publishes through the gateway, and as whom'."
+    }
+   ]
+  },
+  {
+   "view": "GitLab / Runners",
+   "repos": [
+    {
+     "name": "up-gitlab",
+     "path": "up-gitlab",
+     "found": true,
+     "features": [
+      "terraform",
+      "ci"
+     ],
+     "info": "GitLab-side platform infrastructure: the shared CI runners and their workload-identity plumbing."
+    },
+    {
+     "name": "up-gitlab-tenants",
+     "path": "up-gitlab-tenants",
+     "found": true,
+     "features": [
+      "terraform",
+      "ci"
+     ],
+     "info": "GitLab-side permissions: creates each tenant's GitLab group, assigns role-based memberships for tenant owners, and — behind a per-tenant runners flag — provisions Kubernetes-native CI runners. Auth chain: runner pod → K8s ServiceAccount → workload-identity federated credential → the tenant's {tenant}-{tier}-operator identity (owned by up-tenants) → tenant resource groups. No long-lived secrets anywhere."
+    }
+   ]
+  },
+  {
+   "view": "Config",
+   "repos": [
+    {
+     "name": "up-config",
+     "path": "up-config",
+     "found": true,
+     "features": [
+      "ci"
+     ],
+     "info": "The shared configuration layer: environments, regions and stage wiring every other repo consumes."
+    }
+   ]
+  },
+  {
+   "view": "Tenants",
+   "repos": [
+    {
+     "name": "up-tenants",
+     "path": "up-tenants",
+     "found": true,
+     "features": [
+      "terraform",
+      "ci"
+     ],
+     "info": "Defines what a TENANT gets: seven Entra groups ({tenant}-live/sandbox-admins/contributors/operators + {tenant}-readers) plus the tenant's resource groups per region, Key Vaults, Terraform state containers and {tenant}-{tier}-operator managed identities for CI. Levels: admins → Contributor + User Access Administrator + KV Secrets Officer (PIM, 8 h, justification); contributors → Contributor + KV Secrets Officer (PIM); operators → permanent (service accounts only, no humans); readers → permanent Reader, no Key Vault."
+    },
+    {
+     "name": "up-multitenant",
+     "path": "up-multitenant",
+     "found": true,
+     "features": [
+      "terraform",
+      "ci"
+     ],
+     "info": "The multi-tenant application platform for the apps sector: shared services with per-tenant isolation."
+    },
+    {
+     "name": "up-gitlab-tenants",
+     "path": "up-gitlab-tenants",
+     "found": true,
+     "features": [
+      "terraform",
+      "ci"
+     ],
+     "info": "GitLab-side permissions: creates each tenant's GitLab group, assigns role-based memberships for tenant owners, and — behind a per-tenant runners flag — provisions Kubernetes-native CI runners. Auth chain: runner pod → K8s ServiceAccount → workload-identity federated credential → the tenant's {tenant}-{tier}-operator identity (owned by up-tenants) → tenant resource groups. No long-lived secrets anywhere."
+    },
+    {
+     "name": "up-grafana-tenants",
+     "path": "up-grafana-tenants",
+     "found": true,
+     "features": [
+      "terraform",
+      "ci"
+     ],
+     "info": "Grafana-side permissions — one for_each over the tenant YAMLs: per tenant a team, an isolated folder and a viewer service account for tooling. Access matrix: platform team → Admin everywhere; every other team → Edit its own folder, View the rest (deliberate cross-tenant visibility). Per-tenant alerts + dashboards deploy from JSON via shared modules. Users must already exist in Grafana — no user sync."
+    },
+    {
+     "name": "up-namespaces",
+     "path": "up-namespaces",
+     "found": true,
+     "features": [
+      "ci"
+     ],
+     "info": "Namespace-scoped Kubernetes RBAC + guardrails: every application namespace gets four role bindings bound to the tenant's Entra groups (admins → ClusterRole admin; contributors → custom Role, everything except RBAC; operators → admin for CI; readers → custom Role, no secrets) plus ResourceQuotas, LimitRanges and prevent_destroy. A namespace is one YAML file declaring its tenant and the clusters it deploys to — the tenant-level counterpart to up-kubernetes' cluster-wide bindings."
+    }
+   ]
+  },
+  {
+   "view": "Developer Portal / IDP",
+   "repos": [
+    {
+     "name": "up-portal",
+     "path": "up-portal",
+     "found": true,
+     "features": [],
+     "info": "The developer portal (IDP frontend) — a Backstage software catalog of domains, systems, components, APIs and resources, each owned by a team and scored against maturity checks. Populated by catalog-info.yaml files in service repos plus auto-discovered tagged cloud resources. Shows ownership and state; never grants access."
+    }
+   ]
+  },
+  {
+   "view": "GitOps",
+   "repos": [
+    {
+     "name": "up-gitops",
+     "path": "up-gitops",
+     "found": true,
+     "features": [],
+     "info": "GitOps delivery for cluster workloads: one Argo CD project per tenant (namespace + repo allow-lists) and ApplicationSets generating one application per app folder. The cluster PULLS desired state from Git — infrastructure still deploys via CI pipelines; this owns only the in-cluster manifest side."
+    }
+   ]
+  },
+  {
+   "view": "Inventory",
+   "repos": [
+    {
+     "name": "up-inventory",
+     "path": "up-inventory",
+     "found": true,
+     "features": [],
+     "info": "The platform's inventory — a periodically refreshed, diffable index of what actually exists: every Terraform state (modules, versions, resources) and every tagged cloud resource. Feeds the map's drift view, the portal's discovered resources and 'what do we actually run?' questions."
+    }
+   ]
+  },
+  {
+   "view": "Backups",
+   "repos": [
+    {
+     "name": "up-backups",
+     "path": "up-backups",
+     "found": true,
+     "features": [],
+     "info": "Centralized backup management: two Data Protection + two Recovery Services vaults per (sector, tier, region) — a GeoZone-redundant pair for critical data (cross-region restore) and a Zone-redundant pair for important data. Enrolment is tag-driven: DINE policies auto-enrol disks/VMs tagged data_criticality=important|critical; scheduled daily jobs discover and enrol database servers and storage accounts; an AKS extension backs up label-opted-in PVCs. Trunk-based with a canary tuple + automated smoke test gating auto-promotion to the remaining tuples. Vault is additive — built-in PITR / soft-delete remain the primary recovery path."
+    }
+   ]
+  },
+  {
+   "view": "AI",
+   "repos": [
+    {
+     "name": "ultraplatform-ai",
+     "path": "ultraplatform-ai",
+     "found": true,
+     "features": [
+      "ci"
+     ],
+     "info": "The AI artifact library: skills, agents, commands and hooks the platform team uses when working with AI assistants — covering platform engineering, SRE, service desk, Go/Helm development and technical docs. Tool-agnostic (Claude Code, Copilot, Cursor, GPT/Gemini tools); distributed as a Claude Code plugin so its skills are available in every session. This is the how-we-work-with-AI layer; the ai/ repos are the infrastructure that work travels through."
+    },
+    {
+     "name": "up-agents",
+     "path": "up-agents",
+     "found": true,
+     "features": [
+      "ci"
+     ],
+     "info": "Agentic automation operating ON the platform — agents that propose and execute platform changes through the same policy-gated pipelines as humans."
+    },
+    {
+     "name": "ai-foundry",
+     "path": "ai/ai-foundry",
+     "found": true,
+     "features": [
+      "terraform",
+      "ci"
+     ],
+     "info": "STATUS: scaffold in review — main is EMPTY; the scaffold MR (Foundry account, project and model deployments) is unmerged; nothing deployed. WHAT THE CODE DECLARES: one shared AI Foundry account (ultracore-eu01), no sandbox/live split, with six GPT-5.x deployments in the tfvars — the map key IS the deployment name clients would pass in the model field. Applies run serial; outputs are consumed by ai-gateway via remote state. The Claude backend for agentic dev is NOT here — it lives in ai-gateway's own Sweden Central account."
+    },
+    {
+     "name": "ai-gateway",
+     "path": "ai/ai-gateway",
+     "found": true,
+     "features": [
+      "ci"
+     ],
+     "info": "STATUS: scaffold in review — main is EMPTY; the redesign MR (Foundry remote state, split policies, subscription management) is unmerged; nothing deployed by CI, PoC applies are manual + torn down. WHAT THE CODE DECLARES: an API Management GenAI gateway (sandbox Basic v2, no VNet; live Standard v2, VNet-integrated) with exactly ONE API — Claude (Anthropic Messages API) at path ai/claude — backed by claude-sonnet-4-6 in the gateway's OWN Foundry account in Sweden Central (managed identity; enable_foundry=false falls back to the api.anthropic.com passthrough if subscription eligibility blocks Foundry Claude). Policies: llm-token-limit (50k/100k TPM per personal key, 429 + Retry-After), llm-emit-token-metric → App Insights. The OpenAI-compatible /llm/v1 facade for applications is designed, NOT in code yet. Next milestone: Entra ID SSO."
+    },
+    {
+     "name": "ai-subscriptions",
+     "path": "ai/ai-subscriptions",
+     "found": true,
+     "features": [
+      "ci"
+     ],
+     "info": "STATUS: scaffold in review — main is EMPTY; the scaffold MR (subscription key provisioning) is unmerged; nothing deployed; depends on ai-gateway remote state, so it can only apply after ai-gateway does. DESIGN: one gateway subscription key per application in subscriptions.yaml ({name, display_name, team}); merge auto-applies; retrieve with `terraform output -json subscription_keys`; share via the secrets manager — never chat or email. Client gotcha: pass the key as default_headers={'Ocp-Apim-Subscription-Key': key} in the OpenAI SDK — the gateway ignores Authorization: Bearer."
+    }
+   ]
+  },
+  {
+   "view": "Platform API",
+   "repos": [
+    {
+     "name": "up-api",
+     "path": "up-api",
+     "found": true,
+     "features": [
+      "ci"
+     ],
+     "info": "The platform's own API — programmatic access to platform capabilities, the backend behind the platform portal. Live in eu01: assigned to the live block of the platform architecture."
+    }
+   ]
+  },
+  {
+   "view": "Observability",
+   "repos": [
+    {
+     "name": "up-observability",
+     "path": "up-observability",
+     "found": true,
+     "features": [
+      "terraform",
+      "ci"
+     ],
+     "info": "Grafana, Loki and Mimir wired as platform defaults; alerting and the shared dashboards."
+    },
+    {
+     "name": "up-grafana",
+     "path": "up-grafana",
+     "found": true,
+     "features": [
+      "ci"
+     ],
+     "info": "Dashboards as code for the platform Grafana."
+    },
+    {
+     "name": "up-grafana-tenants",
+     "path": "up-grafana-tenants",
+     "found": true,
+     "features": [
+      "terraform",
+      "ci"
+     ],
+     "info": "Grafana-side permissions — one for_each over the tenant YAMLs: per tenant a team, an isolated folder and a viewer service account for tooling. Access matrix: platform team → Admin everywhere; every other team → Edit its own folder, View the rest (deliberate cross-tenant visibility). Per-tenant alerts + dashboards deploy from JSON via shared modules. Users must already exist in Grafana — no user sync."
+    }
+   ]
+  },
+  {
+   "view": "Helm Charts",
+   "repos": [
+    {
+     "name": "up-helm-charts",
+     "path": "up-helm-charts",
+     "found": true,
+     "features": [
+      "helm",
+      "ci"
+     ],
+     "info": "The reusable Helm chart library — one chart per workload shape (web-service, worker, cronjob, gateway wiring, database binding), consumed as Chart.yaml dependencies. The map lists every chart + version straight from the repo on each sync."
+    }
+   ]
+  },
+  {
+   "view": "Terraform Modules",
+   "repos": [
+    {
+     "name": "azure-key-vault",
+     "path": "up-modules/azure-key-vault",
+     "found": true,
+     "features": [
+      "terraform"
+     ],
+     "info": "Terraform module: one Key Vault per tenant per region, living in the platform RG."
+    },
+    {
+     "name": "postgresql-k8s",
+     "path": "up-modules/postgresql-k8s",
+     "found": true,
+     "features": [
+      "terraform"
+     ],
+     "info": "Terraform module: PostgreSQL for cluster workloads with private networking by default."
+    }
+   ]
+  },
+  {
+   "view": "CI Components",
+   "repos": [
+    {
+     "name": "up-ci-components",
+     "path": "up-ci-components",
+     "found": true,
+     "features": [],
+     "info": "Reusable GitLab CI components: base, env-trigger and terraform-deploy used by every repo."
+    },
+    {
+     "name": "up-ci-toolkit",
+     "path": "up-ci-toolkit",
+     "found": true,
+     "features": [],
+     "info": "Shared CI scripts and helpers consumed by the components."
+    }
+   ]
+  }
+ ],
+ "unmapped": [
+  "legacy/old-watchtower",
+  "tools/rune-scratchpad"
+ ],
+ "ignored": [
+  "sandbox/experiments"
+ ],
+ "signals": {
+  "argocd": {
+   "found": true,
+   "hits": 5,
+   "sample": [
+    "up-kubernetes :: gitops/platform-root.yaml",
+    "up-kubernetes :: gitops/platform-services/base/argo-cd.yaml",
+    "up-kubernetes :: gitops/platform-services/base/dapr.yaml",
+    "up-kubernetes :: gitops/platform-services/base/external-dns.yaml",
+    "up-kubernetes :: gitops/platform-services/base/external-secrets.yaml"
+   ]
+  },
+  "flux": {
+   "found": false,
+   "hits": 0,
+   "sample": []
+  },
+  "deployMechanism": "Argo CD detected"
+ },
+ "subscriptions": {
+  "ultracore": {
+   "live": {
+    "repoCount": 18,
+    "repos": [
+     "ai/ai-foundry",
+     "ai/ai-gateway",
+     "ai/ai-subscriptions",
+     "up-api",
+     "up-backups",
+     "up-bootstrap",
+     "up-config",
+     "up-gitlab",
+     "up-gitops",
+     "up-identity",
+     "up-kubernetes",
+     "up-network",
+     "up-observability",
+     "up-portal",
+     "up-storage-proxy",
+     "up-tenants",
+     "up-vpn",
+     "up-waf"
+    ],
+    "regions": [
+     "ca01",
+     "eu01",
+     "us01",
+     "us02"
+    ]
+   },
+   "sandbox": {
+    "repoCount": 3,
+    "repos": [
+     "ai/ai-gateway",
+     "up-gitops",
+     "up-kubernetes"
+    ],
+    "regions": [
+     "eu01"
+    ]
+   }
+  },
+  "ultraapps": {
+   "live": {
+    "repoCount": 1,
+    "repos": [
+     "up-multitenant"
+    ],
+    "regions": [
+     "ca01",
+     "us01"
+    ]
+   },
+   "sandbox": {
+    "repoCount": 2,
+    "repos": [
+     "up-multitenant",
+     "up-network"
+    ],
+    "regions": [
+     "eu01"
+    ]
+   },
+   "test": {
+    "repoCount": 1,
+    "repos": [
+     "up-multitenant"
+    ],
+    "regions": []
+   }
+  }
+ },
+ "liveRegions": [
+  "ca01",
+  "eu01",
+  "us01",
+  "us02"
+ ],
+ "otherEnvs": [],
+ "apps": {
+  "tenants": [
+   "acme-retail",
+   "contoso",
+   "fabrikam",
+   "northwind"
+  ],
+  "namespaces": [
+   "alerting-service",
+   "analytics-engine",
+   "contoso-api",
+   "fabrikam-portal",
+   "fabrikam-routing",
+   "gateway",
+   "northwind-dashboard",
+   "platform-status",
+   "shipping-tracker",
+   "storefront-web"
+  ],
+  "details": [
+   {
+    "name": "alerting-service",
+    "tenant": "shared",
+    "clusters": [
+     "k8s-ultracore-live-eu01",
+     "k8s-ultracore-live-us02"
+    ],
+    "regions": [
+     "eu01",
+     "us02"
+    ]
+   },
+   {
+    "name": "analytics-engine",
+    "tenant": "shared",
+    "clusters": [
+     "k8s-ultraapps-sandbox-eu01",
+     "k8s-ultraapps-live-us01"
+    ],
+    "regions": [
+     "eu01",
+     "us01"
+    ]
+   },
+   {
+    "name": "contoso-api",
+    "tenant": "contoso",
+    "clusters": [
+     "k8s-ultracore-live-eu01",
+     "k8s-ultracore-live-us01"
+    ],
+    "regions": [
+     "eu01",
+     "us01"
+    ]
+   },
+   {
+    "name": "fabrikam-portal",
+    "tenant": "fabrikam",
+    "clusters": [
+     "k8s-ultracore-sandbox-eu01",
+     "k8s-ultracore-live-eu01"
+    ],
+    "regions": [
+     "eu01"
+    ]
+   },
+   {
+    "name": "fabrikam-routing",
+    "tenant": "fabrikam",
+    "clusters": [
+     "k8s-ultracore-live-eu01",
+     "k8s-ultracore-live-us01"
+    ],
+    "regions": [
+     "eu01",
+     "us01"
+    ]
+   },
+   {
+    "name": "gateway",
+    "tenant": "shared",
+    "clusters": [
+     "k8s-ultracore-sandbox-eu01",
+     "k8s-ultracore-live-eu01",
+     "k8s-ultracore-live-us01",
+     "k8s-ultracore-live-us02",
+     "k8s-ultracore-live-ca01"
+    ],
+    "regions": [
+     "eu01",
+     "us01",
+     "us02",
+     "ca01"
+    ]
+   },
+   {
+    "name": "northwind-dashboard",
+    "tenant": "northwind",
+    "clusters": [
+     "k8s-ultracore-live-eu01"
+    ],
+    "regions": [
+     "eu01"
+    ]
+   },
+   {
+    "name": "platform-status",
+    "tenant": "shared",
+    "clusters": [
+     "k8s-ultracore-sandbox-eu01",
+     "k8s-ultracore-live-eu01",
+     "k8s-ultracore-live-us01",
+     "k8s-ultracore-live-us02",
+     "k8s-ultracore-live-ca01"
+    ],
+    "regions": [
+     "eu01",
+     "us01",
+     "us02",
+     "ca01"
+    ]
+   },
+   {
+    "name": "shipping-tracker",
+    "tenant": "northwind",
+    "clusters": [
+     "k8s-ultracore-live-ca01"
+    ],
+    "regions": [
+     "ca01"
+    ]
+   },
+   {
+    "name": "storefront-web",
+    "tenant": "contoso",
+    "clusters": [
+     "k8s-ultracore-live-eu01",
+     "k8s-ultracore-live-us01"
+    ],
+    "regions": [
+     "eu01",
+     "us01"
+    ]
+   }
+  ],
+  "excluded": [],
+  "sources": [
+   "up-tenants/config",
+   "up-namespaces/namespaces"
+  ]
+ },
+ "network": {
+  "subnets": [
+   {
+    "scope": "azure-hub",
+    "name": "bastion"
+   },
+   {
+    "scope": "azure-hub",
+    "name": "firewall-mgmt"
+   },
+   {
+    "scope": "azure-hub",
+    "name": "firewall"
+   },
+   {
+    "scope": "azure-hub",
+    "name": "gateway"
+   },
+   {
+    "scope": "azure-hub",
+    "name": "resolver-inbound"
+   },
+   {
+    "scope": "azure-hub",
+    "name": "resolver-outbound"
+   },
+   {
+    "scope": "azure-spoke",
+    "name": "ingress"
+   },
+   {
+    "scope": "azure-spoke",
+    "name": "private-endpoints"
+   },
+   {
+    "scope": "azure-spoke",
+    "name": "workloads"
+   }
+  ],
+  "source": "up-network"
+ },
+ "deployVars": {
+  "group": [
+   "ARM_CLIENT_ID",
+   "ARM_TENANT_ID",
+   "KUBE_CONTEXT",
+   "REGION",
+   "TF_STATE_ACCOUNT",
+   "TF_STATE_KEY"
+  ],
+  "repos": {
+   "ai/ai-foundry": {
+    "defined": [
+     "ARM_SUBSCRIPTION_ID"
+    ],
+    "referenced": []
+   },
+   "ai/ai-gateway": {
+    "defined": [
+     "RATE_LIMIT_TIER"
+    ],
+    "referenced": [
+     "MODEL_ENDPOINT",
+     "RATE_LIMIT_TIER"
+    ]
+   },
+   "ai/ai-subscriptions": {
+    "defined": [
+     "ARM_SUBSCRIPTION_ID"
+    ],
+    "referenced": []
+   },
+   "ultraplatform-ai": {
+    "defined": [],
+    "referenced": [
+     "MODEL_ENDPOINT"
+    ]
+   },
+   "up-agents": {
+    "defined": [
+     "AGENT_PROFILE"
+    ],
+    "referenced": [
+     "AGENT_PROFILE"
+    ]
+   },
+   "up-api": {
+    "defined": [
+     "API_LOG_LEVEL"
+    ],
+    "referenced": [
+     "API_LOG_LEVEL"
+    ]
+   },
+   "up-backups": {
+    "defined": [
+     "BACKUP_ALERT_EMAIL"
+    ],
+    "referenced": []
+   },
+   "up-bootstrap": {
+    "defined": [],
+    "referenced": [
+     "ARM_CLIENT_ID"
+    ]
+   },
+   "up-config": {
+    "defined": [
+     "CONFIG_SCOPE"
+    ],
+    "referenced": [
+     "CONFIG_SCOPE"
+    ]
+   },
+   "up-crds": {
+    "defined": [],
+    "referenced": [
+     "KUBE_CONTEXT"
+    ]
+   },
+   "up-gateway": {
+    "defined": [],
+    "referenced": [
+     "KUBE_CONTEXT"
+    ]
+   },
+   "up-gitlab": {
+    "defined": [],
+    "referenced": [
+     "ARM_CLIENT_ID"
+    ]
+   },
+   "up-gitops": {
+    "defined": [
+     "ARGOCD_SERVER"
+    ],
+    "referenced": []
+   },
+   "up-grafana": {
+    "defined": [
+     "GRAFANA_ORG"
+    ],
+    "referenced": [
+     "GRAFANA_ORG"
+    ]
+   },
+   "up-grafana-tenants": {
+    "defined": [
+     "GRAFANA_ORG"
+    ],
+    "referenced": [
+     "GRAFANA_ORG"
+    ]
+   },
+   "up-guardrails": {
+    "defined": [
+     "POLICY_LEVEL"
+    ],
+    "referenced": [
+     "POLICY_LEVEL"
+    ]
+   },
+   "up-helm-charts": {
+    "defined": [
+     "CHART_VERSION"
+    ],
+    "referenced": [
+     "CHART_VERSION"
+    ]
+   },
+   "up-identity": {
+    "defined": [],
+    "referenced": [
+     "ARM_CLIENT_ID"
+    ]
+   },
+   "up-kubernetes": {
+    "defined": [
+     "ARM_SUBSCRIPTION_ID"
+    ],
+    "referenced": [
+     "ARM_CLIENT_ID",
+     "REGION",
+     "TF_STATE_KEY"
+    ]
+   },
+   "up-multitenant": {
+    "defined": [],
+    "referenced": [
+     "ARM_CLIENT_ID"
+    ]
+   },
+   "up-namespaces": {
+    "defined": [],
+    "referenced": [
+     "KUBE_CONTEXT"
+    ]
+   },
+   "up-network": {
+    "defined": [
+     "ARM_SUBSCRIPTION_ID"
+    ],
+    "referenced": [
+     "ARM_CLIENT_ID",
+     "REGION",
+     "TF_STATE_KEY"
+    ]
+   },
+   "up-nodepools": {
+    "defined": [
+     "NODEPOOL_SKU"
+    ],
+    "referenced": [
+     "ARM_CLIENT_ID",
+     "NODEPOOL_SKU"
+    ]
+   },
+   "up-observability": {
+    "defined": [],
+    "referenced": [
+     "ARM_CLIENT_ID"
+    ]
+   },
+   "up-policies": {
+    "defined": [
+     "POLICY_LEVEL"
+    ],
+    "referenced": [
+     "POLICY_LEVEL"
+    ]
+   },
+   "up-portal": {
+    "defined": [
+     "PORTAL_BASE_URL"
+    ],
+    "referenced": []
+   },
+   "up-security-policies": {
+    "defined": [
+     "POLICY_LEVEL"
+    ],
+    "referenced": [
+     "POLICY_LEVEL"
+    ]
+   },
+   "up-storage-proxy": {
+    "defined": [
+     "STORAGE_ACCOUNT"
+    ],
+    "referenced": [
+     "STORAGE_ACCOUNT"
+    ]
+   },
+   "up-tenants": {
+    "defined": [
+     "TENANT_CONFIG_DIR"
+    ],
+    "referenced": [
+     "ARM_CLIENT_ID",
+     "TENANT_CONFIG_DIR"
+    ]
+   },
+   "up-vpn": {
+    "defined": [],
+    "referenced": [
+     "ARM_CLIENT_ID"
+    ]
+   },
+   "up-waf": {
+    "defined": [],
+    "referenced": [
+     "ARM_CLIENT_ID"
+    ]
+   }
+  }
+ },
+ "helmCharts": {
+  "repo": "up-helm-charts",
+  "charts": [
+   {
+    "name": "cronjob",
+    "version": "1.0.1",
+    "published": "",
+    "description": "Scheduled job — CronJob with the platform's quota/limit defaults baked in",
+    "path": "charts/cronjob/Chart.yaml"
+   },
+   {
+    "name": "k8s-gateway",
+    "version": "2.0.1",
+    "published": "2.0.1",
+    "description": "Gateway API HTTPRoute + per-tenant oauth2-proxy sidecar wiring",
+    "path": "charts/k8s-gateway/Chart.yaml"
+   },
+   {
+    "name": "postgres-connection",
+    "version": "1.0.1",
+    "published": "1.0.1",
+    "description": "Binds a workload to its tenant PostgreSQL — secretless, via workload identity",
+    "path": "charts/postgres-connection/Chart.yaml"
+   },
+   {
+    "name": "web-service",
+    "version": "1.2.0",
+    "published": "1.2.0",
+    "description": "HTTP workload — Deployment + Service + HTTPRoute, workload identity wired in",
+    "path": "charts/web-service/Chart.yaml"
+   },
+   {
+    "name": "worker",
+    "version": "1.1.3",
+    "published": "1.1.3",
+    "description": "Queue/background worker — Deployment without a Service, KEDA-scalable",
+    "path": "charts/worker/Chart.yaml"
+   }
+  ],
+  "registry": true
+ },
+ "tfModules": {
+  "source": "wiki/Terraform-Module-Releases",
+  "title": "Terraform Module Releases",
+  "modules": [
+   {
+    "name": "azure-key-vault",
+    "version": "1.0.1",
+    "released": "2026-07-02"
+   },
+   {
+    "name": "azure-postgresql",
+    "version": "1.2.0",
+    "released": "2026-06-30"
+   },
+   {
+    "name": "azure-storage-account",
+    "version": "1.0.0",
+    "released": "2026-06-26"
+   },
+   {
+    "name": "aks-nodepool",
+    "version": "2.1.0",
+    "released": "2026-07-08"
+   },
+   {
+    "name": "resource-group",
+    "version": "1.0.2",
+    "released": "2026-06-28"
+   },
+   {
+    "name": "postgresql-k8s",
+    "version": "0.9.1",
+    "released": "2026-07-05"
+   },
+   {
+    "name": "vnet-spoke",
+    "version": "1.3.0",
+    "released": "2026-07-10"
+   }
+  ]
+ },
+ "ciComponents": {
+  "repo": "up-ci-components",
+  "components": [
+   {
+    "name": "base",
+    "path": "templates/base.yml",
+    "inputs": [
+     "stage"
+    ],
+    "description": "shared job skeleton every pipeline extends — image, cache, default stage"
+   },
+   {
+    "name": "docker",
+    "path": "templates/docker.yml",
+    "inputs": [
+     "base_image",
+     "base_image_tag"
+    ],
+    "description": "Docker-in-Docker build + push to the group registry"
+   },
+   {
+    "name": "env-trigger",
+    "path": "templates/env-trigger.yml",
+    "inputs": [
+     "stage",
+     "environments"
+    ],
+    "description": "Environment fan-out trigger"
+   },
+   {
+    "name": "module-publish",
+    "path": "templates/module-publish.yml",
+    "inputs": [
+     "module_name",
+     "version_bump"
+    ],
+    "description": "Tags + publishes a terraform module release and updates the group release wiki"
+   },
+   {
+    "name": "terraform-deploy",
+    "path": "templates/terraform-deploy.yml",
+    "inputs": [
+     "stage",
+     "tf_root"
+    ],
+    "description": "Terraform plan → policy gate → apply"
+   }
+  ]
+ },
+ "cached": false,
+ "security": {
+  "updatedAt": "2026-07-17T11:02:40.423Z",
+  "kinds": {
+   "roleAssignments": {
+    "label": "Role assignments (IAM)",
+    "type": "azurerm_role_assignment",
+    "total": 7,
+    "entries": [
+     {
+      "repo": "legacy/old-watchtower",
+      "file": "iam/roles.tf",
+      "names": [
+       "monitor_reader",
+       "log_reader"
+      ]
+     },
+     {
+      "repo": "up-bootstrap",
+      "file": "terraform/bootstrap/owners.tf",
+      "names": [
+       "subscription_owner",
+       "network_contributor"
+      ]
+     },
+     {
+      "repo": "up-identity",
+      "file": "terraform/azure/rbac.tf",
+      "names": [
+       "tenant_reader",
+       "pipeline_deployer",
+       "kv_secrets_officer"
+      ]
+     }
+    ]
+   },
+   "roleDefinitions": {
+    "label": "Custom role definitions",
+    "type": "azurerm_role_definition",
+    "total": 1,
+    "entries": [
+     {
+      "repo": "up-tenants",
+      "file": "terraform/azure/modules/custom_role/role.tf",
+      "names": [
+       "gate_keeper"
+      ]
+     }
+    ]
+   },
+   "subnets": {
+    "label": "Subnet creations",
+    "type": "azurerm_subnet",
+    "total": 9,
+    "entries": [
+     {
+      "repo": "up-network",
+      "file": "terraform/azure-hub/subnet.bastion.tf",
+      "names": [
+       "bastion"
+      ]
+     },
+     {
+      "repo": "up-network",
+      "file": "terraform/azure-hub/subnet.firewall-mgmt.tf",
+      "names": [
+       "firewall-mgmt"
+      ]
+     },
+     {
+      "repo": "up-network",
+      "file": "terraform/azure-hub/subnet.firewall.tf",
+      "names": [
+       "firewall"
+      ]
+     },
+     {
+      "repo": "up-network",
+      "file": "terraform/azure-hub/subnet.gateway.tf",
+      "names": [
+       "gateway"
+      ]
+     },
+     {
+      "repo": "up-network",
+      "file": "terraform/azure-hub/subnet.resolver-inbound.tf",
+      "names": [
+       "resolver-inbound"
+      ]
+     },
+     {
+      "repo": "up-network",
+      "file": "terraform/azure-hub/subnet.resolver-outbound.tf",
+      "names": [
+       "resolver-outbound"
+      ]
+     },
+     {
+      "repo": "up-network",
+      "file": "terraform/azure-spoke/subnet.ingress.tf",
+      "names": [
+       "ingress"
+      ]
+     },
+     {
+      "repo": "up-network",
+      "file": "terraform/azure-spoke/subnet.private-endpoints.tf",
+      "names": [
+       "private_endpoints"
+      ]
+     },
+     {
+      "repo": "up-network",
+      "file": "terraform/azure-spoke/subnet.workloads.tf",
+      "names": [
+       "workloads"
+      ]
+     }
+    ]
+   },
+   "firewallRules": {
+    "label": "Firewall rules",
+    "type": "azurerm_firewall_policy_rule_collection_group",
+    "total": 4,
+    "entries": [
+     {
+      "repo": "up-network",
+      "file": "terraform/azure-hub/firewall-rules.tf",
+      "names": [
+       "region_baseline",
+       "segmentation",
+       "management",
+       "vpn"
+      ]
+     }
+    ]
+   },
+   "nsgRules": {
+    "label": "NSG security rules",
+    "type": "azurerm_network_security_rule",
+    "total": 2,
+    "entries": [
+     {
+      "repo": "up-network",
+      "file": "terraform/azure-spoke/nsg.workloads.tf",
+      "names": [
+       "allow_alb_inbound",
+       "deny_all_inbound"
+      ]
+     }
+    ]
+   },
+   "peerings": {
+    "label": "VNet peerings",
+    "type": "azurerm_virtual_network_peering",
+    "total": 7,
+    "entries": [
+     {
+      "repo": "up-network",
+      "file": "terraform/azure-hub/peering.hubs.tf",
+      "names": [
+       "eu01_to_us01",
+       "eu01_to_us02",
+       "eu01_to_ca01"
+      ]
+     },
+     {
+      "repo": "up-network",
+      "file": "terraform/azure-hub/peering.spokes.tf",
+      "names": [
+       "hub_to_ultracore_live",
+       "hub_to_ultraapps_sandbox",
+       "hub_to_ultracore_sandbox",
+       "hub_to_ultraapps_live"
+      ]
+     }
+    ]
+   },
+   "privateEndpoints": {
+    "label": "Private endpoints",
+    "type": "azurerm_private_endpoint",
+    "total": 3,
+    "entries": [
+     {
+      "repo": "up-kubernetes",
+      "file": "terraform/registry.tf",
+      "names": [
+       "acr_endpoint"
+      ]
+     },
+     {
+      "repo": "up-modules/azure-key-vault",
+      "file": "main.tf",
+      "names": [
+       "kv_endpoint"
+      ]
+     },
+     {
+      "repo": "up-modules/postgresql-k8s",
+      "file": "main.tf",
+      "names": [
+       "pg_endpoint"
+      ]
+     }
+    ]
+   }
+  }
+ }
+}

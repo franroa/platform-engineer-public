@@ -1,0 +1,659 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+  <title>Francisco Roa — Posts</title>
+  <link>https://franroa.github.io/platform-engineer/writing.html</link>
+  <atom:link href="https://franroa.github.io/platform-engineer/feed.xml" rel="self" type="application/rss+xml"/>
+  <description>Platform engineering from practice: Terraform at scale, multi-tenant Kubernetes, AI platforms and agent workflows.</description>
+  <language>en</language>
+  <lastBuildDate>Thu, 16 Jul 2026 22:00:00 GMT</lastBuildDate>
+  <item>
+    <title>A marketplace of one — versioning your own AI skills</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-marketplace</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-marketplace</guid>
+    <description>Assistant skills drift and fork like dotfiles. Moving every skill, agent and hook into a local plugin marketplace — versioned plugins, symlinked single source, installed per session — makes every future session consistent.</description>
+    <pubDate>Thu, 16 Jul 2026 22:00:00 GMT</pubDate>
+    <category>Skills</category><category>Workflow</category><category>AI</category>
+  </item>
+  <item>
+    <title>Disaster recovery is a rehearsal, not a binder</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-disaster-recovery</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-disaster-recovery</guid>
+    <description>Region loss as a scheduled event: critical data already lives in a second geography, one region pair is the designated restore target, and a weekly pipeline rehearses the restore into an isolated resource group and asserts the data is usable.</description>
+    <pubDate>Thu, 16 Jul 2026 22:00:00 GMT</pubDate>
+    <category>Backups</category><category>Platform</category><category>Well-Architected</category>
+  </item>
+  <item>
+    <title>A backup is a tag, not a ticket</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-backups</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-backups</guid>
+    <description>One tag — data_criticality — routes every resource to the right vault pair: GeoZone-redundant with paired-region restore for critical, Zone-redundant for important. DINE policies and daily discovery enforce enrolment; nobody files a backup ticket.</description>
+    <pubDate>Thu, 16 Jul 2026 22:00:00 GMT</pubDate>
+    <category>Backups</category><category>Platform</category><category>Security</category>
+  </item>
+  <item>
+    <title>A raw model key is a budget with no owner and no off switch</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-ai-gateway</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-ai-gateway</guid>
+    <description>Model keys never leave the platform: every AI call goes through a GenAI gateway — per-app subscription keys, hard token budgets, per-app×model metering, managed identity to the backend. Clients change one line: base_url.</description>
+    <pubDate>Wed, 15 Jul 2026 22:00:00 GMT</pubDate>
+    <category>AI</category><category>Security</category><category>Platform</category>
+  </item>
+  <item>
+    <title>Blender now takes a chat message as input, and that changes who can 3D-model</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-blender-mcp</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-blender-mcp</guid>
+    <description>blender-mcp wires an MCP server into Blender so an assistant can drive the modeling tool directly from plain language. The interesting part isn't the demo — it's who gets to touch 3D work now.</description>
+    <pubDate>Wed, 15 Jul 2026 22:00:00 GMT</pubDate>
+    <category>Design</category><category>AI</category>
+  </item>
+  <item>
+    <title>"What happens when it dies?" is the whole architecture review</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-failure-modes</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-failure-modes</guid>
+    <description>Delete a box from the diagram and read what's left. Ask it of the hub, the ONE gateway, a whole region — the answer is either a design property (a PDB, a cell boundary, run-once placement) or a war story. War stories are findings.</description>
+    <pubDate>Tue, 14 Jul 2026 22:00:00 GMT</pubDate>
+    <category>Well-Architected</category><category>Kubernetes</category><category>Platform</category>
+  </item>
+  <item>
+    <title>One gateway, one login: SSO for every tenant route</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-traefik-oauth</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-traefik-oauth</guid>
+    <description>Move the OAuth dance out of the apps: one shared Traefik gateway, and an oauth2-proxy that fronts each tenant app — as forwardAuth middleware, or as this platform's default: a sidecar with per-tenant client, cookie and blast radius.</description>
+    <pubDate>Mon, 13 Jul 2026 22:00:00 GMT</pubDate>
+    <category>Security</category><category>Kubernetes</category><category>Multi-tenancy</category>
+  </item>
+  <item>
+    <title>The sidecar pattern: capabilities a pod wears, not code it imports</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-sidecar-patterns</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-sidecar-patterns</guid>
+    <description>Sidecar, ambassador, adapter — where this platform uses each (oauth2-proxy, Dapr, OTel), what a sidecar really costs, and the rule for when a DaemonSet beats N sidecars.</description>
+    <pubDate>Mon, 13 Jul 2026 22:00:00 GMT</pubDate>
+    <category>Kubernetes</category><category>Fundamentals</category>
+  </item>
+  <item>
+    <title>The cheapest cost review happens before the merge</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-finops-cost-gates</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-finops-cost-gates</guid>
+    <description>A billing review three weeks after the merge is archaeology. Price the Terraform plan in the MR (Infracost), meter reality in the cluster (OpenCost), and gate like the safety gate — feedback loop first, hard block only for the GPU-sized risks.</description>
+    <pubDate>Mon, 13 Jul 2026 22:00:00 GMT</pubDate>
+    <category>FinOps</category><category>Platform</category><category>Terraform</category>
+  </item>
+  <item>
+    <title>Cost governance is three verbs: estimate, meter, standardize</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-finops-governance</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-finops-governance</guid>
+    <description>Not a dashboard — a cycle: estimate at plan time, meter at runtime, standardize the metric so every cloud reports cost in the same shape. Plus the honest caveats: labels are the weakest link, and the integration needs an owner or it rots.</description>
+    <pubDate>Mon, 13 Jul 2026 22:00:00 GMT</pubDate>
+    <category>FinOps</category><category>Kubernetes</category><category>Observability</category>
+  </item>
+  <item>
+    <title>Golden paths fail when they're built for the platform team</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-golden-paths-fail</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-golden-paths-fail</guid>
+    <description>The predictable failure modes — too many choices, one template for every workload, abandonment, no escape hatches — and the two metrics that matter: retention and bypass rate. Run the path as a product, not a launch.</description>
+    <pubDate>Mon, 13 Jul 2026 22:00:00 GMT</pubDate>
+    <category>Platform</category><category>Reuse</category><category>Workflow</category>
+  </item>
+  <item>
+    <title>An internal DevOps assistant is mostly plumbing, and MCP is the pipe</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-mcp-assistant</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-mcp-assistant</guid>
+    <description>The useful assistant is an LLM with standardized read-only taps into git, metrics, cluster state and runbooks — evidence over eloquence, RBAC inherited, every request audited. MCP just makes the plumbing boring.</description>
+    <pubDate>Mon, 13 Jul 2026 22:00:00 GMT</pubDate>
+    <category>AI</category><category>Platform</category><category>Workflow</category>
+  </item>
+  <item>
+    <title>A good plan names the files before it touches them</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-writing-plans</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-writing-plans</guid>
+    <description>A plan is the cheapest place to be wrong. Write it so a reviewer can kill the mistake before any code exists — name the exact files and edits, put the verification in the plan, and spend most of your words on what you will not do.</description>
+    <pubDate>Sun, 12 Jul 2026 22:00:00 GMT</pubDate>
+    <category>Workflow</category>
+  </item>
+  <item>
+    <title>The cheapest bug to kill is still in the plan</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-reviewing-plans</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-reviewing-plans</guid>
+    <description>Reviewing a plan beats reviewing the diff: a wrong assumption costs a sentence here and a rewrite there. Review the approach, the blast radius, the missing states and the escape hatch — then approve narrowly.</description>
+    <pubDate>Sun, 12 Jul 2026 22:00:00 GMT</pubDate>
+    <category>Workflow</category>
+  </item>
+  <item>
+    <title>A skill is a prompt you only write once</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-writing-skills</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-writing-skills</guid>
+    <description>A skill is the paved road for an agent — encode your conventions once instead of re-explaining them every session. One job, a description written to trigger it, the whole ceremony, and guardrails that bite.</description>
+    <pubDate>Sun, 12 Jul 2026 22:00:00 GMT</pubDate>
+    <category>Skills</category><category>Workflow</category>
+  </item>
+  <item>
+    <title>Review a skill by the mistakes it prevents</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-reviewing-skills</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-reviewing-skills</guid>
+    <description>You do not lint a skill, you taste-test it: does the description make it trigger at the right moment, do the steps survive a literal agent, and do the guardrails actually stop the failure you fear?</description>
+    <pubDate>Sun, 12 Jul 2026 22:00:00 GMT</pubDate>
+    <category>Skills</category><category>Workflow</category>
+  </item>
+  <item>
+    <title>DNS is the platform's phone book — and its weakest excuse for an outage</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-dns</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-dns</guid>
+    <description>Names as infrastructure: private zones so services resolve over the inspected path, records generated from live ingresses, and TTLs chosen as a consistency knob rather than inherited.</description>
+    <pubDate>Sun, 12 Jul 2026 22:00:00 GMT</pubDate>
+    <category>Fundamentals</category><category>Networking</category>
+  </item>
+  <item>
+    <title>TLS is easy; rotating certificates without downtime is the real job</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-tls-rotation</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-tls-rotation</guid>
+    <description>Certificates are time bombs with friendly names. Issue and renew them with a controller, make the rotation actually reach the pods, and terminate where your controls can read the request.</description>
+    <pubDate>Sun, 12 Jul 2026 22:00:00 GMT</pubDate>
+    <category>Fundamentals</category><category>Security</category>
+  </item>
+  <item>
+    <title>Load balancing — L4 moves connections, L7 makes decisions</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-load-balancing</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-load-balancing</guid>
+    <description>"Load balancer" names two different machines: L4 spreads connections by tuple, L7 routes on the request. Most routing pain is asking L4 a question only L7 can answer.</description>
+    <pubDate>Sun, 12 Jul 2026 22:00:00 GMT</pubDate>
+    <category>Fundamentals</category><category>Networking</category>
+  </item>
+  <item>
+    <title>SLOs and error budgets — turning "is it up?" into a number you can spend</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-slo-error-budgets</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-slo-error-budgets</guid>
+    <description>An SLI measures what users feel, an SLO is the target, and the error budget is a currency: spend it on releases when there is budget, stop and harden when there is not.</description>
+    <pubDate>Sun, 12 Jul 2026 22:00:00 GMT</pubDate>
+    <category>Fundamentals</category><category>Observability</category>
+  </item>
+  <item>
+    <title>Blue-green and canary — ship to a few before you ship to everyone</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-progressive-delivery</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-progressive-delivery</guid>
+    <description>A deploy is a bet the new version works. Progressive delivery keeps most of the stake back — traffic-splitting plus a health signal, with rollback as the feature, not the fallback.</description>
+    <pubDate>Sun, 12 Jul 2026 22:00:00 GMT</pubDate>
+    <category>Fundamentals</category><category>Kubernetes</category>
+  </item>
+  <item>
+    <title>Defense in depth — no single wall, because walls fall</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-defense-in-depth</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-defense-in-depth</guid>
+    <description>Security that needs one control to never fail is a countdown to a breach. Stack independent envelopes — identity, network, policy — so getting through one buys an attacker almost nothing.</description>
+    <pubDate>Sun, 12 Jul 2026 22:00:00 GMT</pubDate>
+    <category>Fundamentals</category><category>Security</category>
+  </item>
+  <item>
+    <title>Twelve-Factor isn't a checklist — it's what the platform makes free</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-twelve-factor</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-twelve-factor</guid>
+    <description>The platform enforces most of the twelve so the app team gets them for free: config from a vault, stateless pods, logs as streams, disposability by default. Discipline becomes the shape of the paved road.</description>
+    <pubDate>Sun, 12 Jul 2026 22:00:00 GMT</pubDate>
+    <category>Fundamentals</category><category>Platform</category>
+  </item>
+  <item>
+    <title>The OSI model, one layer at a time — and where each one runs here</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-osi-model</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-osi-model</guid>
+    <description>Seven layers as a map of where a decision belongs: packet filtering at L3/4, load balancing at L4, routing and policy at L7, names resolved privately underneath. The layer tells you which repo to open.</description>
+    <pubDate>Sun, 12 Jul 2026 22:00:00 GMT</pubDate>
+    <category>Fundamentals</category><category>Networking</category>
+  </item>
+  <item>
+    <title>You can't SSH into production — that's the feature</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-immutability</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-immutability</guid>
+    <description>Every manual hot-fix is drift the code doesn't know about — and a box you can no longer rebuild. Immutable infrastructure removes the temptation by removing the door: change the code, roll a new one.</description>
+    <pubDate>Sat, 11 Jul 2026 22:00:00 GMT</pubDate>
+    <category>Fundamentals</category><category>Security</category>
+  </item>
+  <item>
+    <title>Replace, don't repair — cattle, not pets</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-replace-dont-repair</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-replace-dont-repair</guid>
+    <description>Repairing a live instance is a bespoke, unrepeatable act that leaves you a slightly different system. Replacing it from code is boring, automatic and identical every time — which is why the platform does it for you.</description>
+    <pubDate>Sat, 11 Jul 2026 22:00:00 GMT</pubDate>
+    <category>Fundamentals</category><category>Kubernetes</category>
+  </item>
+  <item>
+    <title>Idempotency: declare the end state, run it twice</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-idempotency</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-idempotency</guid>
+    <description>The quiet property that makes a platform safe to automate: Terraform applies to the same result, Argo CD syncs on a loop, a failed pipeline is just re-run. Without it every retry is a gamble.</description>
+    <pubDate>Sat, 11 Jul 2026 22:00:00 GMT</pubDate>
+    <category>Fundamentals</category><category>IaC</category>
+  </item>
+  <item>
+    <title>CAP is a decision you already made — here's where</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-cap-theorem</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-cap-theorem</guid>
+    <description>CAP isn't a whiteboard abstraction — you make the call every time you decide where data lives. Regional-by-default placement, per tenant-region secrets, and "global" reserved for what tolerates lag.</description>
+    <pubDate>Sat, 11 Jul 2026 22:00:00 GMT</pubDate>
+    <category>Fundamentals</category><category>Multi-tenancy</category>
+  </item>
+  <item>
+    <title>Well-architected is a set of questions, not a badge</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-well-architected</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-well-architected</guid>
+    <description>The five pillars audited against a running platform — each answered with a mechanism you can click: reliability that rebuilds from code, three security envelopes, budgets with owners, a paved road, and capacity as a decision.</description>
+    <pubDate>Fri, 10 Jul 2026 22:00:00 GMT</pubDate>
+    <category>Well-Architected</category><category>Platform</category>
+  </item>
+  <item>
+    <title>Migrating a self-managed GitLab to gitlab.com</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-gitlab-migration</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-gitlab-migration</guid>
+    <description>Three independent migrations — users, repositories, artifacts — all asynchronous, so verify jobs, not calls. Plus the two coordination rules that save the cut-over: a freeze period and an immediate origin switch.</description>
+    <pubDate>Thu, 09 Jul 2026 22:00:00 GMT</pubDate>
+    <category>Migration</category><category>Platform</category>
+  </item>
+  <item>
+    <title>Terraform at scale — scopes, tiers &amp; a policy gate</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-terraform</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-terraform</guid>
+    <description>Why "one repo per concern, one scope per resource" beats a mono-state, and how an OPA gate makes apply boring.</description>
+    <pubDate>Tue, 07 Jul 2026 22:00:00 GMT</pubDate>
+    <category>Terraform</category><category>IaC</category><category>Platform</category><category>Well-Architected</category>
+  </item>
+  <item>
+    <title>Multi-tenant Kubernetes without the foot-guns</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-kubernetes</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-kubernetes</guid>
+    <description>Namespaces as code, dedicated node pools, and why a tenant's data deliberately lives where the tenant can't delete it.</description>
+    <pubDate>Thu, 02 Jul 2026 22:00:00 GMT</pubDate>
+    <category>Kubernetes</category><category>Multi-tenancy</category>
+  </item>
+  <item>
+    <title>An AI layer for a developer platform</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-ai-platform</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-ai-platform</guid>
+    <description>Grounding assistants in the platform's own knowledge graph and live state instead of hoping the model guesses right.</description>
+    <pubDate>Sat, 27 Jun 2026 22:00:00 GMT</pubDate>
+    <category>AI</category><category>RAG</category>
+  </item>
+  <item>
+    <title>Your secrets don't live in your resource group</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-tenant-keyvaults</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-tenant-keyvaults</guid>
+    <description>One Key Vault per tenant per region — deliberately placed in a platform-owned resource group, so a tenant can use its secrets but never destroy the vault.</description>
+    <pubDate>Mon, 22 Jun 2026 22:00:00 GMT</pubDate>
+    <category>Security</category><category>Multi-tenancy</category><category>Well-Architected</category>
+  </item>
+  <item>
+    <title>A 403 is usually the fence doing its job</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-tenant-isolation</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-tenant-isolation</guid>
+    <description>Tenants are isolated cells: near-admin inside, zero power outside, and no way to grant yourself in. A cross-tenant role-assignment 403 is that boundary made visible — not a missing permission.</description>
+    <pubDate>Wed, 17 Jun 2026 22:00:00 GMT</pubDate>
+    <category>Multi-tenancy</category><category>Security</category>
+  </item>
+  <item>
+    <title>A runner that can only touch its own tenant</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-gitlab-runners</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-gitlab-runners</guid>
+    <description>GitLab is configured per tenant; the env vars pin each runner to a managed identity that can assign permissions only in its own tenant. The configuration is the security boundary — and the platform owns it.</description>
+    <pubDate>Fri, 12 Jun 2026 22:00:00 GMT</pubDate>
+    <category>Identity</category><category>Multi-tenancy</category>
+  </item>
+  <item>
+    <title>A SAS token is a one-year password you forgot you minted</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-storage-proxy</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-storage-proxy</guid>
+    <description>SAS tokens are long-lived, over-scoped bearer credentials you can't individually revoke — so clients never get one. A storage proxy authenticates with a managed identity, scopes each request, and can be cut off in one place.</description>
+    <pubDate>Sun, 07 Jun 2026 22:00:00 GMT</pubDate>
+    <category>Security</category><category>Identity</category>
+  </item>
+  <item>
+    <title>Three libraries, one platform</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-reuse-libraries</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-reuse-libraries</guid>
+    <description>Terraform modules, Helm charts and GitLab CI components — one reuse grammar (reference + version, never copy) with the OPA policy pack riding inside.</description>
+    <pubDate>Tue, 02 Jun 2026 22:00:00 GMT</pubDate>
+    <category>Platform</category><category>Reuse</category>
+  </item>
+  <item>
+    <title>The golden path is three files, not a wiki page</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-golden-path</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-golden-path</guid>
+    <description>A new service composes a pipeline component, Terraform modules and Helm charts — the paved road where doing it right is also the shortest route.</description>
+    <pubDate>Thu, 28 May 2026 22:00:00 GMT</pubDate>
+    <category>Platform</category><category>Reuse</category><category>Well-Architected</category>
+  </item>
+  <item>
+    <title>Instrumentation as a platform default — the OpenTelemetry Operator</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-otel-operator</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-otel-operator</guid>
+    <description>A design note: collectors and auto-instrumentation as CRDs, so tenants inherit traces from their namespace instead of wiring SDKs by hand.</description>
+    <pubDate>Sat, 23 May 2026 22:00:00 GMT</pubDate>
+    <category>Observability</category><category>Kubernetes</category>
+  </item>
+  <item>
+    <title>Nobody holds standing power</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-access-as-code</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-access-as-code</guid>
+    <description>PIM-activated humans, standing operator identities for automation, membership as YAML merge requests, and secretless OIDC for CI.</description>
+    <pubDate>Mon, 18 May 2026 22:00:00 GMT</pubDate>
+    <category>Security</category><category>Identity</category>
+  </item>
+  <item>
+    <title>Every alert email can prove where it came from</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-azure-email</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-azure-email</guid>
+    <description>One shared email relay, one sender identity per tool — and a DKIM check inside every message that cryptographically proves its origin.</description>
+    <pubDate>Wed, 13 May 2026 22:00:00 GMT</pubDate>
+    <category>Security</category><category>Platform</category>
+  </item>
+  <item>
+    <title>A cockpit for a fleet of agents</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-agent-cockpit</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-agent-cockpit</guid>
+    <description>A which-key agent leader in tmux and agentsview — reading each session’s context fill from its transcript, so observing agents is free.</description>
+    <pubDate>Fri, 08 May 2026 22:00:00 GMT</pubDate>
+    <category>Workflow</category>
+  </item>
+  <item>
+    <title>Attention is the bottleneck — signals from a working agent</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-claude-signals</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-claude-signals</guid>
+    <description>Lifecycle hooks write per-session status files; the statusline spins while agents work and blinks when they need you — with GitLab events in the same strip.</description>
+    <pubDate>Sun, 03 May 2026 22:00:00 GMT</pubDate>
+    <category>Workflow</category>
+  </item>
+  <item>
+    <title>Agent of Empires — sessions, worktrees, profiles, sandboxes</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-agent-of-empires</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-agent-of-empires</guid>
+    <description>Each unit of work is a session with its own git worktree, an explicit identity profile, and — when trust is low — a sandbox. Tenancy ideas, applied to agents.</description>
+    <pubDate>Tue, 28 Apr 2026 22:00:00 GMT</pubDate>
+    <category>Workflow</category>
+  </item>
+  <item>
+    <title>Run the pipeline before you push it</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-local-remote-ci</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-local-remote-ci</guid>
+    <description>Local CI runs byte-identical to remote, a one-key diff that makes every divergence auditable, and a poller that watches the real pipeline after push.</description>
+    <pubDate>Thu, 23 Apr 2026 22:00:00 GMT</pubDate>
+    <category>Workflow</category><category>Platform</category>
+  </item>
+  <item>
+    <title>Skills are golden paths for agents</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-agent-skills</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-agent-skills</guid>
+    <description>Versioned, reviewable procedures the agent loads on demand — MR conventions, test-driven CI loops. The paved-road idea, applied to AI.</description>
+    <pubDate>Sat, 18 Apr 2026 22:00:00 GMT</pubDate>
+    <category>Skills</category><category>Workflow</category>
+  </item>
+  <item>
+    <title>A statusline that knows who’s working — yas, wrapped</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-yas-wrapper</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-yas-wrapper</guid>
+    <description>yet-another-statusline, untouched, plus a wrapper that splices in 📄 context files, 🧠 memory, the profile identity and a 🐳 sandbox badge.</description>
+    <pubDate>Mon, 13 Apr 2026 22:00:00 GMT</pubDate>
+    <category>Workflow</category>
+  </item>
+  <item>
+    <title>fran-local-synapse — a marketplace for my agent’s habits</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-synapse-skills</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-synapse-skills</guid>
+    <description>Personal skills organised as plugins in a local marketplace: working-on-ticket ceremonies, GitLab pipeline setup, CI watching, git guardrails.</description>
+    <pubDate>Wed, 08 Apr 2026 22:00:00 GMT</pubDate>
+    <category>Skills</category><category>Workflow</category>
+  </item>
+  <item>
+    <title>Sandboxing Claude — three tools, three philosophies, and my setup</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-sandboxing-claude</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-sandboxing-claude</guid>
+    <description>Docker sandboxes vs nono vs agent-cage — filesystem, permissions or egress — and my own: sandboxes + profile mounts + an Obsidian vault as the dynamic context bus.</description>
+    <pubDate>Fri, 03 Apr 2026 22:00:00 GMT</pubDate>
+    <category>Workflow</category><category>Security</category>
+  </item>
+  <item>
+    <title>What a secure agent sandbox should look like</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-secure-sandbox</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-secure-sandbox</guid>
+    <description>I audited my agent runner’s sandbox and filed four upstream issues — least capability, least network, validated mounts, ephemeral credentials.</description>
+    <pubDate>Sun, 29 Mar 2026 22:00:00 GMT</pubDate>
+    <category>Security</category><category>Workflow</category>
+  </item>
+  <item>
+    <title>Gathering and filtering information — an agent reads my feeds</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-info-filtering</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-info-filtering</guid>
+    <description>An RSS list fetched by an agent that scores every item against an interest profile written as a markdown note — and delivers a prioritized digest into my vault.</description>
+    <pubDate>Tue, 24 Mar 2026 23:00:00 GMT</pubDate>
+    <category>Information and Learning</category><category>Workflow</category>
+  </item>
+  <item>
+    <title>Grafana Cloud as the observability backend</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-grafana-cloud</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-grafana-cloud</guid>
+    <description>Keep the opinionated half — collectors, tenancy labels, dashboards-as-code — and pay someone else to run Mimir at 3 a.m. Tenancy labels ARE the cost model.</description>
+    <pubDate>Thu, 19 Mar 2026 23:00:00 GMT</pubDate>
+    <category>Observability</category>
+  </item>
+  <item>
+    <title>Migrating observability: on-premises → Grafana Cloud</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-grafana-cloud-migration</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-grafana-cloud-migration</guid>
+    <description>Dual-write at the agents, migrate the readers, starve the old stack — and the three things that actually bit: cardinality, retention, auth.</description>
+    <pubDate>Sat, 14 Mar 2026 23:00:00 GMT</pubDate>
+    <category>Observability</category><category>Migration</category>
+  </item>
+  <item>
+    <title>From on-premises to cloud — migrate the operating model</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-migration-onprem-cloud</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-migration-onprem-cloud</guid>
+    <description>Guardrails first, workloads through the golden path, and an old environment that gets starved rather than switched off.</description>
+    <pubDate>Mon, 09 Mar 2026 23:00:00 GMT</pubDate>
+    <category>Migration</category><category>Platform</category>
+  </item>
+  <item>
+    <title>Moving a platform between Azure subscriptions</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=blog-migration-subscriptions</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=blog-migration-subscriptions</guid>
+    <description>Same cloud, same code, different boundary: recreate the scope, repoint state/identity/DNS/peering, dual-run until the diff is only intentional.</description>
+    <pubDate>Wed, 04 Mar 2026 23:00:00 GMT</pubDate>
+    <category>Migration</category><category>Terraform</category>
+  </item>
+  <item>
+    <title>The landscape — CNCF &amp; friends I actually run</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=landscape-index</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=landscape-index</guid>
+    <description>Not a logo wall: every tool runs in the platform today, earns its place, and is GitOps-delivered by cluster class — base everywhere, hub extras once, dev tooling never in live.</description>
+    <pubDate>Fri, 27 Feb 2026 23:00:00 GMT</pubDate>
+    <category>K8s Services</category><category>Kubernetes</category>
+  </item>
+  <item>
+    <title>cert-manager — certificates as a controller, not a calendar entry</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=res-cert-manager</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=res-cert-manager</guid>
+    <description>CSR → issue → store → renew before expiry, reconciled by a controller instead of a human — installed first among cluster services because everything with a hostname depends on it.</description>
+    <pubDate>Wed, 25 Feb 2026 23:00:00 GMT</pubDate>
+    <category>K8s Services</category><category>Kubernetes</category><category>Security</category>
+  </item>
+  <item>
+    <title>Argo CD — the cluster state is a repo</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=landscape-argocd</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=landscape-argocd</guid>
+    <description>App-of-apps per cluster, drift as a dashboard state, no kubectl in pipelines — and Argo manages Argo, so terraform only seeds the first install.</description>
+    <pubDate>Mon, 23 Feb 2026 23:00:00 GMT</pubDate>
+    <category>K8s Services</category><category>Kubernetes</category>
+  </item>
+  <item>
+    <title>Kyverno — safe namespaces by default</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=landscape-kyverno</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=landscape-kyverno</guid>
+    <description>Validate, mutate, generate — the runtime half of the policy gate, sync-waved at −2 so admission policy exists before the first tenant namespace ever syncs.</description>
+    <pubDate>Thu, 19 Feb 2026 23:00:00 GMT</pubDate>
+    <category>K8s Services</category><category>Kubernetes</category><category>Security</category>
+  </item>
+  <item>
+    <title>External Secrets — Key Vault to pods, no humans</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=landscape-external-secrets</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=landscape-external-secrets</guid>
+    <description>Key Vault → Kubernetes secrets without a person in the loop; workloads reference ExternalSecret outputs on their very first sync.</description>
+    <pubDate>Sun, 15 Feb 2026 23:00:00 GMT</pubDate>
+    <category>K8s Services</category><category>Kubernetes</category><category>Security</category>
+  </item>
+  <item>
+    <title>Reloader — rotation that actually reaches pods</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=landscape-reloader</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=landscape-reloader</guid>
+    <description>A rotated secret restarts the pods that mount it — closing the last mile of External Secrets so rotation is real, not cosmetic.</description>
+    <pubDate>Wed, 11 Feb 2026 23:00:00 GMT</pubDate>
+    <category>K8s Services</category><category>Kubernetes</category>
+  </item>
+  <item>
+    <title>External DNS — records follow the routes</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=landscape-external-dns</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=landscape-external-dns</guid>
+    <description>Watches the HTTPRoutes tenants create and reconciles the platform DNS zone — nobody files a ticket for a CNAME.</description>
+    <pubDate>Sat, 07 Feb 2026 23:00:00 GMT</pubDate>
+    <category>K8s Services</category><category>Kubernetes</category>
+  </item>
+  <item>
+    <title>KEDA — scale on real signals</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=landscape-keda</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=landscape-keda</guid>
+    <description>Queues and events instead of CPU guesses, including scale-to-zero — event-driven autoscaling every tenant inherits.</description>
+    <pubDate>Tue, 03 Feb 2026 23:00:00 GMT</pubDate>
+    <category>K8s Services</category><category>Kubernetes</category>
+  </item>
+  <item>
+    <title>Karpenter — just-in-time, right-sized nodes</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=landscape-karpenter</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=landscape-karpenter</guid>
+    <description>Provisioned in seconds, consolidated when idle: system pools stay terraform-owned, burst capacity is Karpenter-owned.</description>
+    <pubDate>Thu, 29 Jan 2026 23:00:00 GMT</pubDate>
+    <category>K8s Services</category><category>Kubernetes</category>
+  </item>
+  <item>
+    <title>OpenTelemetry — instrument once, everywhere</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=landscape-opentelemetry</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=landscape-opentelemetry</guid>
+    <description>One collector per cluster (daemonset + gateway): tenants instrument once against OTLP and the platform decides where telemetry lands.</description>
+    <pubDate>Sun, 25 Jan 2026 23:00:00 GMT</pubDate>
+    <category>K8s Services</category><category>Kubernetes</category><category>Observability</category>
+  </item>
+  <item>
+    <title>Grafana — one pane, run once</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=landscape-grafana</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=landscape-grafana</guid>
+    <description>Dashboards, alerts and Explore as code over Mimir &amp; Loki — hub-only by design: regional clusters ship telemetry, they don't each run a dashboard stack.</description>
+    <pubDate>Wed, 21 Jan 2026 23:00:00 GMT</pubDate>
+    <category>K8s Services</category><category>Kubernetes</category><category>Observability</category>
+  </item>
+  <item>
+    <title>Telepresence — debug the real cluster, safely</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=landscape-telepresence</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=landscape-telepresence</guid>
+    <description>Intercept a Service from the laptop — a sandbox-cluster feature by placement, because the same trick in live is an incident.</description>
+    <pubDate>Sat, 17 Jan 2026 23:00:00 GMT</pubDate>
+    <category>K8s Services</category><category>Kubernetes</category>
+  </item>
+  <item>
+    <title>Backstage — the developer portal</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=landscape-backstage</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=landscape-backstage</guid>
+    <description>Software catalog, golden-path scaffolder and TechDocs — hub-only: one catalog, one scaffolder, backed by the postgresql-k8s module.</description>
+    <pubDate>Tue, 13 Jan 2026 23:00:00 GMT</pubDate>
+    <category>K8s Services</category><category>Kubernetes</category><category>Platform</category>
+  </item>
+  <item>
+    <title>Cloud Native Buildpacks — images without Dockerfiles</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=landscape-buildpacks</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=landscape-buildpacks</guid>
+    <description>kpack turns source into an OCI image on the hardened base without a hand-written Dockerfile — one builder to patch, not one Dockerfile per repo.</description>
+    <pubDate>Sun, 11 Jan 2026 23:00:00 GMT</pubDate>
+    <category>K8s Services</category><category>Kubernetes</category><category>Security</category>
+  </item>
+  <item>
+    <title>Trivy — continuous vulnerability scanning, not just a build-time gate</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=landscape-trivy</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=landscape-trivy</guid>
+    <description>Scans every running workload on a schedule — so a CVE disclosed the day after a deploy is caught, not just the one that existed at build time.</description>
+    <pubDate>Sat, 10 Jan 2026 23:00:00 GMT</pubDate>
+    <category>K8s Services</category><category>Kubernetes</category><category>Security</category>
+  </item>
+  <item>
+    <title>Policy Reporter — one dashboard for every policy engine</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=landscape-policy-reporter</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=landscape-policy-reporter</guid>
+    <description>Reads the PolicyReport CRDs Kyverno and Trivy already emit and turns them into one UI plus Slack/Teams alerts — a standard, not a custom exporter.</description>
+    <pubDate>Thu, 08 Jan 2026 23:00:00 GMT</pubDate>
+    <category>K8s Services</category><category>Kubernetes</category><category>Security</category>
+  </item>
+  <item>
+    <title>OpenCost — cost allocation, per tenant, per namespace</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=landscape-opencost</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=landscape-opencost</guid>
+    <description>Cost per namespace and workload from real requests/usage against actual pricing — the number behind "~90% cost cut," visible to anyone on the platform.</description>
+    <pubDate>Tue, 06 Jan 2026 23:00:00 GMT</pubDate>
+    <category>K8s Services</category><category>Kubernetes</category><category>FinOps</category>
+  </item>
+  <item>
+    <title>OPA / rego — infrastructure can't change unless policy says it may</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=security-opa</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=security-opa</guid>
+    <description>A plan → OPA evaluation → apply safety gate, composable per cloud provider — the safe choice (paranoid/high/standard) is the default, not an opt-in.</description>
+    <pubDate>Mon, 05 Jan 2026 23:00:00 GMT</pubDate>
+    <category>K8s Services</category><category>Kubernetes</category><category>Security</category>
+  </item>
+  <item>
+    <title>Falco — the third layer: catching what already got past the first two</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=landscape-falco</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=landscape-falco</guid>
+    <description>eBPF syscall watching for what admission policy and image scans can't see — a shell spawned inside a container, a write to /etc/shadow, an unexpected connection.</description>
+    <pubDate>Sun, 04 Jan 2026 23:00:00 GMT</pubDate>
+    <category>K8s Services</category><category>Kubernetes</category><category>Security</category>
+  </item>
+  <item>
+    <title>Litmus — chaos as a reviewed experiment, never a surprise</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=landscape-litmus</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=landscape-litmus</guid>
+    <description>Controlled failure to prove resilience claims instead of hoping them — every experiment is a reviewed ChaosEngine CRD, scoped to one namespace, opt-in only.</description>
+    <pubDate>Sat, 03 Jan 2026 23:00:00 GMT</pubDate>
+    <category>K8s Services</category><category>Kubernetes</category>
+  </item>
+  <item>
+    <title>OpenFeature — decouple the deploy from the release</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=landscape-openfeature</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=landscape-openfeature</guid>
+    <description>A vendor-neutral feature-flag spec + SDK backed by flagd in-cluster — dark-launch a feature before it's a canary rollout, not after.</description>
+    <pubDate>Fri, 02 Jan 2026 23:00:00 GMT</pubDate>
+    <category>K8s Services</category><category>Kubernetes</category><category>Platform</category>
+  </item>
+  <item>
+    <title>Cilium — the CNI, chosen at cluster creation, not GitOps'd in later</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=landscape-cilium</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=landscape-cilium</guid>
+    <description>Azure CNI powered by Cilium: eBPF dataplane set at cluster creation, not a Helm chart installed after — L3-L7 network policy and Hubble visibility in one dataplane's job.</description>
+    <pubDate>Thu, 01 Jan 2026 23:00:00 GMT</pubDate>
+    <category>K8s Services</category><category>Kubernetes</category><category>Networking</category>
+  </item>
+  <item>
+    <title>Dapr — building-block APIs a sidecar gives every language</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=landscape-dapr</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=landscape-dapr</guid>
+    <description>Pub/sub, state, service invocation and durable workflow over one sidecar API — the durable-workflow primitive agentic AI pipelines need without hand-rolling it.</description>
+    <pubDate>Wed, 31 Dec 2025 23:00:00 GMT</pubDate>
+    <category>K8s Services</category><category>Kubernetes</category><category>AI</category>
+  </item>
+  <item>
+    <title>Traefik — one shared gateway, many tenant routes</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=landscape-traefik</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=landscape-traefik</guid>
+    <description>Exactly ONE gateway instance per cluster, platform-owned; tenants attach namespace-scoped HTTPRoutes by parentRef and never run their own ingress — SSO rides as an oauth2-proxy sidecar, so the gateway stays auth-agnostic.</description>
+    <pubDate>Sun, 28 Dec 2025 23:00:00 GMT</pubDate>
+    <category>K8s Services</category><category>Kubernetes</category><category>Multi-tenancy</category>
+  </item>
+  <item>
+    <title>Helm — the packaging grammar</title>
+    <link>https://franroa.github.io/platform-engineer/writing.html#read=landscape-helm</link>
+    <guid isPermaLink="true">https://franroa.github.io/platform-engineer/writing.html#read=landscape-helm</guid>
+    <description>One chart library consumed everywhere — and deliberately NO controller in the cluster: charts are OCI artifacts Argo CD renders server-side.</description>
+    <pubDate>Mon, 29 Dec 2025 23:00:00 GMT</pubDate>
+    <category>K8s Services</category><category>Kubernetes</category><category>Reuse</category>
+  </item>
+</channel>
+</rss>

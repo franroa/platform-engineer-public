@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Local Test · Ultraplatform Platform Map</title>
+<style>
+  :root{--bg:#04050b;--fg:#e8eefc;--muted:#8b97b8;--line:rgba(140,170,255,.18);--ok:#34d399;--bad:#f87171;--pend:#ffd166}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--fg);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    min-height:100vh;padding:34px 22px 60px}
+  .wrap{max-width:960px;margin:0 auto}
+  h1{font-size:26px;font-weight:800;letter-spacing:-.02em;
+    background:linear-gradient(90deg,#7fd4ff,#b69bff 55%,#ffb36b);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:var(--muted);font-size:13px;margin-top:4px}
+  .bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:20px 0}
+  .btn{cursor:pointer;border:1px solid var(--line);background:rgba(20,28,52,.6);color:var(--fg);
+    padding:10px 16px;border-radius:11px;font-size:14px;font-weight:600;text-decoration:none;display:inline-flex;gap:8px;align-items:center;transition:.15s}
+  .btn:hover{border-color:rgba(140,170,255,.6);background:rgba(34,46,82,.75);transform:translateY(-1px)}
+  .btn.primary{border-color:#7fd4ff;background:rgba(60,110,200,.4)}
+  .summary{margin-left:auto;font-size:14px;font-weight:700}
+  .card{background:rgba(10,15,32,.66);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:14px 0}
+  .card h2{font-size:14px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:10px}
+  .row{display:flex;align-items:center;gap:10px;padding:5px 0;font-size:13.5px;border-top:1px solid rgba(140,170,255,.07)}
+  .row:first-of-type{border-top:0}
+  .pill{width:64px;flex:0 0 auto;font-size:11px;font-weight:700;text-align:center;padding:3px 0;border-radius:6px}
+  .pill.ok{background:rgba(52,211,153,.16);color:var(--ok)}
+  .pill.bad{background:rgba(248,113,113,.16);color:var(--bad)}
+  .pill.pend{background:rgba(255,209,102,.16);color:var(--pend)}
+  .row .name{font-weight:600}
+  .row .det{color:var(--muted);margin-left:auto;font-size:12px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 26px}
+  @media (max-width:680px){.grid{grid-template-columns:1fr}}
+  ul.check{list-style:none;font-size:13.5px;color:#d5def5}
+  ul.check li{padding:5px 0;border-top:1px solid rgba(140,170,255,.07)}
+  ul.check li:first-child{border-top:0}
+  ul.check b{color:#bcd0ff}
+  code{background:rgba(120,150,255,.14);padding:1px 6px;border-radius:5px;font-family:ui-monospace,Menlo,monospace;font-size:12.5px;color:#cfe0ff}
+  .note{color:var(--muted);font-size:12px;margin-top:6px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Local Test · Ultraplatform Platform Map</h1>
+  <div class="sub">Automated smoke tests for the local build — run this before pushing. Serve the folder (see below) and open this page over <code>http://</code> (not <code>file://</code>).</div>
+
+  <div class="bar">
+    <a class="btn primary" href="ultraplatform.html">▶ Open the map</a>
+    <button class="btn" id="rerun">↻ Re-run tests</button>
+    <span class="summary" id="summary">running…</span>
+  </div>
+
+  <div class="card">
+    <h2>Assets & dependencies</h2>
+    <div id="assets"></div>
+  </div>
+
+  <div class="card">
+    <h2>Doc links (every menu item resolves to a real <code>docs/*.md</code>)</h2>
+    <div class="grid" id="docs"></div>
+  </div>
+
+  <div class="card">
+    <h2>Resource icons (every <code>RES</code> key resolves to a real <code>icons/*.svg</code>)</h2>
+    <div class="grid" id="icons"></div>
+  </div>
+
+  <div class="card">
+    <h2>Blog wiring (every <code>POSTS</code> entry: doc exists · in the map's Blog group · in the feed)</h2>
+    <div class="grid" id="blog"></div>
+  </div>
+
+  <div class="card">
+    <h2>Manual checklist</h2>
+    <ul class="check">
+      <li><b>Overview</b> — stacked spine + 3 envelopes render; <b>⧉ Nested</b> toggles boxes-inside-boxes.</li>
+      <li><b>Click a block</b> (e.g. Network) → 3D internals open + concept doc on the right.</li>
+      <li><b>Build an App (guided)</b> → <b>Next ▶</b> steps Region → Cluster → Tenant → App → Shared Responsibility.</li>
+      <li><b>Resources &amp; Scopes</b> → Key Vault shown in a <i>separate</i> RG (not the tenant RG).</li>
+      <li><b>About · Portfolio</b> (top-right chip) opens the profile.</li>
+      <li>No red errors in the browser console.</li>
+    </ul>
+    <div class="note">Tip: keep the DevTools console open while clicking around — this page can't catch runtime errors inside the 3D app, only that assets load.</div>
+  </div>
+
+  <div class="card">
+    <h2>Run locally</h2>
+    <ul class="check">
+      <li><code>./serve.sh</code> &nbsp;(or <code>python3 -m http.server 8000</code>) — then open <code>http://localhost:8000/test.html</code></li>
+      <li>Edit <code>ultraplatform.html</code> / <code>docs/*.md</code>, refresh, re-run tests, and only push when green.</li>
+    </ul>
+  </div>
+</div>
+
+<script src="vendor/marked.min.js"></script>
+<script type="module">
+  const results = { pass:0, fail:0, rows:[] };
+  window.__testresults = results;
+  const assetsEl = document.getElementById('assets');
+  const docsEl = document.getElementById('docs');
+  const iconsEl = document.getElementById('icons');
+  const blogEl = document.getElementById('blog');
+  const summaryEl = document.getElementById('summary');
+
+  function row(container, name, state, detail){
+    const div = document.createElement('div'); div.className='row';
+    div.innerHTML = `<span class="pill ${state}">${state==='ok'?'PASS':state==='bad'?'FAIL':'…'}</span>`+
+      `<span class="name">${name}</span><span class="det">${detail||''}</span>`;
+    container.appendChild(div);
+    return div;
+  }
+  function tally(state){ if(state==='ok')results.pass++; else if(state==='bad')results.fail++; }
+
+  async function fetchText(url){
+    const r = await fetch(url, {cache:'no-store'});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    return r.text();
+  }
+
+  async function run(){
+    results.pass=0; results.fail=0; results.rows=[];
+    assetsEl.innerHTML=''; docsEl.innerHTML=''; iconsEl.innerHTML='';
+    summaryEl.textContent='running…'; summaryEl.style.color='var(--pend)';
+
+    // 1) ultraplatform.html (the map)
+    let indexText='';
+    try{ indexText = await fetchText('ultraplatform.html');
+      const s = indexText.length>2000?'ok':'bad';
+      row(assetsEl,'ultraplatform.html', s, (indexText.length/1024|0)+' KB'); tally(s);
+    }catch(e){ row(assetsEl,'ultraplatform.html','bad', e.message); tally('bad'); }
+
+    // 2) marked CDN
+    { const s = (typeof window.marked!=='undefined')?'ok':'bad';
+      row(assetsEl,'marked (CDN)', s, s==='ok'?'loaded':'not reachable'); tally(s); }
+
+    // 3) three.js vendored locally (no CDN)
+    try{ await import('./vendor/three/build/three.module.min.js');
+      row(assetsEl,'three.js 0.160 (local vendor, min)','ok','import ok'); tally('ok');
+    }catch(e){ row(assetsEl,'three.js 0.160 (local vendor)','bad','vendor missing? '+e.message); tally('bad'); }
+
+    // 4) every doc referenced in ultraplatform.html must resolve — menu docs + per-resource docs (RES registry)
+    const menuDocs = [...indexText.matchAll(/doc:'([a-z0-9-]+)'/g)].map(m=>m[1]);
+    // two RES registration blocks: Azure/K8s resources (res-*.md) and the CNCF
+    // landscape services (landscape-*.md) — the doc prefix depends on the block
+    const resMatches = [...indexText.matchAll(/\['([a-z0-9-]+)','[^']*',C\.[a-z0-9]+\]/g)];
+    const resSplit  = indexText.indexOf("doc:('res-'+k)");
+    const resKeys  = resMatches.map(m=>m[1]);
+    const resDocs  = resMatches.map(m=>(m.index<resSplit?'res-':'landscape-')+m[1]);
+    const referenced = [...new Set([...menuDocs, ...resDocs])].sort();
+    if(!referenced.length) row(docsEl,'(no doc: keys found)','bad','regex/markup changed?'),tally('bad');
+    for(const key of referenced){
+      const d = row(docsEl, 'docs/'+key+'.md', 'pend', '');
+      try{ const t = await fetchText('docs/'+key+'.md');
+        const s = t.trim().length>40?'ok':'bad';
+        d.querySelector('.pill').className='pill '+s; d.querySelector('.pill').textContent=s==='ok'?'PASS':'FAIL';
+        d.querySelector('.det').textContent = (t.length/1024).toFixed(1)+' KB'; tally(s);
+      }catch(e){ d.querySelector('.pill').className='pill bad'; d.querySelector('.pill').textContent='FAIL';
+        d.querySelector('.det').textContent=e.message; tally('bad'); }
+    }
+
+    // 5) every RES key must resolve to a real icons/<key>.svg (per-resource Azure/K8s icons)
+    for(const key of [...new Set(resKeys)].sort()){
+      const d = row(iconsEl, 'icons/'+key+'.svg', 'pend', '');
+      try{ const r = await fetch('icons/'+key+'.svg', {cache:'no-store'});
+        const ok = r.ok; const len = (await r.text()).length;
+        const s = (ok && len>100) ? 'ok':'bad';
+        d.querySelector('.pill').className='pill '+s; d.querySelector('.pill').textContent=s==='ok'?'PASS':'FAIL';
+        d.querySelector('.det').textContent = ok ? (len/1024).toFixed(1)+' KB' : 'HTTP '+r.status; tally(s);
+      }catch(e){ d.querySelector('.pill').className='pill bad'; d.querySelector('.pill').textContent='FAIL';
+        d.querySelector('.det').textContent=e.message; tally('bad'); }
+    }
+
+    // 6) blog wiring: every writing.html POSTS entry must have its docs/blog-*.md,
+    //    a Blog-group menu item in the map, and an item in feed.xml (the three-places rule)
+    try{
+      const wtext = await fetchText('writing.html');
+      const feed  = await fetchText('feed.xml').catch(()=> '');
+      const sitemap = await fetchText('sitemap.xml').catch(()=> '');
+      const postKeys = [...wtext.matchAll(/key:'(blog-[a-z0-9-]+)'/g)].map(m=>m[1]);
+      const blogMenu = [...indexText.matchAll(/id:'(blog-[a-z0-9-]+)'/g)].map(m=>m[1]);
+      if(!postKeys.length){ row(blogEl,'(no POSTS keys found)','bad','regex/markup changed?'); tally('bad'); }
+      for(const key of [...new Set(postKeys)]){
+        const d = row(blogEl, key, 'pend', '');
+        let det=[], ok=true;
+        try{ const t=await fetchText('docs/'+key+'.md'); if(t.trim().length<=40){ok=false;det.push('doc empty');} }
+        catch(e){ ok=false; det.push('doc missing'); }
+        if(!blogMenu.includes(key)){ ok=false; det.push('not in map Blog group'); }
+        if(!feed.includes('#read='+key)){ ok=false; det.push('not in feed.xml'); }
+        // static crawlable page (p/<key>.html) must exist, render the article, and be in the sitemap
+        try{ const pg=await fetchText('p/'+key+'.html'); if(!/class="md"/.test(pg)||pg.length<800){ok=false;det.push('page thin');} }
+        catch(e){ ok=false; det.push('no static page'); }
+        if(sitemap && !sitemap.includes('p/'+key+'.html')){ ok=false; det.push('not in sitemap'); }
+        const s = ok?'ok':'bad';
+        d.querySelector('.pill').className='pill '+s; d.querySelector('.pill').textContent=ok?'PASS':'FAIL';
+        d.querySelector('.det').textContent = ok?'doc · map · feed · page · sitemap':det.join(' · '); tally(s);
+      }
+    }catch(e){ row(blogEl,'writing.html','bad',e.message); tally('bad'); }
+
+    summaryEl.textContent = results.fail===0 ? `✓ ${results.pass} passed` : `✗ ${results.fail} failed / ${results.pass} passed`;
+    summaryEl.style.color = results.fail===0 ? 'var(--ok)' : 'var(--bad)';
+    results.done = true;
+  }
+  document.getElementById('rerun').onclick=run;
+  run();
+</script>
+</body>
+</html>

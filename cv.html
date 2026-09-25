@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<script>(function(){try{var t=localStorage.getItem('up-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme:light)').matches)?'light':'dark';document.documentElement.dataset.theme=t;}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Francisco Roa — CV · Senior (AI) Platform Engineer</title>
+<meta name="description" content="Curriculum vitae of Francisco Roa — Senior (AI) Platform Engineer. Azure, Kubernetes, Terraform, internal developer platforms. Print or save as PDF." />
+<meta name="author" content="Francisco Roa" />
+<link rel="canonical" href="https://franroa.github.io/platform-engineer/cv.html" />
+<link rel="alternate" type="application/rss+xml" title="Francisco Roa — Posts" href="feed.xml" />
+<script defer src="analytics.js"></script>
+<script defer src="theme.js"></script>
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<meta name="theme-color" content="#060910" data-dark="#060910" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+<style>
+  :root{--bg:#060910;--fg:#e8eefc;--muted:#8b97b8;--dim:#727c9f;--line:rgba(130,160,230,.16);
+    --cyan:#7fd4ff;--violet:#b69bff;--card:#0e1526;--maxw:820px}
+  /* light theme (screen) — mirrors the print theme so a light CV reads on screen too */
+  :root[data-theme="light"]{--bg:#f6f8fc;--fg:#0f1a33;--muted:#54617e;--dim:#616c88;
+    --line:rgba(40,70,130,.18);--cyan:#0e79b0;--violet:#6d4fd0;--card:#ffffff;color-scheme:light}
+  *{margin:0;padding:0;box-sizing:border-box}
+  .skip{position:absolute;left:-9999px;top:0;z-index:3000;background:var(--cyan);color:#06121f;padding:10px 16px;border-radius:0 0 10px 0;font-weight:700;text-decoration:none}
+  .skip:focus{left:0}
+  body{background:var(--bg);color:var(--fg);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  /* page-specific actions only — navigation is the shared nav.js bar */
+  .cvactions{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:10px;margin-bottom:20px}
+  .btn{font:inherit;font-size:13.5px;font-weight:600;cursor:pointer;border-radius:9px;padding:8px 15px;text-decoration:none;border:1px solid var(--line);color:var(--fg);background:transparent}
+  .btn.primary{color:#06121f;border-color:transparent;background:linear-gradient(135deg,var(--cyan),var(--violet) 70%)}
+  .page{max-width:var(--maxw);margin:0 auto;padding:98px 30px 90px} /* top clears the fixed nav.js bar */
+  header.cv{border-bottom:2px solid var(--line);padding-bottom:20px;margin-bottom:22px}
+  header.cv h1{font-size:32px;font-weight:800;letter-spacing:-.01em}
+  header.cv .role{font-size:16px;color:var(--cyan);font-weight:600;margin-top:3px}
+  header.cv .contacts{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--muted)}
+  header.cv .contacts a{color:var(--muted);text-decoration:none}header.cv .contacts a:hover{color:var(--fg)}
+  h2.sec{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--violet);margin:26px 0 12px;font-weight:700}
+  .summary{color:#c4cee6}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 26px}
+  .skill{font-size:13.5px;color:#c4cee6}.skill b{color:var(--fg)}
+  .job{margin-bottom:16px;page-break-inside:avoid;break-inside:avoid}
+  .job .top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .job h3{font-size:15.5px;font-weight:700}
+  .job .when{font-size:12.5px;color:var(--dim);white-space:nowrap}
+  .job .co{font-size:13px;color:var(--cyan);margin:1px 0 4px}
+  .job p{font-size:13.5px;color:#c4cee6;margin-bottom:4px}
+  .job ul{margin:4px 0 0 18px}.job li{font-size:13px;color:#bcc7e2;margin-bottom:2px}
+  .tools{font-size:13.5px;color:#c4cee6}.tools li{margin:0 0 4px 18px}.tools b{color:var(--fg)}
+  .foot{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+  .foot a{color:var(--cyan);text-decoration:none}
+  .print-hint{font-size:12px;color:var(--dim);margin-top:6px}
+  @media print{
+    @page{margin:14mm}
+    :root{--bg:#fff;--fg:#111;--muted:#444;--dim:#666;--line:#ccc;--card:#fff}
+    body{background:#fff;color:#111;font-size:10.5pt;line-height:1.42}
+    #nav,.cvactions,.print-hint{display:none!important}
+    .page{max-width:none;margin:0;padding:0}
+    header.cv h1{font-size:22pt}
+    header.cv .role,.job .co{color:#0b5bb5}
+    h2.sec{color:#6b46c1;margin:14pt 0 7pt;font-size:9.5pt}
+    a{color:#111;text-decoration:none}
+    .job{margin-bottom:9pt}
+    /* the on-screen body colors are light-on-dark — force dark ink for print */
+    .summary,.job p,.job li,.skill,.tools,.tools li,.foot{color:#222}
+    .skill b,.tools b,.summary b,.job li b{color:#000}
+    header.cv .contacts,header.cv .contacts a,.job .when{color:#333}
+    .foot a{color:#0b5bb5}
+  }
+</style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <script src="nav.js" data-page="cv"></script>
+
+  <main class="page" id="main">
+    <div class="cvactions">
+      <button class="btn primary" onclick="window.print()">⧉ Print / Save as PDF</button>
+      <a class="btn" href="ultraplatform.html">Explore the platform ↗</a>
+    </div>
+    <header class="cv">
+      <h1>Francisco Roa</h1>
+      <div class="role">Senior (AI) Platform Engineer</div>
+      <div class="contacts">
+        <a href="mailto:franciscoroaprieto@gmail.com">franciscoroaprieto@gmail.com</a>
+        <a href="https://github.com/franroa">github.com/franroa</a>
+        <a href="https://www.linkedin.com/in/francisco-roa-prieto">linkedin.com/in/francisco-roa-prieto</a>
+        <span>Remote or on-site · Europe, North &amp; Latin America</span>
+        <a href="https://franroa.github.io/platform-engineer/">franroa.github.io/platform-engineer</a>
+      </div>
+    </header>
+
+    <p class="summary">Platform engineer who designs and runs <b>internal developer platforms</b> end-to-end —
+      the paved road that lets product teams ship safely and fast without re-implementing infrastructure,
+      pipelines or security each time. Fifteen years across full-stack product, DevOps and multi-cloud
+      platforms; the throughline is reliability, cost-awareness and developer experience. I build the
+      guardrails (Terraform modules, CI components, Helm charts, OPA policy) that make the right thing the
+      easy thing.</p>
+
+    <h2 class="sec">Core competencies</h2>
+    <div class="grid">
+      <div class="skill"><b>Platform as a product</b> — reusable Terraform modules, GitLab CI components, Helm charts; golden paths; shared-responsibility model.</div>
+      <div class="skill"><b>Kubernetes</b> — AKS/EKS at scale, node pools, ingress + WAF, cert-manager, GitOps (Argo CD / Flux).</div>
+      <div class="skill"><b>Infrastructure as Code</b> — Terraform at scale, remote state as source of truth, module libraries, Test-Driven Infrastructure.</div>
+      <div class="skill"><b>Cloud &amp; networking</b> — Azure &amp; AWS, hub-and-spoke VNets, cross-subscription peering, DNS/NAT, single P2S VPN entry.</div>
+      <div class="skill"><b>CI/CD &amp; policy</b> — GitLab CI components, OPA/rego gates (plan → policy → apply), secretless OIDC.</div>
+      <div class="skill"><b>Security &amp; identity</b> — Entra ID, PIM, least-privilege RBAC, Key Vault isolation per tenant-region.</div>
+      <div class="skill"><b>Observability</b> — Grafana / Mimir / Loki, dashboards &amp; alerting as code, SLIs/SLOs.</div>
+      <div class="skill"><b>AI platform &amp; tooling</b> — foundations for an internal AI platform and AI-assisted developer tooling.</div>
+    </div>
+
+    <h2 class="sec">Experience</h2>
+
+    <div class="job">
+      <div class="top"><h3>Senior (AI) Platform Engineer</h3><span class="when">Jun 2026 — Present</span></div>
+      <div class="co">Technosylva · Azure &amp; Kubernetes · AI Platform</div>
+      <p>Design, scale and optimize the cloud infrastructure behind mission-critical microservices and the
+        company's next-generation AI platforms. Lead Developer Experience — abstracting Azure/AKS complexity
+        behind golden paths, self-service and policy-as-code.</p>
+      <ul>
+        <li>AKS at scale — hub-and-spoke networking, tenancy isolation, GitOps delivery</li>
+        <li>Terraform module libraries, OPA/rego policy gates, secretless CI/CD</li>
+        <li>Foundations for an internal AI platform and AI-assisted developer tooling</li>
+      </ul>
+    </div>
+
+    <div class="job">
+      <div class="top"><h3>Platform Engineer — Azure &amp; Kubernetes</h3><span class="when">Feb 2025 — Jun 2026</span></div>
+      <div class="co">Technosylva · (promoted to Senior)</div>
+      <p>Built and operated the Azure/AKS developer platform: reusable Terraform modules, GitLab CI
+        components, multi-region clusters, and the guardrails that keep tenant teams safe by default.</p>
+    </div>
+
+    <div class="job">
+      <div class="top"><h3>Software Architect</h3><span class="when">Apr 2024 — Dec 2024</span></div>
+      <div class="co">XERIDIA</div>
+      <p>Designed clean, maintainable architectures for enterprise applications (incl. OutSystems), focused
+        on separation of concerns and long-term maintainability.</p>
+    </div>
+
+    <div class="job">
+      <div class="top"><h3>Masters Director — Business Analytics</h3><span class="when">Oct 2023 — Apr 2024</span></div>
+      <div class="co">Esden Business School</div>
+      <p>Directed the Business Analytics master's programme — curriculum and mentoring bridging data,
+        analytics and engineering practice.</p>
+    </div>
+
+    <div class="job">
+      <div class="top"><h3>DevOps — Kubernetes &amp; AWS</h3><span class="when">Oct 2019 — Dec 2023</span></div>
+      <div class="co">SYNAOS · Hannover (Remote)</div>
+      <p>Migrated infrastructure to AWS (EKS) and Azure (AKS): Packer + Ansible base images, Terraform for
+        the infrastructure, and an own Test-Driven Infrastructure (TDI) framework in Go. Adopted the AWS
+        Well-Architected Framework.</p>
+      <ul>
+        <li>Multi-account governance (Control Tower + SSO across Azure/AWS), aws-nuke cleanup</li>
+        <li>Cost-aware design — up to <b>90% savings</b> on instance choices (~1,500€/week/env)</li>
+        <li>Flux &amp; Argo CD, GitLab Runners on Kubernetes, a DevSecOps pipeline, observability as code</li>
+      </ul>
+    </div>
+
+    <div class="job">
+      <div class="top"><h3>Full-Stack Engineer — Java &amp; React</h3><span class="when">Jan 2017 — Aug 2019</span></div>
+      <div class="co">Klarna · Berlin</div>
+      <p>Google Pay API integration and a merchant onboarding API (OAuth2). Built an own TDD testing
+        framework; microservices in Java 11 / Spring Boot with React/Redux front-ends, Kafka, Jenkins CI/CD.</p>
+    </div>
+
+    <div class="job">
+      <div class="top"><h3>Software Engineer — earlier roles</h3><span class="when">2011 — 2016</span></div>
+      <div class="co">Targetic · Hieronymus · DADA Company · AVANZO</div>
+      <p>Full-stack PHP/JS (Zend, MySQL, jQuery plugins), database engineering for a social platform, an iOS
+        game (cocos2d / Objective-C), and SCORM e-learning courseware.</p>
+    </div>
+
+    <h2 class="sec">Tools I've built</h2>
+    <ul class="tools">
+      <li><b>gctui</b> — a local GitLab-CI cockpit (Go + Bubble Tea): assemble, run pipelines locally, diff vs remote.</li>
+      <li><b>tflocal</b> — local-only Terraform overrides (Go): run real modules locally, leave the tree untouched.</li>
+      <li><b>time-tracker (tt)</b> — ticket-aware time tracking in tmux (Python).</li>
+    </ul>
+
+    <div class="foot">
+      This CV has an interactive companion: <a href="https://franroa.github.io/platform-engineer/">a 3D map of a
+      production developer platform I build and operate</a> — <div class="print-hint">Tip: use “Print / Save as PDF” above for a clean, one-file copy.</div>
+    </div>
+  </main>
+</body>
+</html>

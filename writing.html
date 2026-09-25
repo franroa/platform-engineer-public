@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<script>(function(){try{var t=localStorage.getItem('up-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme:light)').matches)?'light':'dark';document.documentElement.dataset.theme=t;}catch(e){}})();</script>
+<meta name="theme-color" content="#0a0f1e" data-dark="#0a0f1e" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<title>Posts &amp; notes · Francisco Roa</title>
+<meta name="author" content="Francisco Roa" />
+<meta name="description" content="Long-form posts and a tag-navigable index of notes on platform engineering by Francisco Roa — Terraform at scale, multi-tenant Kubernetes, multi-tenancy, security and AI platforms. Each piece also lives as a clickable 3D diagram." />
+<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+<link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
+<link rel="canonical" href="https://franroa.github.io/platform-engineer/writing.html" />
+<script defer src="analytics.js"></script>
+<script defer src="theme.js"></script>
+<script defer src="highlight.js"></script>
+<!-- social cards -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Francisco Roa · Platform Engineering" />
+<meta property="og:title" content="Posts &amp; notes — platform engineering, from practice" />
+<meta property="og:description" content="Long-form notes on Terraform at scale, multi-tenant Kubernetes, AI platforms and agent workflows — grounded in a real production platform." />
+<meta property="og:url" content="https://franroa.github.io/platform-engineer/writing.html" />
+<meta property="og:image" content="https://franroa.github.io/platform-engineer/assets/og.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Posts &amp; notes — platform engineering, from practice" />
+<meta name="twitter:description" content="Long-form notes on Terraform at scale, multi-tenant Kubernetes, AI platforms and agent workflows — grounded in a real production platform." />
+<meta name="twitter:image" content="https://franroa.github.io/platform-engineer/assets/og.png" />
+<!-- /social -->
+<link rel="alternate" type="application/rss+xml" title="Francisco Roa — Posts" href="feed.xml" />
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"Francisco Roa · Platform Engineering","url":"https://franroa.github.io/platform-engineer/","potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://franroa.github.io/platform-engineer/writing.html?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Blog","name":"Posts & notes · Francisco Roa","url":"https://franroa.github.io/platform-engineer/writing.html","description":"Long-form posts and notes on platform engineering — Terraform at scale, multi-tenant Kubernetes, security and AI platforms.","author":{"@type":"Person","name":"Francisco Roa","url":"https://franroa.github.io/platform-engineer/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://franroa.github.io/platform-engineer/"},{"@type":"ListItem","position":2,"name":"Posts","item":"https://franroa.github.io/platform-engineer/writing.html"}]}]}</script>
+<style>
+  :root{
+    --bg:#060910; --bg2:#0a0f1c; --panel:#0e1526; --line:rgba(130,160,230,.14);
+    --fg:#e8eefc; --muted:#8b97b8; --dim:#727c9f;
+    --cyan:#7fd4ff; --violet:#b69bff; --orange:#ffb36b; --green:#34d399;
+    /* elevated surfaces — cards sit clearly above the background, never fade into it */
+    --card:#141d33; --card2:#101830; --card-line:rgba(150,178,245,.24);
+    --elev:0 1px 0 rgba(255,255,255,.05) inset, 0 14px 30px -16px rgba(0,0,0,.65);
+    --elev-hi:0 1px 0 rgba(255,255,255,.08) inset, 0 22px 44px -18px rgba(0,0,0,.72);
+    --maxw:1080px;
+  }
+  /* light theme — shared palette with the rest of the reading surfaces */
+  :root[data-theme="light"]{
+    --bg:#f6f8fc; --bg2:#eef2f9; --panel:#ffffff; --line:rgba(30,52,96,.15);
+    --fg:#0f1a33; --fg2:#33405f; --muted:#54617e; --dim:#616c88;
+    --cyan:#0e79b0; --violet:#6d4fd0; --green:#0e9e6a;
+    --card:#ffffff; --card2:#f2f6fc; --card-line:rgba(40,70,130,.18);
+    --elev:0 1px 0 rgba(255,255,255,.7) inset, 0 12px 28px -18px rgba(20,45,90,.20);
+    --elev-hi:0 1px 0 rgba(255,255,255,.9) inset, 0 20px 44px -20px rgba(20,45,90,.24);
+    color-scheme:light;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  .skip{position:absolute;left:-9999px;top:0;z-index:3000;background:var(--cyan);color:#06121f;padding:10px 16px;border-radius:0 0 10px 0;font-weight:700;text-decoration:none}
+  .skip:focus{left:0}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  /* accessible keyboard focus — visible only for keyboard users, never on mouse click */
+  a:focus-visible,button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:6px}
+  /* smooth scroll enabled by JS only after load — see the matching comment in index.html;
+     avoids CSS-level smooth scrolling hijacking the browser's own arrival scroll-to-fragment */
+  body{background:var(--bg);color:var(--fg);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:rgba(127,212,255,.28)}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  .grad{background:linear-gradient(100deg,var(--cyan),var(--violet) 55%,var(--orange));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+
+  /* ---------- nav (persistent top bar) ---------- */
+  /* nav bar (markup + styling + mobile) lives in nav.js */
+
+  /* ---------- page head ---------- */
+  .page{padding:120px 0 40px}
+  .kicker{font-size:12.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan);margin-bottom:14px;font-weight:600}
+  .page h1{font-size:clamp(30px,5vw,50px);font-weight:800;letter-spacing:-.02em;line-height:1.08;margin-bottom:16px}
+  .page .lead{color:var(--muted);font-size:clamp(15px,2vw,18px);max-width:680px}
+  .page .lead a{color:var(--cyan)}
+
+  /* ---------- post list ---------- */
+  .posts{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin:0 0 60px}
+  .post{border:1px solid var(--card-line);border-radius:16px;padding:24px;background:linear-gradient(180deg,var(--card),var(--card2));box-shadow:var(--elev);
+    transition:border-color .2s,transform .2s,box-shadow .2s;display:flex;flex-direction:column;gap:12px;cursor:pointer;text-align:left;
+    color:inherit;font:inherit}
+  .post:hover{border-color:rgba(182,155,255,.5);transform:translateY(-3px);box-shadow:var(--elev-hi)}
+  .post .tagrow{display:flex;gap:8px;flex-wrap:wrap}
+  .post .t{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--violet);border:1px solid var(--line);border-radius:6px;padding:2px 8px;cursor:pointer}
+  .post .t:hover{border-color:rgba(182,155,255,.6)}
+  .post .priv{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#ffd479;border:1px solid rgba(255,212,121,.35);border-radius:6px;padding:2px 8px}
+  .post h3{font-size:19px;font-weight:700;line-height:1.25}
+  .post p{color:var(--muted);font-size:14px;flex:1}
+  .post .meta{display:flex;gap:14px;font-size:12.5px;color:var(--dim)}
+  .post .go{color:var(--cyan);font-size:13.5px;font-weight:600}
+  /* note cards reuse the post card chrome, plus a kind label up top */
+  .post .kind{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);display:flex;align-items:center;gap:7px}
+  .post .kind .ic{font-size:13px}
+  a.post{text-decoration:none}
+
+  /* ---------- Posts | Notes tabs ---------- */
+  .tabs{display:flex;gap:8px;margin:28px 0 2px}
+  .tabbtn{font:inherit;font-size:14px;font-weight:600;color:var(--muted);background:none;border:1px solid var(--line);
+    border-radius:999px;padding:8px 20px;cursor:pointer;transition:color .18s,border-color .18s,background .18s}
+  .tabbtn:hover{color:var(--fg)}
+  .tabbtn.on{color:#06121f;background:linear-gradient(135deg,var(--cyan),var(--violet) 70%);border-color:transparent}
+  .postsearch{position:relative;margin:16px 0 2px;max-width:460px}
+  .postsearch svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:17px;height:17px;color:var(--dim);pointer-events:none}
+  .postsearch input{width:100%;font:inherit;font-size:14.5px;color:var(--fg);background:var(--bg2);
+    border:1px solid var(--line);border-radius:11px;padding:11px 14px 11px 40px;transition:border-color .18s}
+  .postsearch input::placeholder{color:var(--dim)}
+  .postsearch input:focus{outline:none;border-color:rgba(127,212,255,.55)}
+  .postsearch input:focus-visible{outline:2px solid var(--cyan);outline-offset:1px}
+  /* "Start here" reading path — a curated ordered journey shown on the Posts tab (unfiltered).
+     Top margin separates it from the tabs above (which sit only 2px clear of it). */
+  .startpath{margin:22px 0 26px;border:1px solid var(--card-line);border-radius:14px;
+    background:linear-gradient(180deg,var(--card),var(--card2));box-shadow:var(--elev);overflow:hidden}
+  .startpath[hidden]{display:none}
+  .startpath summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;
+    padding:15px 20px;font-weight:700;font-size:15px;color:var(--fg);transition:background .15s}
+  .startpath summary:hover{background:rgba(127,212,255,.045)}                 /* signal it's interactive */
+  .startpath summary:focus-visible{outline:2px solid var(--cyan);outline-offset:-2px}
+  .startpath summary::-webkit-details-marker{display:none}
+  .startpath summary .chev{color:var(--cyan);transition:transform .2s;display:inline-block}
+  .startpath[open] summary .chev{transform:rotate(90deg)}
+  .startpath summary .sub{font-weight:500;font-size:12.5px;color:var(--dim);margin-left:auto}
+  .startpath ol{list-style:none;margin:0;padding:2px 10px 12px;counter-reset:sp}
+  .startpath li a{display:flex;gap:13px;align-items:baseline;padding:10px 12px;border-radius:10px;
+    text-decoration:none;color:inherit;transition:background .15s}
+  .startpath li a:hover{background:rgba(127,212,255,.06)}
+  .startpath li a:focus-visible{outline:2px solid var(--cyan);outline-offset:-2px;background:rgba(127,212,255,.06)}
+  .startpath li .n{font:700 12.5px/1.5 ui-monospace,Menlo,monospace;color:var(--cyan);min-width:18px}
+  .startpath li .ti{color:var(--fg);font-size:14px;font-weight:600}
+  .startpath li .wy{color:var(--muted);font-size:13px}
+  @media(max-width:560px){.startpath li .wy{display:none}}
+  .loadmore-btn{display:block;margin:22px auto 0;font:inherit;font-size:14px;font-weight:600;color:var(--fg);
+    background:transparent;border:1px solid var(--line);border-radius:999px;padding:10px 22px;cursor:pointer;
+    transition:border-color .18s,background .18s}
+  .loadmore-btn:hover{border-color:rgba(127,212,255,.5);background:rgba(127,212,255,.06)}
+
+  /* ---------- tag rail + shell (mirrors notes.html) ---------- */
+  .shell{display:grid;grid-template-columns:220px 1fr;gap:36px;align-items:start;margin-top:38px}
+  .rail{position:sticky;top:96px}
+  .rail .rlabel{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin:0 0 12px 12px}
+  .rail .taglist{display:flex;flex-direction:column;gap:2px}
+  .tag{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 12px;border-radius:10px;
+    font-size:14px;color:var(--muted);cursor:pointer;border:1px solid transparent;transition:background .15s,color .15s,border-color .15s;text-align:left;background:transparent;font-family:inherit}
+  .tag:hover{color:var(--fg);background:rgba(127,212,255,.05)}
+  .tag.on{color:var(--fg);background:rgba(127,212,255,.09);border-color:rgba(127,212,255,.35)}
+  .tag .n{font-size:11px;color:var(--dim);background:rgba(130,160,230,.1);border-radius:999px;padding:1px 8px;min-width:24px;text-align:center}
+  .tag.on .n{color:var(--cyan)}
+  .count{font-size:13px;color:var(--dim);margin-bottom:16px}
+  .nvimstrip{display:none;align-items:center;gap:8px;flex-wrap:wrap;margin:-6px 0 16px;font-size:12.5px;color:var(--dim)}
+  .nvimstrip.on{display:flex}
+  .nvimstrip .np{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;color:var(--cyan);
+    border:1px solid var(--line);border-radius:6px;padding:2px 8px;background:rgba(127,212,255,.05)}
+  .empty{color:var(--muted);padding:40px 0}
+  /* mobile tag picker (a select + removable chips); desktop uses the rail instead */
+  .tagselect{display:none;margin:0 0 18px}
+  .tagselect select{width:100%;font:inherit;font-size:14px;color:var(--fg);background:var(--panel);
+    border:1px solid var(--card-line);border-radius:10px;padding:11px 12px;appearance:none;cursor:pointer}
+  .tagchips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .tagchips:empty{margin-top:0}
+  .tagchips .chip{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:#06121f;font-weight:600;
+    background:linear-gradient(135deg,var(--cyan),var(--violet) 80%);border-radius:999px;padding:5px 6px 5px 12px}
+  .tagchips .chip button{border:0;background:rgba(6,18,31,.22);color:#06121f;width:18px;height:18px;border-radius:50%;
+    cursor:pointer;font:700 12px/1 system-ui;display:grid;place-items:center}
+  @media(max-width:820px){
+    .shell{grid-template-columns:1fr;gap:20px;margin-top:26px}
+    .rail{display:none}
+    .tagselect{display:block}
+  }
+
+  /* ---------- reader (in-page article) ---------- */
+  body.noscroll{overflow:hidden}                       /* lock background scroll while the reader is open */
+  .reader{position:fixed;inset:0;z-index:80;background:rgba(4,7,14,.72);backdrop-filter:blur(6px);
+    display:none;overflow-y:auto;overscroll-behavior:contain;padding:88px 20px 60px}
+  .reader.open{display:block}
+  .reader .sheet{max-width:760px;margin:0 auto;background:var(--bg2);border:1px solid var(--line);border-radius:18px;
+    padding:40px clamp(22px,5vw,52px) 52px;box-shadow:0 30px 90px rgba(0,0,0,.5)}
+  .reader .bar{position:sticky;top:-88px;display:flex;justify-content:space-between;align-items:center;gap:14px;
+    margin:-16px 0 24px;padding:16px 0;background:linear-gradient(180deg,var(--bg2) 70%,transparent)}
+  .reader .x{border:1px solid var(--line);background:rgba(127,212,255,.06);color:var(--fg);border-radius:9px;
+    padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer}
+  .reader .x:hover{border-color:rgba(127,212,255,.5)}
+  .reader .openmap{font-size:13px;font-weight:600;color:var(--cyan)}
+  .reader-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 14px;font-size:12.5px;color:var(--dim)}
+  .reader-meta .t{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--violet);border:1px solid var(--line);border-radius:6px;padding:2px 8px}
+  .reader .rprog{position:fixed;top:0;left:0;right:0;height:3px;z-index:90;pointer-events:none}
+  .reader .rprog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--violet))}
+  .md pre{position:relative}
+  .copyc{position:absolute;top:8px;right:8px;font:600 11px/1 ui-monospace,monospace;color:var(--muted);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:5px 9px;cursor:pointer;opacity:.5;transition:opacity .15s,color .15s,border-color .15s}
+  .md pre:hover .copyc,.copyc:focus-visible{opacity:1}
+  .copyc:hover{color:var(--fg);border-color:var(--cyan)}
+  /* rendered markdown */
+  .md h1{font-size:clamp(26px,4vw,36px);font-weight:800;letter-spacing:-.01em;line-height:1.12;margin:6px 0 18px}
+  .md h2{font-size:22px;font-weight:700;margin:30px 0 12px;padding-top:14px;border-top:1px solid var(--line)}
+  .md h3{font-size:17px;font-weight:700;margin:22px 0 8px;color:#cfd8f2}
+  .md p{color:#c4cee6;margin:0 0 14px}
+  .md a{color:var(--cyan);border-bottom:1px solid rgba(127,212,255,.3)}
+  .md a:hover{border-bottom-color:var(--cyan)}
+  .md ul,.md ol{margin:0 0 16px 22px;color:#c4cee6}
+  .md li{margin-bottom:6px}
+  .md code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.9em;background:rgba(127,212,255,.1);
+    border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+  .md pre{background:#0a0f1c;border:1px solid var(--line);border-radius:12px;padding:16px 18px;overflow-x:auto;margin:0 0 16px}
+  .md pre code{background:none;border:0;padding:0;color:#cdd7ef}
+  .md .tok-cmt{color:#6b7a99;font-style:italic}.md .tok-str{color:#9ece6a}.md .tok-num{color:#ff9e64}.md .tok-kw{color:#7aa2f7}.md .tok-lit{color:#bb9af7}
+  :root[data-theme="light"] .md pre{background:#eef2f9}
+  :root[data-theme="light"] .md pre code{color:#24324d}
+  :root[data-theme="light"] .md .tok-cmt{color:#6a737d}:root[data-theme="light"] .md .tok-str{color:#22863a}:root[data-theme="light"] .md .tok-num{color:#b5690a}:root[data-theme="light"] .md .tok-kw{color:#0550ae}:root[data-theme="light"] .md .tok-lit{color:#6f42c1}
+  /* light theme: the reader's prose/table/quote colours below hardcode light-on-dark tones — override for light */
+  :root[data-theme="light"] .md p,:root[data-theme="light"] .md ul,:root[data-theme="light"] .md ol,:root[data-theme="light"] .md li{color:#2b3652}
+  :root[data-theme="light"] .md h3{color:#16203a}
+  :root[data-theme="light"] .md blockquote{color:#2b3652;background:rgba(14,121,176,.06)}
+  :root[data-theme="light"] .md th,:root[data-theme="light"] .md td{color:#2b3652}
+  :root[data-theme="light"] .md th{background:rgba(14,121,176,.09);color:#0f1a33}
+  .md blockquote{border-left:3px solid var(--cyan);background:rgba(127,212,255,.05);border-radius:0 10px 10px 0;
+    padding:12px 18px;margin:0 0 18px;color:#b9c4de}
+  .md hr{border:0;border-top:1px solid var(--line);margin:26px 0}
+  .md .tblwrap{overflow-x:auto;margin:0 0 16px}
+  .md table{border-collapse:collapse;width:100%;font-size:14px}
+  .md th,.md td{border:1px solid var(--line);padding:8px 10px;text-align:left;color:#c4cee6;vertical-align:top}
+  .md th{background:rgba(127,212,255,.06);color:#e8eefc;font-weight:700;white-space:nowrap}
+  .md .loading{color:var(--muted)}
+
+  footer{padding:38px 24px;border-top:1px solid var(--line);text-align:center;color:var(--muted);font-size:13px}
+  footer .grad{font-weight:700}
+
+  /* accessibility: still the decorative animation for users who ask for reduced motion */
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;
+      transition-duration:.01ms!important;scroll-behavior:auto!important}
+  }
+
+  /* print: when an article reader is open, print just the article as a clean document */
+  @media print{
+    :root{--bg:#fff;--bg2:#fff;--fg:#111;--muted:#444;--dim:#555;--line:#ccc}
+    html,body{background:#fff!important;color:#111!important}
+    .page,#theme-toggle,footer,nav,.postsearch,.tabs,.filters,#scroll-sentinel,#loadmore{display:none!important}
+    .reader:not(.open){display:none!important}
+    .reader.open{position:static!important;inset:auto!important;display:block!important;background:#fff!important;backdrop-filter:none!important}
+    .reader.open .bar,.reader.open .rprog,.reader.open .openmap{display:none!important}
+    .reader.open .sheet{max-width:none;margin:0;padding:0;background:#fff!important;border:0;box-shadow:none}
+    .md{color:#111}
+    .md a{color:#111;text-decoration:underline}
+    .md h1,.md h2,.md h3{color:#000;page-break-after:avoid}
+    .md pre,.md img,.md figure,.md table{page-break-inside:avoid}
+    .md pre{background:#f4f4f4!important;border:1px solid #ddd;color:#111;white-space:pre-wrap;word-wrap:break-word}
+    .md code{color:#111}
+    .md .tok-cmt{color:#6a737d!important}.md .tok-str{color:#22863a!important}.md .tok-num{color:#b5690a!important}.md .tok-kw{color:#0550ae!important}.md .tok-lit{color:#6f42c1!important}
+    .copyc{display:none!important}
+    .reader-meta{color:#444}
+  }
+</style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <script src="nav.js" data-page="posts"></script>
+
+  <main class="page" id="main">
+    <div class="wrap">
+      <div class="kicker">Posts</div>
+      <h1>Posts &amp; notes.</h1>
+      <p class="lead">Long-form posts and a tag-navigable index of notes on platform engineering. Read posts here, or open any piece in
+        <a href="ultraplatform.html">Ultraplatform</a> — my interactive map — where the concepts become
+        clickable 3D diagrams wired to the live platform state.</p>
+
+      <div class="tabs" id="tabs" role="tablist">
+        <button class="tabbtn on" type="button" data-tab="posts" role="tab" aria-selected="true">Posts</button>
+        <button class="tabbtn" type="button" data-tab="notes" role="tab" aria-selected="false">Notes</button>
+      </div>
+
+      <div class="postsearch">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="search" id="postsearch" placeholder="Search posts…" aria-label="Search posts" autocomplete="off" spellcheck="false" />
+      </div>
+
+      <details id="startpath" class="startpath">
+        <summary><span class="chev">▸</span> Start here — a guided reading path<span class="sub" id="startpath-sub"></span></summary>
+        <ol id="startpath-list"></ol>
+      </details>
+
+      <h2 class="sr-only" id="list-heading">Posts</h2>
+      <div class="shell">
+        <aside class="rail">
+          <div class="rlabel">Tags</div>
+          <div class="taglist" id="taglist"></div>
+        </aside>
+        <section>
+          <div class="tagselect" id="tagselect">
+            <select id="tagpick" aria-label="Filter by tag"></select>
+            <div class="tagchips" id="tagchips"></div>
+          </div>
+          <div class="count" id="count"></div>
+          <div class="nvimstrip" id="nvimstrip"></div>
+          <div class="posts" id="posts"></div>
+          <button type="button" class="loadmore-btn" id="loadmore" style="display:none"></button>
+          <div id="scroll-sentinel" aria-hidden="true"></div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div class="reader" id="reader" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Article reader">
+    <div class="rprog" aria-hidden="true"><i></i></div>
+    <div class="sheet">
+      <div class="bar">
+        <button class="x" id="reader-x">← Back to posts</button>
+        <a class="openmap" id="reader-map" href="#">Open in the 3D map ↗</a>
+      </div>
+      <div class="reader-meta" id="reader-meta"></div>
+      <article class="md" id="reader-body"></article>
+    </div>
+  </div>
+
+  <footer>
+    <p>© <span id="yr"></span> <span class="grad">Francisco Roa</span> · Senior (AI) Platform Engineer ·
+      <a class="grad" href="ultraplatform.html">explore the map ↗</a> · <a class="grad" href="feed.xml">RSS</a></p>
+  </footer>
+
+<script>
+  document.getElementById('yr').textContent=new Date().getFullYear();
+  addEventListener('load',()=>{ document.documentElement.style.scrollBehavior='smooth'; });
+
+  // Blog posts — single-sourced from the docs vault (docs/blog-*.md). Each also has a map view key,
+  // so a reader can jump from the article into the live 3D diagram of the same concept.
+  const POSTS=[
+    { key:'blog-marketplace', md:'docs/blog-marketplace.md', view:'blog-marketplace',
+      title:'A marketplace of one — versioning your own AI skills',
+      tags:['Skills','Workflow','AI'], date:'Jul 17, 2026', read:'4 min',
+      excerpt:'Assistant skills drift and fork like dotfiles. Moving every skill, agent and hook into a local plugin marketplace — versioned plugins, symlinked single source, installed per session — makes every future session consistent.' },
+    { key:'blog-disaster-recovery', md:'docs/blog-disaster-recovery.md', view:'blog-disaster-recovery',
+      title:'Disaster recovery is a rehearsal, not a binder',
+      tags:['Backups','Platform','Well-Architected'], date:'Jul 17, 2026', read:'5 min',
+      excerpt:'Region loss as a scheduled event: critical data already lives in a second geography, one region pair is the designated restore target, and a weekly pipeline rehearses the restore into an isolated resource group and asserts the data is usable.' },
+    { key:'blog-backups', md:'docs/blog-backups.md', view:'blog-backups',
+      title:'A backup is a tag, not a ticket',
+      tags:['Backups','Platform','Security'], date:'Jul 17, 2026', read:'5 min',
+      excerpt:'One tag — data_criticality — routes every resource to the right vault pair: GeoZone-redundant with paired-region restore for critical, Zone-redundant for important. DINE policies and daily discovery enforce enrolment; nobody files a backup ticket.' },
+    { key:'blog-ai-gateway', md:'docs/blog-ai-gateway.md', view:'blog-ai-gateway',
+      title:'A raw model key is a budget with no owner and no off switch',
+      tags:['AI','Security','Platform'], date:'Jul 16, 2026', read:'7 min',
+      excerpt:'Model keys never leave the platform: every AI call goes through a GenAI gateway — per-app subscription keys, hard token budgets, per-app×model metering, managed identity to the backend. Clients change one line: base_url.' },
+    { key:'blog-blender-mcp', md:'docs/blog-blender-mcp.md', view:'blog-blender-mcp',
+      title:'Blender now takes a chat message as input, and that changes who can 3D-model',
+      tags:['Design','AI'], date:'Jul 16, 2026', read:'4 min',
+      excerpt:'blender-mcp wires an MCP server into Blender so an assistant can drive the modeling tool directly from plain language. The interesting part isn\'t the demo — it\'s who gets to touch 3D work now.' },
+    { key:'blog-failure-modes', md:'docs/blog-failure-modes.md', view:'blog-failure-modes',
+      title:'"What happens when it dies?" is the whole architecture review',
+      tags:['Well-Architected','Kubernetes','Platform'], date:'Jul 15, 2026', read:'6 min',
+      excerpt:'Delete a box from the diagram and read what\'s left. Ask it of the hub, the ONE gateway, a whole region — the answer is either a design property (a PDB, a cell boundary, run-once placement) or a war story. War stories are findings.' },
+    { key:'blog-traefik-oauth', md:'docs/blog-traefik-oauth.md', view:'blog-traefik-oauth',
+      title:'One gateway, one login: SSO for every tenant route',
+      tags:['Security','Kubernetes','Multi-tenancy'], date:'Jul 14, 2026', read:'4 min',
+      excerpt:'Move the OAuth dance out of the apps: one shared Traefik gateway, and an oauth2-proxy that fronts each tenant app — as forwardAuth middleware, or as this platform\'s default: a sidecar with per-tenant client, cookie and blast radius.' },
+    { key:'blog-sidecar-patterns', md:'docs/blog-sidecar-patterns.md', view:'blog-sidecar-patterns',
+      title:'The sidecar pattern: capabilities a pod wears, not code it imports',
+      tags:['Kubernetes','Fundamentals'], date:'Jul 14, 2026', read:'4 min',
+      excerpt:'Sidecar, ambassador, adapter — where this platform uses each (oauth2-proxy, Dapr, OTel), what a sidecar really costs, and the rule for when a DaemonSet beats N sidecars.' },
+    { key:'blog-finops-cost-gates', md:'docs/blog-finops-cost-gates.md', view:'blog-finops-cost-gates',
+      title:'The cheapest cost review happens before the merge',
+      tags:['FinOps','Platform','Terraform'], date:'Jul 14, 2026', read:'4 min',
+      excerpt:'A billing review three weeks after the merge is archaeology. Price the Terraform plan in the MR (Infracost), meter reality in the cluster (OpenCost), and gate like the safety gate — feedback loop first, hard block only for the GPU-sized risks.' },
+    { key:'blog-finops-governance', md:'docs/blog-finops-governance.md', view:'blog-finops-governance',
+      title:'Cost governance is three verbs: estimate, meter, standardize',
+      tags:['FinOps','Kubernetes','Observability'], date:'Jul 14, 2026', read:'4 min',
+      excerpt:'Not a dashboard — a cycle: estimate at plan time, meter at runtime, standardize the metric so every cloud reports cost in the same shape. Plus the honest caveats: labels are the weakest link, and the integration needs an owner or it rots.' },
+    { key:'blog-golden-paths-fail', md:'docs/blog-golden-paths-fail.md', view:'blog-golden-paths-fail',
+      title:'Golden paths fail when they\'re built for the platform team',
+      tags:['Platform','Reuse','Workflow'], date:'Jul 14, 2026', read:'4 min',
+      excerpt:'The predictable failure modes — too many choices, one template for every workload, abandonment, no escape hatches — and the two metrics that matter: retention and bypass rate. Run the path as a product, not a launch.' },
+    { key:'blog-mcp-assistant', md:'docs/blog-mcp-assistant.md', view:'blog-mcp-assistant',
+      title:'An internal DevOps assistant is mostly plumbing, and MCP is the pipe',
+      tags:['AI','Platform','Workflow'], date:'Jul 14, 2026', read:'4 min',
+      excerpt:'The useful assistant is an LLM with standardized read-only taps into git, metrics, cluster state and runbooks — evidence over eloquence, RBAC inherited, every request audited. MCP just makes the plumbing boring.' },
+    { key:'blog-writing-plans', md:'docs/blog-writing-plans.md', view:'blog-writing-plans',
+      title:'A good plan names the files before it touches them',
+      tags:['Workflow'], date:'Jul 13, 2026', read:'5 min',
+      excerpt:'A plan is the cheapest place to be wrong. Write it so a reviewer can kill the mistake before any code exists — name the exact files and edits, put the verification in the plan, and spend most of your words on what you will not do.' },
+    { key:'blog-reviewing-plans', md:'docs/blog-reviewing-plans.md', view:'blog-reviewing-plans',
+      title:'The cheapest bug to kill is still in the plan',
+      tags:['Workflow'], date:'Jul 13, 2026', read:'4 min',
+      excerpt:'Reviewing a plan beats reviewing the diff: a wrong assumption costs a sentence here and a rewrite there. Review the approach, the blast radius, the missing states and the escape hatch — then approve narrowly.' },
+    { key:'blog-writing-skills', md:'docs/blog-writing-skills.md', view:'blog-writing-skills',
+      title:'A skill is a prompt you only write once',
+      tags:['Skills','Workflow'], date:'Jul 13, 2026', read:'5 min',
+      excerpt:'A skill is the paved road for an agent — encode your conventions once instead of re-explaining them every session. One job, a description written to trigger it, the whole ceremony, and guardrails that bite.' },
+    { key:'blog-reviewing-skills', md:'docs/blog-reviewing-skills.md', view:'blog-reviewing-skills',
+      title:'Review a skill by the mistakes it prevents',
+      tags:['Skills','Workflow'], date:'Jul 13, 2026', read:'4 min',
+      excerpt:'You do not lint a skill, you taste-test it: does the description make it trigger at the right moment, do the steps survive a literal agent, and do the guardrails actually stop the failure you fear?' },
+    { key:'blog-dns', md:'docs/blog-dns.md', view:'blog-dns',
+      title:"DNS is the platform's phone book — and its weakest excuse for an outage",
+      tags:['Fundamentals','Networking'], date:'Jul 13, 2026', read:'4 min',
+      excerpt:'Names as infrastructure: private zones so services resolve over the inspected path, records generated from live ingresses, and TTLs chosen as a consistency knob rather than inherited.' },
+    { key:'blog-tls-rotation', md:'docs/blog-tls-rotation.md', view:'blog-tls-rotation',
+      title:'TLS is easy; rotating certificates without downtime is the real job',
+      tags:['Fundamentals','Security'], date:'Jul 13, 2026', read:'4 min',
+      excerpt:'Certificates are time bombs with friendly names. Issue and renew them with a controller, make the rotation actually reach the pods, and terminate where your controls can read the request.' },
+    { key:'blog-load-balancing', md:'docs/blog-load-balancing.md', view:'blog-load-balancing',
+      title:'Load balancing — L4 moves connections, L7 makes decisions',
+      tags:['Fundamentals','Networking'], date:'Jul 13, 2026', read:'4 min',
+      excerpt:'"Load balancer" names two different machines: L4 spreads connections by tuple, L7 routes on the request. Most routing pain is asking L4 a question only L7 can answer.' },
+    { key:'blog-slo-error-budgets', md:'docs/blog-slo-error-budgets.md', view:'blog-slo-error-budgets',
+      title:'SLOs and error budgets — turning "is it up?" into a number you can spend',
+      tags:['Fundamentals','Observability'], date:'Jul 13, 2026', read:'5 min',
+      excerpt:'An SLI measures what users feel, an SLO is the target, and the error budget is a currency: spend it on releases when there is budget, stop and harden when there is not.' },
+    { key:'blog-progressive-delivery', md:'docs/blog-progressive-delivery.md', view:'blog-progressive-delivery',
+      title:'Blue-green and canary — ship to a few before you ship to everyone',
+      tags:['Fundamentals','Kubernetes'], date:'Jul 13, 2026', read:'5 min',
+      excerpt:'A deploy is a bet the new version works. Progressive delivery keeps most of the stake back — traffic-splitting plus a health signal, with rollback as the feature, not the fallback.' },
+    { key:'blog-defense-in-depth', md:'docs/blog-defense-in-depth.md', view:'blog-defense-in-depth',
+      title:'Defense in depth — no single wall, because walls fall',
+      tags:['Fundamentals','Security'], date:'Jul 13, 2026', read:'5 min',
+      excerpt:'Security that needs one control to never fail is a countdown to a breach. Stack independent envelopes — identity, network, policy — so getting through one buys an attacker almost nothing.' },
+    { key:'blog-twelve-factor', md:'docs/blog-twelve-factor.md', view:'blog-twelve-factor',
+      title:"Twelve-Factor isn't a checklist — it's what the platform makes free",
+      tags:['Fundamentals','Platform'], date:'Jul 13, 2026', read:'5 min',
+      excerpt:'The platform enforces most of the twelve so the app team gets them for free: config from a vault, stateless pods, logs as streams, disposability by default. Discipline becomes the shape of the paved road.' },
+    { key:'blog-osi-model', md:'docs/blog-osi-model.md', view:'blog-osi-model',
+      title:'The OSI model, one layer at a time — and where each one runs here',
+      tags:['Fundamentals','Networking'], date:'Jul 13, 2026', read:'5 min',
+      excerpt:'Seven layers as a map of where a decision belongs: packet filtering at L3/4, load balancing at L4, routing and policy at L7, names resolved privately underneath. The layer tells you which repo to open.' },
+    { key:'blog-immutability', md:'docs/blog-immutability.md', view:'blog-immutability',
+      title:"You can't SSH into production — that's the feature",
+      tags:['Fundamentals','Security'], date:'Jul 12, 2026', read:'5 min',
+      excerpt:'Every manual hot-fix is drift the code doesn\'t know about — and a box you can no longer rebuild. Immutable infrastructure removes the temptation by removing the door: change the code, roll a new one.' },
+    { key:'blog-replace-dont-repair', md:'docs/blog-replace-dont-repair.md', view:'blog-replace-dont-repair',
+      title:'Replace, don\'t repair — cattle, not pets',
+      tags:['Fundamentals','Kubernetes'], date:'Jul 12, 2026', read:'5 min',
+      excerpt:'Repairing a live instance is a bespoke, unrepeatable act that leaves you a slightly different system. Replacing it from code is boring, automatic and identical every time — which is why the platform does it for you.' },
+    { key:'blog-idempotency', md:'docs/blog-idempotency.md', view:'blog-idempotency',
+      title:'Idempotency: declare the end state, run it twice',
+      tags:['Fundamentals','IaC'], date:'Jul 12, 2026', read:'5 min',
+      excerpt:'The quiet property that makes a platform safe to automate: Terraform applies to the same result, Argo CD syncs on a loop, a failed pipeline is just re-run. Without it every retry is a gamble.' },
+    { key:'blog-cap-theorem', md:'docs/blog-cap-theorem.md', view:'blog-cap-theorem',
+      title:"CAP is a decision you already made — here's where",
+      tags:['Fundamentals','Multi-tenancy'], date:'Jul 12, 2026', read:'5 min',
+      excerpt:'CAP isn\'t a whiteboard abstraction — you make the call every time you decide where data lives. Regional-by-default placement, per tenant-region secrets, and "global" reserved for what tolerates lag.' },
+    { key:'blog-well-architected', md:'docs/blog-well-architected.md', view:'blog-well-architected',
+      title:'Well-architected is a set of questions, not a badge',
+      tags:['Well-Architected','Platform'], date:'Jul 11, 2026', read:'6 min',
+      excerpt:'The five pillars audited against a running platform — each answered with a mechanism you can click: reliability that rebuilds from code, three security envelopes, budgets with owners, a paved road, and capacity as a decision.' },
+    { key:'blog-gitlab-migration', md:'docs/blog-gitlab-migration.md', view:'blog-gitlab-migration',
+      title:'Migrating a self-managed GitLab to gitlab.com',
+      tags:['Migration','Platform'], date:'Jul 10, 2026', read:'6 min',
+      excerpt:'Three independent migrations — users, repositories, artifacts — all asynchronous, so verify jobs, not calls. Plus the two coordination rules that save the cut-over: a freeze period and an immediate origin switch.' },
+    { key:'blog-terraform', md:'docs/blog-terraform.md', view:'blog-terraform',
+      title:'Terraform at scale — scopes, tiers & a policy gate',
+      tags:['Terraform','IaC','Platform','Well-Architected'], date:'Jul 8, 2026', read:'8 min',
+      excerpt:'Why "one repo per concern, one scope per resource" beats a mono-state, and how an OPA gate makes apply boring.' },
+    { key:'blog-kubernetes', md:'docs/blog-kubernetes.md', view:'blog-kubernetes',
+      title:'Multi-tenant Kubernetes without the foot-guns',
+      tags:['Kubernetes','Multi-tenancy'], date:'Jul 3, 2026', read:'7 min',
+      excerpt:"Namespaces as code, dedicated node pools, and why a tenant's data deliberately lives where the tenant can't delete it." },
+    { key:'blog-ai-platform', md:'docs/blog-ai-platform.md', view:'blog-ai-platform',
+      title:'An AI layer for a developer platform',
+      tags:['AI','RAG'], date:'Jun 28, 2026', read:'6 min',
+      excerpt:"Grounding assistants in the platform's own knowledge graph and live state instead of hoping the model guesses right." },
+    { key:'blog-tenant-keyvaults', md:'docs/blog-tenant-keyvaults.md', view:'blog-tenant-keyvaults',
+      title:"Your secrets don't live in your resource group",
+      tags:['Security','Multi-tenancy','Well-Architected'], date:'Jun 23, 2026', read:'6 min',
+      excerpt:'One Key Vault per tenant per region — deliberately placed in a platform-owned resource group, so a tenant can use its secrets but never destroy the vault.' },
+    { key:'blog-tenant-isolation', md:'docs/blog-tenant-isolation.md', view:'blog-tenant-isolation',
+      title:'A 403 is usually the fence doing its job',
+      tags:['Multi-tenancy','Security'], date:'Jun 18, 2026', read:'6 min',
+      excerpt:"Tenants are isolated cells: near-admin inside, zero power outside, and no way to grant yourself in. A cross-tenant role-assignment 403 is that boundary made visible — not a missing permission." },
+    { key:'blog-gitlab-runners', md:'docs/blog-gitlab-runners.md', view:'blog-gitlab-runners',
+      title:'A runner that can only touch its own tenant',
+      tags:['Identity','Multi-tenancy'], date:'Jun 13, 2026', read:'6 min',
+      excerpt:'GitLab is configured per tenant; the env vars pin each runner to a managed identity that can assign permissions only in its own tenant. The configuration is the security boundary — and the platform owns it.' },
+    { key:'blog-storage-proxy', md:'docs/blog-storage-proxy.md', view:'blog-storage-proxy',
+      title:'A SAS token is a one-year password you forgot you minted',
+      tags:['Security','Identity'], date:'Jun 8, 2026', read:'6 min',
+      excerpt:'SAS tokens are long-lived, over-scoped bearer credentials you can\'t individually revoke — so clients never get one. A storage proxy authenticates with a managed identity, scopes each request, and can be cut off in one place.' },
+    { key:'blog-reuse-libraries', md:'docs/blog-reuse-libraries.md', view:'blog-reuse-libraries',
+      title:'Three libraries, one platform',
+      tags:['Platform','Reuse'], date:'Jun 3, 2026', read:'7 min',
+      excerpt:'Terraform modules, Helm charts and GitLab CI components — one reuse grammar (reference + version, never copy) with the OPA policy pack riding inside.' },
+    { key:'blog-golden-path', md:'docs/blog-golden-path.md', view:'blog-golden-path',
+      title:'The golden path is three files, not a wiki page',
+      tags:['Platform','Reuse','Well-Architected'], date:'May 29, 2026', read:'6 min',
+      excerpt:'A new service composes a pipeline component, Terraform modules and Helm charts — the paved road where doing it right is also the shortest route.' },
+    { key:'blog-otel-operator', md:'docs/blog-otel-operator.md', view:'blog-otel-operator',
+      title:'Instrumentation as a platform default — the OpenTelemetry Operator',
+      tags:['Observability','Kubernetes'], date:'May 24, 2026', read:'7 min',
+      excerpt:'A design note: collectors and auto-instrumentation as CRDs, so tenants inherit traces from their namespace instead of wiring SDKs by hand.' },
+    { key:'blog-access-as-code', md:'docs/blog-access-as-code.md', view:'blog-access-as-code',
+      title:'Nobody holds standing power',
+      tags:['Security','Identity'], date:'May 19, 2026', read:'6 min',
+      excerpt:'PIM-activated humans, standing operator identities for automation, membership as YAML merge requests, and secretless OIDC for CI.' },
+    { key:'blog-azure-email', md:'docs/blog-azure-email.md', view:'blog-azure-email',
+      title:'Every alert email can prove where it came from',
+      tags:['Security','Platform'], date:'May 14, 2026', read:'6 min',
+      excerpt:'One shared email relay, one sender identity per tool — and a DKIM check inside every message that cryptographically proves its origin.' },
+    { key:'blog-agent-cockpit', md:'docs/blog-agent-cockpit.md', view:'blog-agent-cockpit',
+      title:'A cockpit for a fleet of agents',
+      tags:['Workflow'], date:'May 9, 2026', read:'6 min',
+      excerpt:'A which-key agent leader in tmux and agentsview — reading each session’s context fill from its transcript, so observing agents is free.' },
+    { key:'blog-claude-signals', md:'docs/blog-claude-signals.md', view:'blog-claude-signals',
+      title:'Attention is the bottleneck — signals from a working agent',
+      tags:['Workflow'], date:'May 4, 2026', read:'6 min',
+      excerpt:'Lifecycle hooks write per-session status files; the statusline spins while agents work and blinks when they need you — with GitLab events in the same strip.' },
+    { key:'blog-agent-of-empires', md:'docs/blog-agent-of-empires.md', view:'blog-agent-of-empires',
+      title:'Agent of Empires — sessions, worktrees, profiles, sandboxes',
+      tags:['Workflow'], date:'Apr 29, 2026', read:'7 min',
+      excerpt:'Each unit of work is a session with its own git worktree, an explicit identity profile, and — when trust is low — a sandbox. Tenancy ideas, applied to agents.' },
+    { key:'blog-local-remote-ci', md:'docs/blog-local-remote-ci.md', view:'blog-local-remote-ci',
+      title:'Run the pipeline before you push it',
+      tags:['Workflow','Platform'], date:'Apr 24, 2026', read:'7 min',
+      excerpt:'Local CI runs byte-identical to remote, a one-key diff that makes every divergence auditable, and a poller that watches the real pipeline after push.' },
+    { key:'blog-agent-skills', md:'docs/blog-agent-skills.md', view:'blog-agent-skills',
+      title:'Skills are golden paths for agents',
+      tags:['Skills','Workflow'], date:'Apr 19, 2026', read:'6 min',
+      excerpt:'Versioned, reviewable procedures the agent loads on demand — MR conventions, test-driven CI loops. The paved-road idea, applied to AI.' },
+    { key:'blog-yas-wrapper', md:'docs/blog-yas-wrapper.md', view:'blog-yas-wrapper',
+      title:'A statusline that knows who’s working — yas, wrapped',
+      tags:['Workflow'], date:'Apr 14, 2026', read:'6 min',
+      excerpt:'yet-another-statusline, untouched, plus a wrapper that splices in 📄 context files, 🧠 memory, the profile identity and a 🐳 sandbox badge.' },
+    { key:'blog-synapse-skills', md:'docs/blog-synapse-skills.md', view:'blog-synapse-skills',
+      title:'fran-local-synapse — a marketplace for my agent’s habits',
+      tags:['Skills','Workflow'], date:'Apr 9, 2026', read:'6 min',
+      excerpt:'Personal skills organised as plugins in a local marketplace: working-on-ticket ceremonies, GitLab pipeline setup, CI watching, git guardrails.' },
+    { key:'blog-sandboxing-claude', md:'docs/blog-sandboxing-claude.md', view:'blog-sandboxing-claude',
+      title:'Sandboxing Claude — three tools, three philosophies, and my setup',
+      tags:['Workflow','Security'], date:'Apr 4, 2026', read:'7 min',
+      excerpt:'Docker sandboxes vs nono vs agent-cage — filesystem, permissions or egress — and my own: sandboxes + profile mounts + an Obsidian vault as the dynamic context bus.' },
+    { key:'blog-secure-sandbox', md:'docs/blog-secure-sandbox.md', view:'blog-secure-sandbox',
+      title:'What a secure agent sandbox should look like',
+      tags:['Security','Workflow'], date:'Mar 30, 2026', read:'7 min',
+      excerpt:'I audited my agent runner’s sandbox and filed four upstream issues — least capability, least network, validated mounts, ephemeral credentials.' },
+    { key:'blog-info-filtering', md:'docs/blog-info-filtering.md', view:'blog-info-filtering',
+      title:'Gathering and filtering information — an agent reads my feeds',
+      tags:['Information and Learning','Workflow'], date:'Mar 25, 2026', read:'6 min',
+      excerpt:'An RSS list fetched by an agent that scores every item against an interest profile written as a markdown note — and delivers a prioritized digest into my vault.' },
+    { key:'blog-grafana-cloud', md:'docs/blog-grafana-cloud.md', view:'blog-grafana-cloud',
+      title:'Grafana Cloud as the observability backend',
+      tags:['Observability'], date:'Mar 20, 2026', read:'5 min',
+      excerpt:'Keep the opinionated half — collectors, tenancy labels, dashboards-as-code — and pay someone else to run Mimir at 3 a.m. Tenancy labels ARE the cost model.' },
+    { key:'blog-grafana-cloud-migration', md:'docs/blog-grafana-cloud-migration.md', view:'blog-grafana-cloud-migration',
+      title:'Migrating observability: on-premises → Grafana Cloud',
+      tags:['Observability','Migration'], date:'Mar 15, 2026', read:'6 min',
+      excerpt:'Dual-write at the agents, migrate the readers, starve the old stack — and the three things that actually bit: cardinality, retention, auth.' },
+    { key:'blog-migration-onprem-cloud', md:'docs/blog-migration-onprem-cloud.md', view:'blog-migration-onprem-cloud',
+      title:'From on-premises to cloud — migrate the operating model',
+      tags:['Migration','Platform'], date:'Mar 10, 2026', read:'6 min',
+      excerpt:'Guardrails first, workloads through the golden path, and an old environment that gets starved rather than switched off.' },
+    { key:'blog-migration-subscriptions', md:'docs/blog-migration-subscriptions.md', view:'blog-migration-subscriptions',
+      title:'Moving a platform between Azure subscriptions',
+      tags:['Migration','Terraform'], date:'Mar 5, 2026', read:'6 min',
+      excerpt:'Same cloud, same code, different boundary: recreate the scope, repoint state/identity/DNS/peering, dual-run until the diff is only intentional.' },
+    // ---- the K8s services notes: the CNCF landscape running in the clusters ----
+    { key:'landscape-index', md:'docs/landscape-index.md', view:'landscape',
+      title:'The landscape — CNCF & friends I actually run',
+      tags:['K8s Services','Kubernetes'], date:'Feb 28, 2026', read:'4 min',
+      excerpt:'Not a logo wall: every tool runs in the platform today, earns its place, and is GitOps-delivered by cluster class — base everywhere, hub extras once, dev tooling never in live.' },
+    { key:'res-cert-manager', md:'docs/res-cert-manager.md', hash:'aks=eu01&d=res-cert-manager',
+      title:'cert-manager — certificates as a controller, not a calendar entry',
+      tags:['K8s Services','Kubernetes','Security'], date:'Feb 26, 2026', read:'3 min',
+      excerpt:'CSR → issue → store → renew before expiry, reconciled by a controller instead of a human — installed first among cluster services because everything with a hostname depends on it.' },
+    { key:'landscape-argocd', md:'docs/landscape-argocd.md', hash:'aks=eu01&d=landscape-argocd',
+      title:'Argo CD — the cluster state is a repo',
+      tags:['K8s Services','Kubernetes'], date:'Feb 24, 2026', read:'3 min',
+      excerpt:'App-of-apps per cluster, drift as a dashboard state, no kubectl in pipelines — and Argo manages Argo, so terraform only seeds the first install.' },
+    { key:'landscape-kyverno', md:'docs/landscape-kyverno.md', hash:'aks=eu01&d=landscape-kyverno',
+      title:'Kyverno — safe namespaces by default',
+      tags:['K8s Services','Kubernetes','Security'], date:'Feb 20, 2026', read:'3 min',
+      excerpt:'Validate, mutate, generate — the runtime half of the policy gate, sync-waved at −2 so admission policy exists before the first tenant namespace ever syncs.' },
+    { key:'landscape-external-secrets', md:'docs/landscape-external-secrets.md', hash:'aks=eu01&d=landscape-external-secrets',
+      title:'External Secrets — Key Vault to pods, no humans',
+      tags:['K8s Services','Kubernetes','Security'], date:'Feb 16, 2026', read:'3 min',
+      excerpt:'Key Vault → Kubernetes secrets without a person in the loop; workloads reference ExternalSecret outputs on their very first sync.' },
+    { key:'landscape-reloader', md:'docs/landscape-reloader.md', hash:'aks=eu01&d=landscape-reloader',
+      title:'Reloader — rotation that actually reaches pods',
+      tags:['K8s Services','Kubernetes'], date:'Feb 12, 2026', read:'3 min',
+      excerpt:'A rotated secret restarts the pods that mount it — closing the last mile of External Secrets so rotation is real, not cosmetic.' },
+    { key:'landscape-external-dns', md:'docs/landscape-external-dns.md', hash:'aks=eu01&d=landscape-external-dns',
+      title:'External DNS — records follow the routes',
+      tags:['K8s Services','Kubernetes'], date:'Feb 8, 2026', read:'3 min',
+      excerpt:'Watches the HTTPRoutes tenants create and reconciles the platform DNS zone — nobody files a ticket for a CNAME.' },
+    { key:'landscape-keda', md:'docs/landscape-keda.md', hash:'aks=eu01&d=landscape-keda',
+      title:'KEDA — scale on real signals',
+      tags:['K8s Services','Kubernetes'], date:'Feb 4, 2026', read:'3 min',
+      excerpt:'Queues and events instead of CPU guesses, including scale-to-zero — event-driven autoscaling every tenant inherits.' },
+    { key:'landscape-karpenter', md:'docs/landscape-karpenter.md', hash:'aks=eu01&d=landscape-karpenter',
+      title:'Karpenter — just-in-time, right-sized nodes',
+      tags:['K8s Services','Kubernetes'], date:'Jan 30, 2026', read:'3 min',
+      excerpt:'Provisioned in seconds, consolidated when idle: system pools stay terraform-owned, burst capacity is Karpenter-owned.' },
+    { key:'landscape-opentelemetry', md:'docs/landscape-opentelemetry.md', hash:'aks=eu01&d=landscape-opentelemetry',
+      title:'OpenTelemetry — instrument once, everywhere',
+      tags:['K8s Services','Kubernetes','Observability'], date:'Jan 26, 2026', read:'3 min',
+      excerpt:'One collector per cluster (daemonset + gateway): tenants instrument once against OTLP and the platform decides where telemetry lands.' },
+    { key:'landscape-grafana', md:'docs/landscape-grafana.md', hash:'aks=eu01&d=landscape-grafana',
+      title:'Grafana — one pane, run once',
+      tags:['K8s Services','Kubernetes','Observability'], date:'Jan 22, 2026', read:'3 min',
+      excerpt:'Dashboards, alerts and Explore as code over Mimir & Loki — hub-only by design: regional clusters ship telemetry, they don\'t each run a dashboard stack.' },
+    { key:'landscape-telepresence', md:'docs/landscape-telepresence.md', hash:'aks=eu01&d=landscape-telepresence',
+      title:'Telepresence — debug the real cluster, safely',
+      tags:['K8s Services','Kubernetes'], date:'Jan 18, 2026', read:'3 min',
+      excerpt:'Intercept a Service from the laptop — a sandbox-cluster feature by placement, because the same trick in live is an incident.' },
+    { key:'landscape-backstage', md:'docs/landscape-backstage.md', hash:'aks=eu01&d=landscape-backstage',
+      title:'Backstage — the developer portal',
+      tags:['K8s Services','Kubernetes','Platform'], date:'Jan 14, 2026', read:'3 min',
+      excerpt:'Software catalog, golden-path scaffolder and TechDocs — hub-only: one catalog, one scaffolder, backed by the postgresql-k8s module.' },
+    { key:'landscape-buildpacks', md:'docs/landscape-buildpacks.md', hash:'aks=eu01&d=landscape-buildpacks',
+      title:'Cloud Native Buildpacks — images without Dockerfiles',
+      tags:['K8s Services','Kubernetes','Security'], date:'Jan 12, 2026', read:'3 min',
+      excerpt:'kpack turns source into an OCI image on the hardened base without a hand-written Dockerfile — one builder to patch, not one Dockerfile per repo.' },
+    { key:'landscape-trivy', md:'docs/landscape-trivy.md', hash:'aks=eu01&d=landscape-trivy',
+      title:'Trivy — continuous vulnerability scanning, not just a build-time gate',
+      tags:['K8s Services','Kubernetes','Security'], date:'Jan 11, 2026', read:'3 min',
+      excerpt:'Scans every running workload on a schedule — so a CVE disclosed the day after a deploy is caught, not just the one that existed at build time.' },
+    { key:'landscape-policy-reporter', md:'docs/landscape-policy-reporter.md', hash:'aks=eu01&d=landscape-policy-reporter',
+      title:'Policy Reporter — one dashboard for every policy engine',
+      tags:['K8s Services','Kubernetes','Security'], date:'Jan 9, 2026', read:'3 min',
+      excerpt:'Reads the PolicyReport CRDs Kyverno and Trivy already emit and turns them into one UI plus Slack/Teams alerts — a standard, not a custom exporter.' },
+    { key:'landscape-opencost', md:'docs/landscape-opencost.md', hash:'aks=eu01&d=landscape-opencost',
+      title:'OpenCost — cost allocation, per tenant, per namespace',
+      tags:['K8s Services','Kubernetes','FinOps'], date:'Jan 7, 2026', read:'3 min',
+      excerpt:'Cost per namespace and workload from real requests/usage against actual pricing — the number behind "~90% cost cut," visible to anyone on the platform.' },
+    { key:'security-opa', md:'docs/security-opa.md', hash:'aks=eu01&d=security-opa',
+      title:'OPA / rego — infrastructure can\'t change unless policy says it may',
+      tags:['K8s Services','Kubernetes','Security'], date:'Jan 6, 2026', read:'4 min',
+      excerpt:'A plan → OPA evaluation → apply safety gate, composable per cloud provider — the safe choice (paranoid/high/standard) is the default, not an opt-in.' },
+    { key:'landscape-falco', md:'docs/landscape-falco.md', hash:'aks=eu01&d=landscape-falco',
+      title:'Falco — the third layer: catching what already got past the first two',
+      tags:['K8s Services','Kubernetes','Security'], date:'Jan 5, 2026', read:'3 min',
+      excerpt:'eBPF syscall watching for what admission policy and image scans can\'t see — a shell spawned inside a container, a write to /etc/shadow, an unexpected connection.' },
+    { key:'landscape-litmus', md:'docs/landscape-litmus.md', hash:'aks=eu01&d=landscape-litmus',
+      title:'Litmus — chaos as a reviewed experiment, never a surprise',
+      tags:['K8s Services','Kubernetes'], date:'Jan 4, 2026', read:'3 min',
+      excerpt:'Controlled failure to prove resilience claims instead of hoping them — every experiment is a reviewed ChaosEngine CRD, scoped to one namespace, opt-in only.' },
+    { key:'landscape-openfeature', md:'docs/landscape-openfeature.md', hash:'aks=eu01&d=landscape-openfeature',
+      title:'OpenFeature — decouple the deploy from the release',
+      tags:['K8s Services','Kubernetes','Platform'], date:'Jan 3, 2026', read:'3 min',
+      excerpt:'A vendor-neutral feature-flag spec + SDK backed by flagd in-cluster — dark-launch a feature before it\'s a canary rollout, not after.' },
+    { key:'landscape-cilium', md:'docs/landscape-cilium.md', hash:'aks=eu01&d=landscape-cilium',
+      title:'Cilium — the CNI, chosen at cluster creation, not GitOps\'d in later',
+      tags:['K8s Services','Kubernetes','Networking'], date:'Jan 2, 2026', read:'3 min',
+      excerpt:'Azure CNI powered by Cilium: eBPF dataplane set at cluster creation, not a Helm chart installed after — L3-L7 network policy and Hubble visibility in one dataplane\'s job.' },
+    { key:'landscape-dapr', md:'docs/landscape-dapr.md', hash:'aks=eu01&d=landscape-dapr',
+      title:'Dapr — building-block APIs a sidecar gives every language',
+      tags:['K8s Services','Kubernetes','AI'], date:'Jan 1, 2026', read:'3 min',
+      excerpt:'Pub/sub, state, service invocation and durable workflow over one sidecar API — the durable-workflow primitive agentic AI pipelines need without hand-rolling it.' },
+    { key:'landscape-traefik', md:'docs/landscape-traefik.md', hash:'aks=eu01&d=landscape-traefik',
+      title:'Traefik — one shared gateway, many tenant routes',
+      tags:['K8s Services','Kubernetes','Multi-tenancy'], date:'Dec 29, 2025', read:'3 min',
+      excerpt:'Exactly ONE gateway instance per cluster, platform-owned; tenants attach namespace-scoped HTTPRoutes by parentRef and never run their own ingress — SSO rides as an oauth2-proxy sidecar, so the gateway stays auth-agnostic.' },
+    { key:'landscape-helm', md:'docs/landscape-helm.md', hash:'aks=eu01&d=landscape-helm',
+      title:'Helm — the packaging grammar',
+      tags:['K8s Services','Kubernetes','Reuse'], date:'Dec 30, 2025', read:'3 min',
+      excerpt:'One chart library consumed everywhere — and deliberately NO controller in the cluster: charts are OCI artifacts Argo CD renders server-side.' },
+  ];
+
+  // ---------- Notes dataset (the tag-navigable index; second tab of this page) ----------
+  const ICON={doc:'📄',tool:'🛠️',repo:'🐙',ref:'🔗',demo:'🖥️'};
+  const NOTES=[
+    {t:'Platform overview',k:'doc',href:'ultraplatform.html#d=overview',tags:['Platform'],d:'How the whole developer platform fits together — the ten-thousand-foot view of scopes, tiers and tenants.'},
+    {t:'Library — the whole vault, by layer',k:'doc',href:'ultraplatform.html#d=library',tags:['Platform'],d:'Every note in the knowledge base, arranged like the platform itself: envelopes, delivery spine, resources by scope, landscape, tools and writing.'},
+    {t:'Repos by level',k:'doc',href:'ultraplatform.html#d=repos-by-level',tags:['Platform','Terraform'],d:'One owning repo per scope, ordered by dependency — the tier structure that keeps dozens of repos sane.'},
+    {t:'Scopes & ownership',k:'doc',href:'ultraplatform.html#d=scopes',tags:['Platform','Terraform'],d:'"How many of X exist, per what?" — the single question that decides where each resource lives.'},
+    {t:'Reuse & golden paths',k:'doc',href:'ultraplatform.html#d=reuse',tags:['Platform'],d:'Self-service paved roads so product teams ship safely without becoming infrastructure experts.'},
+    {t:'Shared responsibility',k:'doc',href:'ultraplatform.html#d=shared-responsibility',tags:['Platform','Security'],d:'Where the platform ends and the tenant begins — the contract that makes guardrails possible.'},
+    {t:'Global footprint',k:'doc',href:'ultraplatform.html#d=global-footprint',tags:['Platform'],d:'Multi-region topology: what is regional, what is global, and why it matters for latency and blast radius.'},
+    {t:'Tenants',k:'doc',href:'ultraplatform.html#d=tenants',tags:['Platform','Security'],d:'Tenancy isolation as config — permissions default in one repo, extended access in another.'},
+    {t:'Terraform modules',k:'doc',href:'ultraplatform.html#d=terraform-modules',tags:['Terraform','Platform'],d:'Versioned, composable modules from a private registry — the building blocks every scope consumes.'},
+    {t:'OPA policy gate',k:'doc',href:'ultraplatform.html#d=security-opa',tags:['Terraform','Security'],d:'Policy-as-code in front of every apply, so "no public storage" is enforced, not hoped for.'},
+    {t:'GitLab CI components',k:'doc',href:'ultraplatform.html#d=gitlab-components',tags:['Platform','Terraform'],d:'Reusable pipeline components — the same base, env-trigger and terraform-deploy across every repo.'},
+    {t:'Multi-tenant Kubernetes',k:'doc',href:'ultraplatform.html#d=kubernetes',tags:['Kubernetes'],d:'Namespaces as code, dedicated node pools and tenancy that survives a tenant deleting everything they can.'},
+    {t:'Helm charts & releases',k:'doc',href:'ultraplatform.html#d=up-helm-charts',tags:['Kubernetes'],d:'The chart library and release flow that gets workloads onto the clusters repeatably.'},
+    {t:'GitLab runners on K8s',k:'doc',href:'ultraplatform.html#d=gitlab-runners',tags:['Kubernetes','Platform'],d:'Ephemeral CI runners on the clusters — elastic build capacity without pet build servers.'},
+    {t:'Hub-and-spoke network',k:'doc',href:'ultraplatform.html#d=network-hub-spoke',tags:['Platform','Security'],d:'One hub, many spokes — centralised egress, private connectivity and one subnet.<name>.tf per subnet.'},
+    {t:'Identity & PIM',k:'doc',href:'ultraplatform.html#d=identity-pim',tags:['Security'],d:'Just-in-time privileged access via PIM, SSO everywhere, and secretless OIDC into the cloud.'},
+    {t:'WAF',k:'doc',href:'ultraplatform.html#d=waf',tags:['Security','Observability'],d:'The web application firewall in front of ingress — rules, logging and what it actually blocks.'},
+    {t:'VPN & private access',k:'doc',href:'ultraplatform.html#d=vpn',tags:['Security'],d:'How humans and CI reach private endpoints without exposing them to the internet.'},
+    {t:'Sync Auth0 access from an Entra ID group',k:'ref',href:'https://auth0.com/docs/authenticate/protocols/scim/inbound-scim-for-azure-ad-saml-connections',tags:['Identity'],d:'Granting people access to Auth0 and managing their permissions causes quite a few problems. I’d do it the way GitLab does — an Entra ID group that syncs the users who should have access to Auth0. Auth0 supports this via Enterprise Groups with inbound SCIM for Azure AD SAML connections, the most convenient option rather than managing it separately.'},
+    {t:'Shared email relay with provable origin',k:'doc',href:'ultraplatform.html#d=blog-azure-email',tags:['Security','Platform'],d:'One ACS relay for all platform tools, a sender identity per tool, secrets auto-rotated — and a DKIM check inside every email that cryptographically proves it came from the platform, not a spoofer.'},
+    {t:'My terminal, emulated',k:'demo',href:'terminal.html',tags:['Dotfiles','Tools','AI'],d:'An interactive emulation of the daily cockpit: a Claude agent working, a local pipeline running, the yas statusline blinking on done, and the real tmux keys — prefix-o, prefix-n/p, prefix-Space → K for agentsview.'},
+    {t:'Observability',k:'doc',href:'ultraplatform.html#d=observability',tags:['Observability'],d:'Grafana, Loki and Mimir wired as defaults — metrics, logs and dashboards that ship with the platform.'},
+    {t:'An AI layer for the platform',k:'doc',href:'ultraplatform.html#d=ai-ultraplatform',tags:['AI','Platform'],d:'Grounding an assistant in the platform’s own knowledge graph and live state instead of guessing.'},
+    {t:'Dev workflow',k:'doc',href:'ultraplatform.html#d=dev-workflow',tags:['Dotfiles','Platform'],d:'The local loop: worktrees, tmux sessions and running the reusable pipeline before you ever push.'},
+    {t:'Neovim & the River toolchain',k:'doc',href:'ultraplatform.html#d=neovim-tools',tags:['Dotfiles','Tools','Observability'],d:'Grammar, language server and Neovim plugin for River — the missing editor experience for Alloy configs.'},
+    {t:'gctui — local GitLab-CI cockpit',k:'tool',href:'ultraplatform.html#v=gctui',tags:['Tools','Terraform'],d:'Run the reusable pipeline locally and diff it against remote before pushing. A tight CI loop, in a TUI.'},
+    {t:'tflocal — run modules locally',k:'tool',href:'ultraplatform.html#v=tflocal',tags:['Tools','Terraform'],d:'Apply and clean up Terraform overrides locally with fidelity to the remote steps.'},
+    {t:'time-tracker (tt)',k:'tool',href:'ultraplatform.html#v=time-tracker',tags:['Tools','Dotfiles'],d:'A tmux-integrated, ticket-aware time tracker that feeds standups and worklogs automatically.'},
+    {t:'notion-iwe — Notion ⇄ markdown sync',k:'tool',href:'https://github.com/franroa/notion-iwe-sync',tags:['Tools','Dotfiles','AI'],d:'Mirrors a personal Notion workspace as a local IWE markdown vault, bidirectionally: save in Neovim and it lands in Notion; edit in Notion and it lands on disk. Conflict copies, link mapping, and a systemd watch daemon.'},
+    {t:'tree-sitter-river',k:'repo',href:'https://github.com/franroa/tree-sitter-river',tags:['Tools','Observability'],d:'A Tree-sitter grammar for River — fast incremental parsing for highlighting, folding and navigation.'},
+    {t:'river-lsp',k:'repo',href:'https://github.com/franroa/river-lsp',tags:['Tools','Observability'],d:'A Language Server for River: diagnostics, completion and go-to-definition for Alloy configs.'},
+    {t:'alloy.nvim',k:'repo',href:'https://github.com/franroa/alloy.nvim',tags:['Tools','Dotfiles','Observability'],d:'The Neovim plugin tying the grammar and language server together for editing Alloy/River files.'},
+  ];
+
+  // ---------- two tabs (Posts + Notes), each with its own tag order and Neovim picks ----------
+  const CFG={
+    posts:{ items:POSTS, noun:'post',
+      order:['Fundamentals','Workflow','Skills','Information and Learning','Migration','Platform','Well-Architected','Reuse','Terraform','IaC','Kubernetes','K8s Services','Multi-tenancy','Networking','Security','Identity','Observability','Backups','FinOps','AI','RAG','Design'],
+      nvim:{'Workflow':['flash.nvim','hardtime.nvim','grug-far.nvim','flatten.nvim'],'Skills':['iwe.nvim','markdown-plus.nvim'],'Platform':['kulala.nvim','SchemaStore.nvim'],'Terraform':['nvim-lspconfig','conform.nvim'],'IaC':['nvim-lspconfig','SchemaStore.nvim'],'Kubernetes':['SchemaStore.nvim','mason.nvim'],'Observability':['alloy.nvim','river-lsp'],'AI':['sidekick.nvim','copilot.lua','blink.cmp']} },
+    notes:{ items:NOTES, noun:'note',
+      order:['Dotfiles','Tools','Platform','AI','Kubernetes','Terraform','Observability','FinOps','Security','Identity'],
+      nvim:{'Dotfiles':['chezmoi.nvim','mini.files','flatten.nvim','noice.nvim'],'Tools':['gitlab.nvim','tsugit.nvim','diffview.nvim','gitsigns.nvim'],'Platform':['kulala.nvim','SchemaStore.nvim','codereview.nvim'],'AI':['sidekick.nvim','copilot.lua','blink.cmp','codediff.nvim'],'Kubernetes':['SchemaStore.nvim','mason.nvim','nvim-lspconfig'],'Terraform':['nvim-lspconfig','conform.nvim','mini.hipatterns'],'Observability':['alloy.nvim','river-lsp','tree-sitter-river']} },
+  };
+
+  const BATCH=9;
+  const IO_OK='IntersectionObserver' in window;
+  let tab='posts', shown=0;
+  let activeTags=new Set();                          // empty = All (no filter)
+  let searchQuery='';                                // free-text filter (lowercased); '' = no search
+  const railEl=document.getElementById('taglist'), list=document.getElementById('posts'),
+        countEl=document.getElementById('count'), loadmore=document.getElementById('loadmore'),
+        pick=document.getElementById('tagpick'), chipsEl=document.getElementById('tagchips');
+  const cfg=()=>CFG[tab];
+  function tagCounts(){ const c={}; cfg().items.forEach(x=>(x.tags||[]).forEach(t=>c[t]=(c[t]||0)+1)); return c; }
+  function tagList(){ const c=tagCounts(); return [...cfg().order.filter(t=>c[t]),...Object.keys(c).filter(t=>!cfg().order.includes(t)).sort()]; }
+  // an item matches if it carries ANY of the selected tags (union); no selection = everything
+  function filtered(){
+    let items = activeTags.size===0 ? cfg().items : cfg().items.filter(x=>(x.tags||[]).some(t=>activeTags.has(t)));
+    if(searchQuery){ items=items.filter(x=>{
+      const hay=(tab==='posts'?(x.title+' '+x.excerpt):(x.t+' '+x.d))+' '+(x.tags||[]).join(' ');
+      return hay.toLowerCase().includes(searchQuery);
+    }); }
+    return items;
+  }
+  function toggleTag(t){ activeTags.has(t)?activeTags.delete(t):activeTags.add(t); commit(); }
+
+  function renderRail(){
+    const c=tagCounts();
+    railEl.innerHTML='';
+    const all=document.createElement('button'); all.className='tag'+(activeTags.size===0?' on':''); all.type='button';
+    all.setAttribute('aria-pressed',activeTags.size===0?'true':'false');
+    all.innerHTML='<span>All</span><span class="n">'+cfg().items.length+'</span>';
+    all.onclick=()=>{ if(activeTags.size){ activeTags.clear(); commit(); } };
+    railEl.appendChild(all);
+    tagList().forEach(t=>{
+      const b=document.createElement('button'); b.className='tag'+(activeTags.has(t)?' on':''); b.type='button';
+      b.setAttribute('aria-pressed',activeTags.has(t)?'true':'false');
+      b.innerHTML='<span>'+t+'</span><span class="n">'+c[t]+'</span>';
+      b.onclick=()=>toggleTag(t);
+      railEl.appendChild(b);
+    });
+  }
+  function renderPicker(){                            // mobile: a select to add tags + removable chips
+    const chosen=[...activeTags];
+    pick.innerHTML='<option value="">'+(chosen.length?'Add another tag…':'Filter by tag…')+'</option>'
+      + tagList().filter(t=>!activeTags.has(t)).map(t=>'<option>'+t+'</option>').join('');
+    chipsEl.innerHTML=chosen.map(t=>'<span class="chip">'+t+'<button type="button" aria-label="Remove '+t+'" data-tag="'+t.replace(/"/g,'&quot;')+'">×</button></span>').join('');
+    chipsEl.querySelectorAll('button').forEach(x=>x.onclick=()=>toggleTag(x.dataset.tag));
+  }
+  function cardFor(x){
+    let el;
+    if(tab==='posts'){
+      el=document.createElement('a'); el.className='post'; el.href='#read='+x.key;
+      el.innerHTML='<div class="tagrow">'+(x.private?'<span class="priv">🔒 private</span>':'')+x.tags.map(t=>'<span class="t" data-tag="'+t+'">'+t+'</span>').join('')+'</div>'+
+        '<h3>'+x.title+'</h3><p>'+x.excerpt+'</p>'+
+        '<div class="meta"><span>'+x.date+'</span><span>'+x.read+' read</span></div>'+
+        '<span class="go">Read →</span>';
+      // a real link: middle-click/Ctrl+click/right-click→copy all keep working; a plain
+      // left click opens the in-page reader instead of just changing the hash
+      el.addEventListener('click',e=>{
+        if(e.button!==0||e.ctrlKey||e.metaKey||e.shiftKey||e.altKey) return;
+        e.preventDefault(); openPost(x.key,el);
+      });
+    } else {
+      const ext=/^https?:/.test(x.href);
+      el=document.createElement('a'); el.className='post'; el.href=x.href;
+      if(ext){ el.target='_blank'; el.rel='noopener'; }
+      el.innerHTML='<div class="kind"><span class="ic">'+(ICON[x.k]||'📄')+'</span>'+
+        (x.k==='repo'?'GitHub':x.k==='tool'?'Tool · in the map':x.k==='ref'?'Reference':x.k==='demo'?'Interactive demo':'Note · in the map')+'</div>'+
+        '<div class="tagrow">'+x.tags.map(t=>'<span class="t" data-tag="'+t+'">'+t+'</span>').join('')+'</div>'+
+        '<h3>'+x.t+'</h3><p>'+x.d+'</p>'+
+        '<span class="go">'+(x.k==='ref'?'Read the docs ↗':x.k==='demo'?'Try it →':ext?'View on GitHub →':'Open in the map →')+'</span>';
+    }
+    el.querySelectorAll('.t').forEach(chip=>chip.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();toggleTag(chip.dataset.tag);}));
+    return el;
+  }
+  function renderHead(){
+    const items=filtered(), sel=[...activeTags];
+    countEl.textContent=items.length+' '+cfg().noun+(items.length===1?'':'s')+(sel.length?' · '+sel.join(' · '):'');
+    // Neovim picks are per-concept, so only show them when a single tag is selected
+    const strip=document.getElementById('nvimstrip'), picks=sel.length===1?cfg().nvim[sel[0]]:null;
+    strip.classList.toggle('on',!!picks);
+    strip.innerHTML=picks?('⌨️ Neovim picks for '+sel[0]+': '+picks.map(p=>'<span class="np">'+p+'</span>').join('')):'';
+  }
+  function renderList(reset){
+    const items=filtered();
+    if(reset){ list.innerHTML=''; shown=0; }
+    if(!items.length){ list.innerHTML='<p class="empty">'+(searchQuery?('No matches for “'+esc(searchQuery)+'”.'):'Nothing here yet.')+'</p>'; loadmore.style.display='none'; return; }
+    items.slice(shown,shown+BATCH).forEach(x=>list.appendChild(cardFor(x)));
+    shown=Math.min(shown+BATCH,items.length);
+    const remaining=items.length-shown;
+    loadmore.style.display=(remaining>0&&!IO_OK)?'block':'none';
+    if(remaining>0) loadmore.textContent='Show '+Math.min(BATCH,remaining)+' more ('+remaining+' remaining)';
+  }
+  const esc=s=>s.replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+  // a curated learning journey: fundamentals → how the platform expresses them → the synthesis.
+  // shown only on the Posts tab with no tag filter, so it's the default "where do I start?" answer.
+  const READING_PATH=[
+    ['blog-twelve-factor','the mindset — what a platform makes free'],
+    ['blog-osi-model','networking, one layer at a time'],
+    ['blog-idempotency','why automation is safe: desired state'],
+    ['blog-immutability','the operating stance: no SSH into prod'],
+    ['blog-defense-in-depth','how the security envelopes stack'],
+    ['blog-terraform','how the infrastructure is expressed'],
+    ['blog-kubernetes','the compute plane, multi-tenant'],
+    ['blog-golden-path','how it all composes into a paved road'],
+    ['blog-failure-modes','the review question: what happens when it dies?'],
+    ['blog-well-architected','the audit that ties it together'],
+  ];
+  function renderStartPath(){
+    const el=document.getElementById('startpath'); if(!el)return;
+    if(tab!=='posts'||activeTags.size||searchQuery){ el.hidden=true; return; }
+    el.hidden=false;
+    const steps=READING_PATH.map(([k])=>POSTS.find(x=>x.key===k)).filter(Boolean);
+    document.getElementById('startpath-sub').textContent=steps.length+' posts · fundamentals → platform';
+    document.getElementById('startpath-list').innerHTML=READING_PATH.map(([k,why],i)=>{
+      const p=POSTS.find(x=>x.key===k); if(!p)return'';
+      return '<li><a href="#read='+k+'" data-key="'+k+'"><span class="n">'+(i+1)+
+        '</span><span><span class="ti">'+esc(p.title)+'</span> <span class="wy">— '+esc(why)+'</span></span></a></li>';
+    }).join('');
+    document.querySelectorAll('#startpath-list a[data-key]').forEach(a=>
+      a.onclick=e=>{e.preventDefault();openPost(a.dataset.key,a);});
+  }
+  function rerender(){ renderHead(); renderRail(); renderPicker(); renderStartPath(); renderList(true);
+    if(IO_OK) requestAnimationFrame(autoFill); }
+
+  function hashFor(){ const t=[...activeTags];
+    if(!t.length) return tab==='notes'?'#tab=notes':location.pathname;
+    return (tab==='notes'?'#tab=notes&tag=':'#tag=')+t.map(encodeURIComponent).join(','); }
+  function commit(){ history.replaceState(null,'',hashFor()); rerender(); scrollTo({top:0,behavior:'smooth'}); }
+  pick.onchange=()=>{ if(pick.value){ activeTags.add(pick.value); commit(); } };
+
+  function syncTabButtons(){ document.querySelectorAll('.tabbtn').forEach(b=>{const on=b.dataset.tab===tab;b.classList.toggle('on',on);b.setAttribute('aria-selected',on);});
+    document.getElementById('list-heading').textContent=tab==='notes'?'Notes':'Posts'; }
+  function setTab(t){ if(t===tab)return; tab=t; activeTags.clear();
+    searchQuery=''; const se=document.getElementById('postsearch'); if(se){ se.value=''; se.placeholder='Search '+(t==='notes'?'notes':'posts')+'…'; }
+    syncTabButtons(); history.replaceState(null,'',t==='notes'?'#tab=notes':location.pathname);
+    rerender(); scrollTo({top:0,behavior:'smooth'}); }
+  document.querySelectorAll('.tabbtn').forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+
+  loadmore.onclick=()=>renderList(false);
+
+  // free-text search — filters the current tab's cards by title/excerpt/tags as you type
+  const searchEl=document.getElementById('postsearch');
+  let searchT;
+  searchEl.addEventListener('input',()=>{ clearTimeout(searchT); searchT=setTimeout(()=>{
+    searchQuery=searchEl.value.trim().toLowerCase();
+    renderHead(); renderStartPath(); renderList(true); if(IO_OK) requestAnimationFrame(autoFill);
+  },120); });
+
+  // infinite scroll: the sentinel below the grid loads the next batch as it nears the
+  // viewport; the button above stays as the fallback when IntersectionObserver is missing
+  const sentinel=document.getElementById('scroll-sentinel');
+  function autoFill(){ let guard=0;
+    while(filtered().length>shown && sentinel.getBoundingClientRect().top<=innerHeight+600 && ++guard<=40)
+      renderList(false);
+  }
+  if(IO_OK) new IntersectionObserver(es=>{ if(es.some(e=>e.isIntersecting)) autoFill(); },{rootMargin:'600px 0px'}).observe(sentinel);
+
+  // deep links: #tab=notes[&tag=A,B], #tag=A,B (posts). #read=<key> is handled by the reader below.
+  (function(){ const h=location.hash;
+    const tm=h.match(/[#&]tab=(posts|notes)\b/); if(tm) tab=tm[1];
+    syncTabButtons();
+    const gm=h.match(/[#&]tag=([^&]+)/); if(gm){ const avail=tagList(); decodeURIComponent(gm[1]).split(',').forEach(t=>{ if(avail.includes(t)) activeTags.add(t); }); }
+  })();
+  // honour a ?q= deep link — this is exactly what the SearchAction in the page's JSON-LD targets
+  (function(){ const q=new URLSearchParams(location.search).get('q');
+    if(q){ searchEl.value=q; searchQuery=q.trim().toLowerCase(); } })();
+  rerender();
+
+  // ---------- tiny markdown renderer (headings, lists, code, quotes, links, bold, code spans) ----------
+  function inline(s){
+    return esc(s)
+      .replace(/`([^`]+)`/g,'<code>$1</code>')
+      .replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>')
+      .replace(/\*([^*\n]+)\*/g,'<i>$1</i>')       // single-asterisk emphasis (after bold, so ** is safe)
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/g,(m,txt,href)=>{
+        // IWE-style bare keys ([x](res-vnet)) and .md links resolve inside the map's doc panel
+        let h=href.trim();
+        if(/^https?:/.test(h)) return '<a href="'+h+'" target="_blank" rel="noopener">'+txt+'</a>';
+        // map deep links ([see it](#aks=eu01&d=…)) keep their full hash, aimed at the map page
+        if(/^#(aks|r|v)=/.test(h)) return '<a href="ultraplatform.html'+h+'">'+txt+'</a>';
+        h=h.replace(/\.md$/,'').replace(/^\.\//,'').replace(/#.*$/,'');
+        return '<a href="ultraplatform.html#d='+encodeURIComponent(h)+'">'+txt+'</a>';
+      });
+  }
+  function mdToHtml(src){
+    const lines=src.replace(/\r/g,'').split('\n'); let out=[],i=0;
+    while(i<lines.length){
+      let ln=lines[i];
+      if(/^```/.test(ln)){ const lang=ln.slice(3).trim().split(/\s+/)[0].toLowerCase(); const cls=/^[a-z0-9+#-]+$/.test(lang)?' class="language-'+lang+'"':''; let buf=[]; i++; while(i<lines.length&&!/^```/.test(lines[i])){buf.push(esc(lines[i]));i++;} i++;
+        out.push('<pre><code'+cls+'>'+buf.join('\n')+'</code></pre>'); continue; }
+      if(/^\s*$/.test(ln)){ i++; continue; }
+      let hm=ln.match(/^(#{1,4})\s+(.*)$/);
+      if(hm){ const lvl=hm[1].length; out.push('<h'+lvl+'>'+inline(hm[2])+'</h'+lvl+'>'); i++; continue; }
+      if(/^(---|\*\*\*|___)\s*$/.test(ln)){ out.push('<hr>'); i++; continue; }
+      if(/^\s*>/.test(ln)){ let buf=[]; while(i<lines.length&&/^\s*>/.test(lines[i])){buf.push(lines[i].replace(/^\s*>\s?/,''));i++;}
+        out.push('<blockquote>'+inline(buf.join(' '))+'</blockquote>'); continue; }
+      if(/^\s*[-*]\s+/.test(ln)){ let buf=[]; while(i<lines.length&&/^\s*[-*]\s+/.test(lines[i])){buf.push('<li>'+inline(lines[i].replace(/^\s*[-*]\s+/,''))+'</li>');i++;}
+        out.push('<ul>'+buf.join('')+'</ul>'); continue; }
+      if(/^\s*\d+[.)]\s+/.test(ln)){ let buf=[]; while(i<lines.length&&/^\s*\d+[.)]\s+/.test(lines[i])){buf.push('<li>'+inline(lines[i].replace(/^\s*\d+[.)]\s+/,''))+'</li>');i++;}
+        out.push('<ol>'+buf.join('')+'</ol>'); continue; }
+      // pipe tables: | a | b | — wrapped in .tblwrap so wide tables scroll horizontally
+      if(/^\s*\|.*\|\s*$/.test(ln)){ let rows=[]; while(i<lines.length&&/^\s*\|.*\|\s*$/.test(lines[i])){rows.push(lines[i].trim());i++;}
+        const cells=r=>r.replace(/^\|/,'').replace(/\|$/,'').split('|').map(c=>c.trim());
+        const sep=rows[1]&&/^\|?[\s:|-]+\|?$/.test(rows[1]);
+        let t='<div class="tblwrap"><table>';
+        if(sep) t+='<thead><tr>'+cells(rows[0]).map(c=>'<th>'+inline(c)+'</th>').join('')+'</tr></thead>';
+        t+='<tbody>'; for(let r=sep?2:0;r<rows.length;r++) t+='<tr>'+cells(rows[r]).map(c=>'<td>'+inline(c)+'</td>').join('')+'</tr>';
+        out.push(t+'</tbody></table></div>'); continue; }
+      // paragraph: gather until blank
+      let buf=[ln]; i++; while(i<lines.length&&!/^\s*$/.test(lines[i])&&!/^(#{1,4}\s|```|\s*[-*]\s|\s*\d+[.)]\s|\s*>)/.test(lines[i])){buf.push(lines[i]);i++;}
+      out.push('<p>'+inline(buf.join(' '))+'</p>');
+    }
+    return out.join('\n');
+  }
+
+  // ---------- reader ----------
+  const reader=document.getElementById('reader'), body=document.getElementById('reader-body'),
+        mapLink=document.getElementById('reader-map'), closeBtn=document.getElementById('reader-x'),
+        metaEl=document.getElementById('reader-meta');
+  const BASE_TITLE=document.title;
+  let readerTrigger=null;                             // element to return focus to on close
+  async function openPost(key,trigger){
+    const p=POSTS.find(x=>x.key===key); if(!p)return;
+    readerTrigger=trigger||document.activeElement;
+    // a post may carry its own map hash (e.g. straight into the AKS view); else view+key
+    const mapHash=p.hash||(p.view?('v='+p.view+'&d='+p.key):null);
+    mapLink.style.display=mapHash?'':'none';
+    if(mapHash) mapLink.href='ultraplatform.html#'+mapHash;
+    metaEl.innerHTML='<span>'+p.date+'</span><span>'+p.read+' read</span>'+p.tags.map(t=>'<span class="t">'+t+'</span>').join('');
+    body.innerHTML='<p class="loading">Loading…</p>';
+    reader.classList.add('open'); reader.setAttribute('aria-hidden','false'); reader.scrollTop=0;
+    document.body.classList.add('noscroll');
+    history.replaceState(null,'','#read='+key);
+    document.title=p.title+' · Francisco Roa';
+    closeBtn.focus();                                  // move focus into the dialog
+    try{
+      const r=await fetch(p.md); if(!r.ok)throw 0; body.innerHTML=mdToHtml(await r.text());
+      enhanceReader(key);
+      const i=POSTS.indexOf(p), next=POSTS[i+1];
+      if(next) body.insertAdjacentHTML('beforeend','<hr><p><a href="#read='+next.key+'" id="reader-next">Next → '+next.title+'</a></p>');
+      if(next) document.getElementById('reader-next').onclick=(e)=>{e.preventDefault();openPost(next.key,trigger);};
+    }
+    catch{ body.innerHTML='<p class="loading">Couldn’t load this piece here — '+(mapHash?'<a href="ultraplatform.html#'+mapHash+'">read it in the map ↗</a> or ':'')+'<a href="" id="reader-retry">try again</a>.</p>';
+      document.getElementById('reader-retry').onclick=(e)=>{e.preventDefault();openPost(key,trigger);}; }
+  }
+  function closeReader(){ reader.classList.remove('open'); reader.setAttribute('aria-hidden','true');
+    document.body.classList.remove('noscroll');
+    history.replaceState(null,'',hashFor());            // preserve any active tag filter, don't wipe it
+    document.title=BASE_TITLE;
+    if(readerTrigger&&readerTrigger.focus) readerTrigger.focus(); // return focus to the card that opened it
+    readerTrigger=null;
+  }
+  closeBtn.onclick=closeReader;
+  reader.onclick=e=>{ if(e.target===reader) closeReader(); };
+  addEventListener('keydown',e=>{
+    if(!reader.classList.contains('open')) return;
+    if(e.key==='Escape'){ closeReader(); return; }
+    if(e.key!=='Tab') return;
+    // focus trap: keep Tab / Shift+Tab cycling inside the open dialog
+    const list=[...reader.querySelectorAll('a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])')]
+      .filter(el=>el.offsetParent!==null);
+    if(!list.length) return;
+    const first=list[0], last=list[list.length-1];
+    if(!reader.contains(document.activeElement)){ e.preventDefault(); first.focus(); }
+    else if(e.shiftKey && document.activeElement===first){ e.preventDefault(); last.focus(); }
+    else if(!e.shiftKey && document.activeElement===last){ e.preventDefault(); first.focus(); }
+  });
+  // reading UX: copy-code buttons + a scroll-progress bar + a one-shot post_read analytics event
+  const rprog=document.querySelector('#reader .rprog i');
+  function enhanceReader(key){
+    reader.__key=key; reader.__read=false; if(rprog) rprog.style.width='0%';
+    if(window.upHighlight) window.upHighlight(body);   // syntax-highlight the freshly injected code blocks
+    body.querySelectorAll('pre').forEach(pre=>{
+      const b=document.createElement('button'); b.className='copyc'; b.type='button'; b.textContent='Copy'; b.setAttribute('aria-label','Copy code');
+      b.onclick=()=>{ const c=pre.querySelector('code')||pre; if(navigator.clipboard) navigator.clipboard.writeText(c.innerText).then(()=>{ b.textContent='Copied'; setTimeout(()=>b.textContent='Copy',1400); }); };
+      pre.appendChild(b);
+    });
+  }
+  reader.addEventListener('scroll',()=>{
+    const mx=(reader.scrollHeight-reader.clientHeight)||1, pct=reader.scrollTop/mx;
+    if(rprog) rprog.style.width=Math.min(100,Math.max(0,pct*100))+'%';
+    if(pct>0.85 && !reader.__read){ reader.__read=true; if(window.upTrack) window.upTrack('post_read',{slug:reader.__key}); }
+  },{passive:true});
+  // deep link: #read=<key> opens that article
+  (function(){ const m=location.hash.match(/read=([\w-]+)/); if(m) openPost(m[1]); })();
+
+  // local-only private posts: private/posts.json exists only on this machine (the
+  // publish allow-list never ships private/) — elsewhere the fetch 404s and nothing changes
+  fetch('private/posts.json').then(r=>r.ok?r.json():null).then(extra=>{
+    if(!Array.isArray(extra)||!extra.length) return;
+    extra.forEach(p=>{ p.private=true;
+      const i=POSTS.findIndex(x=>new Date(x.date)<new Date(p.date));
+      i<0?POSTS.push(p):POSTS.splice(i,0,p);
+    });
+    if(tab==='posts') rerender();
+    const m=location.hash.match(/read=([\w-]+)/);
+    if(m&&extra.some(p=>p.key===m[1])) openPost(m[1]);
+  }).catch(()=>{});
+</script>
+<script>
+/* wheel→horizontal shim: a plain vertical mouse wheel scrolls horizontally-
+   overflowing containers (code blocks, wide panels). Trackpad horizontal
+   gestures and Shift+wheel keep working; the 3D canvas (scroll = zoom) is
+   untouched because it is not a scroll container. At the horizontal edge the
+   event is left alone so the page/panel continues to scroll vertically. */
+(function(){
+  function scrollableX(el){
+    for(; el && el.nodeType === 1 && el !== document.body && el !== document.documentElement; el = el.parentElement){
+      var s = getComputedStyle(el);
+      if((s.overflowX === 'auto' || s.overflowX === 'scroll') && el.scrollWidth > el.clientWidth + 1) return el;
+    }
+    return null;
+  }
+  addEventListener('wheel', function(e){
+    if(e.ctrlKey) return;                                   // let browser/pinch zoom through
+    if(Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;     // already a horizontal gesture
+    var box = scrollableX(e.target);
+    if(!box) return;
+    var cs = getComputedStyle(box);
+    if((cs.overflowY === 'auto' || cs.overflowY === 'scroll') && box.scrollHeight > box.clientHeight + 1) return; // let it scroll vertically instead
+    var before = box.scrollLeft;
+    box.scrollLeft += e.deltaY;
+    if(box.scrollLeft !== before) e.preventDefault();       // consumed; at the edge, fall through to vertical
+  }, {passive:false});
+})();
+
+  // (nav + its mobile hamburger are injected by nav.js)
+</script>
+</body>
+</html>

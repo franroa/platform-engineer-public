@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<script>(function(){try{var t=localStorage.getItem('up-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme:light)').matches)?'light':'dark';document.documentElement.dataset.theme=t;}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Run the pipeline before you push it · Francisco Roa</title>
+<meta name="description" content="Local CI runs byte-identical to remote, a one-key diff that makes every divergence auditable, and a poller that watches the real pipeline after push." />
+<meta name="author" content="Francisco Roa" />
+<link rel="canonical" href="https://franroa.github.io/platform-engineer/p/blog-local-remote-ci.html" />
+<meta name="theme-color" content="#060910" data-dark="#060910" />
+<link rel="icon" href="../favicon.svg" type="image/svg+xml" />
+<link rel="manifest" href="../manifest.webmanifest" />
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png" />
+<link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
+<script defer src="../analytics.js"></script>
+<script defer src="../theme.js"></script>
+<script defer src="../highlight.js"></script>
+<link rel="alternate" type="application/rss+xml" title="Francisco Roa — Posts" href="../feed.xml" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="Francisco Roa · Platform Engineering" />
+<meta property="og:title" content="Run the pipeline before you push it" />
+<meta property="og:description" content="Local CI runs byte-identical to remote, a one-key diff that makes every divergence auditable, and a poller that watches the real pipeline after push." />
+<meta property="og:url" content="https://franroa.github.io/platform-engineer/p/blog-local-remote-ci.html" />
+<meta property="og:image" content="https://franroa.github.io/platform-engineer/assets/og/blog-local-remote-ci.png" />
+<meta property="article:published_time" content="2026-04-23" />
+<meta property="article:tag" content="Workflow" />
+<meta property="article:tag" content="Platform" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Run the pipeline before you push it" />
+<meta name="twitter:description" content="Local CI runs byte-identical to remote, a one-key diff that makes every divergence auditable, and a poller that watches the real pipeline after push." />
+<meta name="twitter:image" content="https://franroa.github.io/platform-engineer/assets/og/blog-local-remote-ci.png" />
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Run the pipeline before you push it","description":"Local CI runs byte-identical to remote, a one-key diff that makes every divergence auditable, and a poller that watches the real pipeline after push.","image":"https://franroa.github.io/platform-engineer/assets/og/blog-local-remote-ci.png","datePublished":"2026-04-23","dateModified":"2026-04-23","author":{"@type":"Person","name":"Francisco Roa","url":"https://franroa.github.io/platform-engineer/"},"publisher":{"@type":"Person","name":"Francisco Roa","url":"https://franroa.github.io/platform-engineer/"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://franroa.github.io/platform-engineer/p/blog-local-remote-ci.html"},"keywords":"Workflow, Platform","url":"https://franroa.github.io/platform-engineer/p/blog-local-remote-ci.html"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://franroa.github.io/platform-engineer/"},{"@type":"ListItem","position":2,"name":"Posts","item":"https://franroa.github.io/platform-engineer/writing.html"},{"@type":"ListItem","position":3,"name":"Run the pipeline before you push it","item":"https://franroa.github.io/platform-engineer/p/blog-local-remote-ci.html"}]}</script>
+<style>:root{--bg:#060910;--bg2:#0a0f1c;--line:rgba(130,160,230,.14);--fg:#e8eefc;--muted:#8b97b8;--dim:#727c9f;--cyan:#7fd4ff;--violet:#b69bff}
+:root[data-theme="light"]{--bg:#f6f8fc;--bg2:#eef2f9;--line:rgba(40,70,130,.18);--fg:#0f1a33;--muted:#54617e;--dim:#616c88;--cyan:#0e79b0;--violet:#6d4fd0;color-scheme:light}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.skip{position:absolute;left:-9999px;top:0;z-index:3000;background:var(--cyan);color:#06121f;padding:10px 16px;border-radius:0 0 10px 0;font-weight:700;text-decoration:none}
+.skip:focus{left:0}
+.topbar{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 24px;backdrop-filter:blur(12px);background:rgba(6,9,16,.82);border-bottom:1px solid var(--line);font-size:14px}
+.topbar a{color:var(--muted);text-decoration:none;transition:color .18s}
+.topbar a:hover{color:var(--fg)}
+.topbar .brand{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--fg)}
+.topbar .brand .badge{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font:700 12px/1 ui-monospace,monospace;color:#06121f;background:linear-gradient(135deg,#7fd4ff,#b69bff 60%,#ffb36b)}
+.topbar .links{display:flex;gap:22px}
+.wrap{max-width:760px;margin:0 auto;padding:40px 22px 80px}
+.crumb{font-size:13px;color:var(--dim);margin-bottom:20px}
+.crumb a{color:var(--cyan);text-decoration:none}
+.meta{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:0 0 8px;font-size:12.5px;color:var(--dim)}
+.meta .t{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--violet);border:1px solid var(--line);border-radius:6px;padding:2px 8px}
+.md h1{font-size:clamp(26px,4vw,38px);font-weight:800;letter-spacing:-.01em;line-height:1.14;margin:6px 0 20px}
+.md h2{font-size:22px;font-weight:700;margin:32px 0 12px;padding-top:14px;border-top:1px solid var(--line)}
+.md h3{font-size:17px;font-weight:700;margin:22px 0 8px;color:#cfd8f2}
+.md p{color:#c4cee6;margin:0 0 14px}
+.md a{color:var(--cyan);border-bottom:1px solid rgba(127,212,255,.3);text-decoration:none}
+.md a:hover{border-bottom-color:var(--cyan)}
+.md ul,.md ol{margin:0 0 16px 22px;color:#c4cee6}
+.md li{margin-bottom:6px}
+.md code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.9em;background:rgba(127,212,255,.1);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+.md pre{background:#0a0f1c;border:1px solid var(--line);border-radius:12px;padding:16px 18px;overflow-x:auto;margin:0 0 16px}
+.md pre code{background:none;border:0;padding:0;color:#cdd7ef}
+.md .tok-cmt{color:#6b7a99;font-style:italic}.md .tok-str{color:#9ece6a}.md .tok-num{color:#ff9e64}.md .tok-kw{color:#7aa2f7}.md .tok-lit{color:#bb9af7}
+:root[data-theme="light"] .md pre{background:#eef2f9}
+:root[data-theme="light"] .md pre code{color:#24324d}
+:root[data-theme="light"] .md .tok-cmt{color:#6a737d}:root[data-theme="light"] .md .tok-str{color:#22863a}:root[data-theme="light"] .md .tok-num{color:#b5690a}:root[data-theme="light"] .md .tok-kw{color:#0550ae}:root[data-theme="light"] .md .tok-lit{color:#6f42c1}
+/* light theme: the prose/table/quote colours below hardcode light-on-dark tones — override them for light */
+:root[data-theme="light"] .md p,:root[data-theme="light"] .md ul,:root[data-theme="light"] .md ol,:root[data-theme="light"] .md li{color:#2b3652}
+:root[data-theme="light"] .md h3{color:#16203a}
+:root[data-theme="light"] .md blockquote{color:#2b3652;background:rgba(14,121,176,.06)}
+:root[data-theme="light"] .md th,:root[data-theme="light"] .md td{color:#2b3652}
+:root[data-theme="light"] .md th{background:rgba(14,121,176,.09);color:#0f1a33}
+:root[data-theme="light"] .topbar{background:rgba(246,248,252,.85)}
+.md blockquote{border-left:3px solid var(--cyan);background:rgba(127,212,255,.05);border-radius:0 10px 10px 0;padding:12px 18px;margin:0 0 18px;color:#b9c4de}
+.md hr{border:0;border-top:1px solid var(--line);margin:26px 0}
+.md .tblwrap{overflow-x:auto;margin:0 0 16px}
+.md table{border-collapse:collapse;width:100%;font-size:14px}
+.md th,.md td{border:1px solid var(--line);padding:8px 10px;text-align:left;color:#c4cee6;vertical-align:top}
+.md th{background:rgba(127,212,255,.06);color:#e8eefc;font-weight:700;white-space:nowrap}
+.cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:40px;padding-top:24px;border-top:1px solid var(--line);font-size:14px}
+.cta a{color:var(--cyan);text-decoration:none;border:1px solid var(--line);border-radius:9px;padding:9px 15px;transition:border-color .18s}
+.cta a:hover{border-color:rgba(127,212,255,.5)}
+footer{padding:34px 24px;border-top:1px solid var(--line);text-align:center;color:var(--muted);font-size:13px}
+.rprog{position:fixed;top:0;left:0;right:0;height:3px;z-index:20;pointer-events:none}
+.rprog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--violet))}
+.md pre{position:relative}
+.copyc{position:absolute;top:8px;right:8px;font:600 11px/1 ui-monospace,monospace;color:var(--muted);background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:5px 9px;cursor:pointer;opacity:.5;transition:opacity .15s,color .15s,border-color .15s}
+.md pre:hover .copyc,.copyc:focus-visible{opacity:1}
+.copyc:hover{color:var(--fg);border-color:var(--cyan)}
+.rtoc{display:none}
+@media(min-width:1200px){
+  .rtoc{display:block;position:fixed;top:120px;left:max(16px,calc(50% - 596px));width:188px;max-height:72vh;overflow:auto;font-size:12.5px}
+  .rtoc ul{list-style:none;border-left:1px solid var(--line)}
+  .rtoc a{display:block;color:var(--dim);text-decoration:none;padding:5px 0 5px 14px;margin-left:-1px;border-left:2px solid transparent;line-height:1.35}
+  .rtoc a:hover{color:var(--fg)}
+  .rtoc a.active{color:var(--cyan);border-left-color:var(--cyan)}
+}
+@media(max-width:640px){.topbar .links{gap:14px}}
+@media print{
+  :root{--bg:#fff;--bg2:#fff;--fg:#111;--muted:#444;--dim:#555;--line:#ccc}
+  html,body{background:#fff!important;color:#111!important}
+  .topbar,.rprog,.rtoc,.copyc,.cta,footer,#theme-toggle,.crumb{display:none!important}
+  main.wrap{max-width:none;margin:0;padding:0}
+  .md{color:#111}
+  .md a{color:#111;text-decoration:underline}
+  .md h1,.md h2,.md h3{color:#000;page-break-after:avoid}
+  .md pre,.md img,.md figure,.md table{page-break-inside:avoid}
+  .md pre{background:#f4f4f4!important;border:1px solid #ddd;color:#111;white-space:pre-wrap;word-wrap:break-word}
+  .md code{color:#111}
+  .md .tok-cmt{color:#6a737d!important}.md .tok-str{color:#22863a!important}.md .tok-num{color:#b5690a!important}.md .tok-kw{color:#0550ae!important}.md .tok-lit{color:#6f42c1!important}
+  .meta{color:#444;border:0}
+  a[href]:after{content:''}
+}</style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="rprog" aria-hidden="true"><i></i></div>
+  <header class="topbar">
+    <a class="brand" href="../index.html"><span class="badge">FR</span><span>Francisco Roa</span></a>
+    <nav class="links">
+      <a href="../index.html">Home</a>
+      <a href="../writing.html">Posts</a>
+      <a href="../ultraplatform.html">Map</a>
+    </nav>
+  </header>
+  <main class="wrap" id="main">
+    <div class="crumb"><a href="../writing.html">← All posts</a></div>
+    <div class="meta"><span>Apr 24, 2026</span><span>7 min read</span><span class="t">Workflow</span><span class="t">Platform</span></div>
+    <article class="md">
+<h1>🔁 Run the pipeline before you push it</h1>
+<blockquote>💡 <b>TL;DR</b> — CI round-trips are the slowest debugger in the industry. My rule: <b>local runs must mirror the remote steps, and every divergence must be auditable.</b> gctui — a terminal cockpit over <code>gitlab-ci-local</code> — runs the <i>same</i> pipeline on my machine, keeps jobs <b>byte-identical</b> to what GitLab would run, shows a <b>diff of local vs remote</b> config (including which variables exist where), and then watches the real remote pipeline after push. Green locally, pushed once, green remotely.</blockquote>
+<h2>1 · The check is the same check, twice</h2>
+<p>The workflow has two gates and they must agree:</p>
+<ul><li><b>Local</b>: run the job under development in a loop until it passes, then the whole pipeline</li></ul>
+<p>  (<code>plan → OPA → apply</code> and friends), on the laptop, in containers — exit codes and all, so   agents and scripts can drive it too. My agent workflow is literally test-driven CI:   the agent edits the job, runs it locally, repeats until green, <i>then</i> opens the MR.</p>
+<ul><li><b>Remote</b>: after push, a poller watches the actual GitLab pipeline and reports into the</li></ul>
+<p>  tmux statusline (<a href="blog-claude-signals.html">signals</a>). Remote is the source of truth; local is   the fast approximation of it.</p>
+<p>The point is not "test locally" — everyone says that. The point is the two runs execute the <b>same job definitions</b>, so a local green actually predicts a remote green.</p>
+<h2>2 · Byte-identical or it doesn't count</h2>
+<p>The failure mode of every local-CI tool is drift: a wrapper injects a variable here, skips a step there, and six months later local-green means nothing. Two defences:</p>
+<ul><li><b>Marker-free wrappers.</b> The local runner overrides only the shared base of the pipeline</li></ul>
+<p>  (the one include every repo consumes) — the job scripts themselves stay byte-identical to   what the remote executes. No sentinel comments, no patched YAML in the repo.</p>
+<ul><li><b>The <code>D</code> key.</b> One keystroke diffs the <i>effective</i> local configuration against the</li></ul>
+<p>  remote's — including the <b>names</b> of deploy variables present on each side. Divergence is   allowed (some things can't run on a laptop) but it is <b>visible and deliberate</b>, never   silent (<a href="../ultraplatform.html#d=dev-workflow">local mirrors remote</a> is the principle; the diff is its enforcement).</p>
+<h2>3 · The awkward parts, handled honestly</h2>
+<p>Real pipelines resist laptops in specific ways, and each gets an explicit answer rather than a shrug: deploy jobs get a <b>local/remote toggle</b> (default local, so a rehearsal can't touch real infra); runtime deploy variables are injected from a config file that holds <b>no secrets</b> (secret-shaped values come from the host environment or not at all); and jobs whose scripts assume the CI image's toolchain get a <b>bridge that discovers those tools from the image itself</b> — cached per image digest — instead of hardcoding paths that rot. Every one of these is a divergence from remote, which is why every one shows up in the diff.</p>
+<h2>4 · What I'd tell a team adopting this</h2>
+<ol><li>Make local vs remote parity a <i>checked</i> property (a diff you can open), not a promise.</li><li>Give jobs exit-code interfaces — if a human must read the output to know it failed,</li></ol>
+<p>   agents can't drive the loop.</p>
+<ol><li>Default rehearsals to not touching real infrastructure; opting into danger should be typed.</li><li>Watch the remote pipeline from the same place you ran the local one — one queue, one</li></ol>
+<p>   attention channel.</p>
+<h2>Related</h2>
+<p><a href="blog-claude-signals.html">Attention is the bottleneck</a> · <a href="../ultraplatform.html#d=gctui">gctui</a> · <a href="blog-agent-skills.html">Skills are golden paths for agents</a> · <a href="../ultraplatform.html#d=gitlab-components">GitLab components</a> · <a href="../ultraplatform.html#d=blog-index">✍️ all articles</a></p>
+    </article>
+    <div class="cta">
+      <a href="../ultraplatform.html#v=blog-local-remote-ci&amp;d=blog-local-remote-ci">Open in the interactive 3D map ↗</a>
+      <a href="../writing.html#read=blog-local-remote-ci">Read in the posts index ↗</a>
+    </div>
+  </main>
+  <footer>© <span id="yr"></span> Francisco Roa · Senior (AI) Platform Engineer ·
+    <a href="../ultraplatform.html" style="color:var(--muted)">explore the map ↗</a></footer>
+  <script>document.getElementById('yr').textContent=new Date().getFullYear();</script>
+  <script>(function(){
+    var PKEY="blog-local-remote-ci";
+    var art=document.querySelector('article.md'); if(!art) return;
+    var fill=document.querySelector('.rprog i');
+    function prog(){var h=document.documentElement,mx=(h.scrollHeight-h.clientHeight)||1;if(fill)fill.style.width=Math.min(100,Math.max(0,h.scrollTop/mx*100))+'%';}
+    addEventListener('scroll',prog,{passive:true}); prog();
+    var hs=[].slice.call(art.querySelectorAll('h2'));
+    hs.forEach(function(h,i){ if(!h.id) h.id='s-'+i+'-'+((h.textContent||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40)); });
+    if(hs.length>=3){
+      var nav=document.createElement('nav'); nav.className='rtoc'; nav.setAttribute('aria-label','On this page');
+      var ul=document.createElement('ul');
+      hs.forEach(function(h){ var li=document.createElement('li'), a=document.createElement('a'); a.href='#'+h.id; a.textContent=(h.textContent||'').replace(/^\s*\d+\s*·\s*/,''); a.dataset.id=h.id; li.appendChild(a); ul.appendChild(li); });
+      nav.appendChild(ul); document.body.appendChild(nav);
+      var links=[].slice.call(nav.querySelectorAll('a'));
+      function spy(){ var cur=null; hs.forEach(function(h){ if(h.getBoundingClientRect().top<140) cur=h.id; }); links.forEach(function(a){ a.classList.toggle('active', a.dataset.id===cur); }); }
+      addEventListener('scroll',spy,{passive:true}); spy();
+    }
+    art.querySelectorAll('pre').forEach(function(pre){
+      var b=document.createElement('button'); b.className='copyc'; b.type='button'; b.textContent='Copy'; b.setAttribute('aria-label','Copy code');
+      b.addEventListener('click',function(){ var c=pre.querySelector('code')||pre; if(navigator.clipboard) navigator.clipboard.writeText(c.innerText).then(function(){ b.textContent='Copied'; setTimeout(function(){ b.textContent='Copy'; },1400); }); });
+      pre.appendChild(b);
+    });
+    var end=document.querySelector('.cta')||document.querySelector('footer');
+    if(end&&'IntersectionObserver' in window){ var io=new IntersectionObserver(function(es){ es.forEach(function(en){ if(en.isIntersecting){ if(window.upTrack) window.upTrack('post_read',{slug:PKEY}); io.disconnect(); } }); }); io.observe(end); }
+  })();</script>
+</body>
+</html>

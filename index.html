@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<script>(function(){try{var t=localStorage.getItem('up-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme:light)').matches)?'light':'dark';document.documentElement.dataset.theme=t;}catch(e){}})();</script>
+<meta name="theme-color" content="#0a0f1e" data-dark="#0a0f1e" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<title>Francisco Roa · Senior (AI) Platform Engineer</title>
+<meta name="author" content="Francisco Roa" />
+<meta name="description" content="Francisco Roa — Senior (AI) Platform Engineer. Azure, Kubernetes and AI platforms. Explore Ultraplatform, an interactive 3D map of a production developer platform." />
+<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+<link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
+<link rel="canonical" href="https://franroa.github.io/platform-engineer/" />
+<script defer src="analytics.js"></script>
+<script defer src="theme.js"></script>
+<link rel="alternate" type="application/rss+xml" title="Francisco Roa — Posts" href="feed.xml" />
+<!-- social cards -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Francisco Roa · Platform Engineering" />
+<meta property="og:title" content="Francisco Roa · Senior (AI) Platform Engineer" />
+<meta property="og:description" content="Turning cloud complexity into golden paths — Azure, Kubernetes and AI platforms, with an interactive 3D map of a production developer platform." />
+<meta property="og:url" content="https://franroa.github.io/platform-engineer/" />
+<meta property="og:image" content="https://franroa.github.io/platform-engineer/assets/og.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Francisco Roa · Senior (AI) Platform Engineer" />
+<meta name="twitter:description" content="Turning cloud complexity into golden paths — Azure, Kubernetes and AI platforms, with an interactive 3D map of a production developer platform." />
+<meta name="twitter:image" content="https://franroa.github.io/platform-engineer/assets/og.png" />
+<!-- /social -->
+<style>
+  :root{
+    --bg:#060910; --bg2:#0a0f1c; --panel:#0e1526; --line:rgba(130,160,230,.14);
+    /* elevated surfaces — cards sit clearly ABOVE the background, never fade into it */
+    --card:#141d33; --card2:#101830; --card-line:rgba(150,178,245,.24);
+    --elev:0 1px 0 rgba(255,255,255,.05) inset, 0 14px 30px -16px rgba(0,0,0,.65);
+    --elev-hi:0 1px 0 rgba(255,255,255,.08) inset, 0 22px 44px -18px rgba(0,0,0,.72);
+    --fg:#e8eefc; --fg2:#c4cee6; --muted:#8b97b8; --dim:#727c9f;
+    --cyan:#7fd4ff; --violet:#b69bff; --orange:#ffb36b; --green:#34d399;
+    --band:rgba(10,15,28,.5);
+    --maxw:1080px;
+  }
+  /* light theme — every reading surface INCLUDING the hero; only the 3D map page stays
+     dark by design. The globe embed renders transparent, so the hero backdrop is ours. */
+  :root[data-theme="light"]{
+    --bg:#f6f8fc; --bg2:#eef2f9; --panel:#ffffff; --line:rgba(30,52,96,.15);
+    --card:#ffffff; --card2:#f2f6fc; --card-line:rgba(40,70,130,.18);
+    --elev:0 1px 0 rgba(255,255,255,.7) inset, 0 12px 28px -18px rgba(20,45,90,.20);
+    --elev-hi:0 1px 0 rgba(255,255,255,.9) inset, 0 20px 44px -20px rgba(20,45,90,.24);
+    --fg:#0f1a33; --fg2:#33405f; --muted:#54617e; --dim:#616c88;
+    --cyan:#0e79b0; --violet:#6d4fd0; --green:#0e9e6a; --orange:#b45f17;
+    --band:rgba(20,45,90,.045);
+    color-scheme:light;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  .skip{position:absolute;left:-9999px;top:0;z-index:3000;background:var(--cyan);color:#06121f;padding:10px 16px;border-radius:0 0 10px 0;font-weight:700;text-decoration:none}
+  .skip:focus{left:0}
+  /* accessible keyboard focus — visible only for keyboard users, never on mouse click */
+  a:focus-visible,button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:6px}
+  /* smooth scroll is enabled by JS only after load (see bottom script) — CSS-level smooth
+     scrolling also applies to the browser's OWN initial scroll-to-fragment on arrival, which
+     turns a cross-page link like writing.html→index.html#about into a multi-second scrub
+     through the whole 220vh hero. Instant landing, smooth in-page scrolling thereafter. */
+  body{color:var(--fg);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;overflow-x:hidden;
+    /* ambient depth: a faint cyan aurora up top, a soft violet pool low-right — anchored to the viewport */
+    background:
+      radial-gradient(120% 60% at 50% -8%, rgba(127,212,255,.07), transparent 55%),
+      radial-gradient(90% 60% at 108% 108%, rgba(182,155,255,.06), transparent 55%),
+      var(--bg);
+    background-attachment:fixed}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:rgba(127,212,255,.28)}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  .grad{background:linear-gradient(100deg,var(--cyan),var(--violet) 55%,var(--orange));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+
+  /* ---------- nav ---------- the bar itself (markup + styling + mobile) lives in nav.js */
+  .cta{display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:10px;font-size:14px;font-weight:600;
+    color:#06121f;background:linear-gradient(135deg,var(--cyan),var(--violet) 70%);box-shadow:0 6px 22px rgba(127,212,255,.22);
+    transition:transform .15s,box-shadow .2s}
+  .cta:hover{transform:translateY(-1px);box-shadow:0 10px 30px rgba(127,212,255,.34)}
+  .cta .ci{width:17px;height:17px;display:block;flex:0 0 auto} /* transparent glyph (currentColor) — the button gradient shows through */
+  /* dock CTA: as the hero text fades on scroll, the big Access button collapses into a small
+     icon-only circle in the bottom-left corner (mirrors the theme toggle in the other corner) */
+  .dock-cta{position:fixed;left:18px;bottom:18px;z-index:45;width:48px;height:48px;border-radius:50%;
+    display:inline-flex;align-items:center;justify-content:center;text-decoration:none;color:#06121f;
+    background:linear-gradient(135deg,var(--cyan),var(--violet) 70%);box-shadow:0 8px 26px rgba(127,212,255,.3);
+    opacity:0;transform:scale(1.5);pointer-events:none;transition:box-shadow .2s}
+  .dock-cta svg{width:24px;height:24px;display:block}
+  .dock-cta:hover{box-shadow:0 12px 34px rgba(127,212,255,.42)}
+  /* only when the top nav has collapsed to the hamburger (matches nav.js @1150px) — above that
+     the bar's own Access CTA is always visible, so the corner dock would be redundant */
+  @media(min-width:1151px){.dock-cta{display:none}}
+  @media(max-width:640px){.dock-cta{left:12px;bottom:12px;width:44px;height:44px}.dock-cta svg{width:22px;height:22px}}
+  .cta.ghost{color:var(--fg);background:transparent;border:1px solid var(--line);box-shadow:none}
+  .cta.ghost:hover{border-color:rgba(127,212,255,.6);background:rgba(127,212,255,.06)}
+
+  /* ---------- hero (scroll-scrub: text first, globe arrives from deep space) ---------- */
+  /* hero scroll length shrinks on smaller widths so narrow screens don't leave a long dead
+     scroll between the globe and the About block below */
+  .hero{position:relative;height:260vh}
+  @media(max-width:980px){ .hero{height:215vh} }
+  @media(max-width:820px){ .hero{height:200vh} }
+  @media(max-width:560px){ .hero{height:190vh} }
+  .hero .stage{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;overflow:hidden;perspective:1400px}
+  .hero .globe{position:absolute;inset:0;width:100%;height:100%;border:0;pointer-events:none;
+    opacity:0;transform:scale(.32);will-change:opacity,transform}
+  .hero .globe-skeleton{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    pointer-events:none;opacity:.16;transform:scale(.32);will-change:opacity,transform;transition:opacity .7s ease}
+  .hero .globe-skeleton svg{width:min(74vmin,540px);height:min(74vmin,540px);filter:drop-shadow(0 0 40px rgba(70,120,220,.28))}
+  .hero .globe-skeleton.gone{opacity:0!important}
+  /* light theme: the stand-in's dark radial fill reads as a dark stain behind the headline on
+     first paint — restyle it to a light sketch (SVG stop-color IS CSS-styleable) */
+  :root[data-theme="light"] .hero .globe-skeleton #gsk stop:nth-of-type(1){stop-color:#dce6f5}
+  :root[data-theme="light"] .hero .globe-skeleton #gsk stop:nth-of-type(2){stop-color:#e8eef8}
+  :root[data-theme="light"] .hero .globe-skeleton #gsk stop:nth-of-type(3){stop-color:#f1f5fb}
+  :root[data-theme="light"] .hero .globe-skeleton svg circle{stroke:rgba(14,121,176,.38)}
+  :root[data-theme="light"] .hero .globe-skeleton svg g{stroke:rgba(14,121,176,.22)}
+  :root[data-theme="light"] .hero .globe-skeleton svg{filter:drop-shadow(0 0 40px rgba(20,45,90,.15))}
+  @media (prefers-reduced-motion:reduce){ .hero .globe-skeleton{transition:none} }
+  .hero .veil{position:absolute;inset:0;pointer-events:none;opacity:0;
+    background:radial-gradient(120% 90% at 50% 42%,transparent 34%,rgba(6,9,16,.55) 66%,var(--bg) 88%)}
+  :root[data-theme="light"] .hero .veil{background:radial-gradient(120% 90% at 50% 42%,transparent 34%,rgba(238,242,249,.55) 66%,var(--bg) 88%)}
+  /* the whole globe is a link into the map (enabled once the globe has arrived) */
+  .hero .globe-hit{position:absolute;inset:0;z-index:1;pointer-events:none;cursor:pointer;display:block}
+  .hero .content{position:relative;z-index:2;padding:0 24px;max-width:900px;transform-origin:center top;will-change:transform}
+  .hero .rotwrap{margin-top:20px;font-size:15px;letter-spacing:.06em;color:var(--muted)}
+  .hero .rotwrap #rot{font-weight:700;display:inline-block;min-width:172px;text-align:left;transition:opacity .3s}
+  /* sits near the bottom of the hero (scales slightly with viewport height) */
+  .hero .enter-hint{position:absolute;bottom:clamp(20px,4vh,40px);top:auto;left:50%;transform:translateX(-50%);z-index:3;pointer-events:none;
+    opacity:0;font-size:14px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#eaf7ff;
+    display:flex;align-items:center;gap:10px;padding:12px 22px;border-radius:999px;
+    background:linear-gradient(135deg,rgba(127,212,255,.16),rgba(182,155,255,.16));
+    border:1px solid rgba(127,212,255,.6);backdrop-filter:blur(6px);
+    box-shadow:0 0 30px rgba(127,212,255,.3);animation:hintpulse 2.1s ease-in-out infinite}
+  .hero .enter-hint .arr{animation:hintarr 1.5s ease-in-out infinite;display:inline-block}
+  @keyframes hintpulse{0%,100%{box-shadow:0 0 22px rgba(127,212,255,.25);border-color:rgba(127,212,255,.5)}
+    50%{box-shadow:0 0 44px rgba(127,212,255,.6);border-color:rgba(182,155,255,.85)}}
+  @keyframes hintarr{0%,100%{transform:translate(0,0)}50%{transform:translate(4px,-2px)}}
+  /* tablets in portrait/square: the globe frames to width and sits high in the stage, so the
+     hint stranded at the bottom leaves a big gap — lift it toward the globe. Landscape (aspect>1,
+     incl. all desktop) keeps the low position, where the globe fills the height. */
+  @media(min-width:821px) and (max-aspect-ratio:1/1){
+    .hero .enter-hint{bottom:clamp(70px,15vh,180px);top:auto}
+  }
+  /* mobile: lift the hint up toward the globe, and draw the standard separator before About */
+  @media(max-width:820px){
+    .hero .enter-hint{bottom:clamp(90px,18vh,170px);top:auto}
+    /* the "Scroll ↓" prompt duplicates the enter-hint's own scroll-to-reveal affordance on a
+       screen already showing scrollable content below the fold — drop it, keep enter-hint */
+    .hero .scrollhint{display:none}
+    #about{position:relative}
+    #about::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);
+      width:min(var(--maxw),86%);height:1px;background:linear-gradient(90deg,transparent,rgba(150,178,245,.30) 22%,rgba(150,178,245,.30) 78%,transparent)}
+    #about::after{content:"";position:absolute;top:-2px;left:50%;transform:translateX(-50%) rotate(45deg);
+      width:5px;height:5px;background:var(--cyan);border-radius:1px;box-shadow:0 0 10px 1px rgba(127,212,255,.6)}
+    /* the reserved min-width on #rot (kept to avoid layout shift as the word swaps) drags the
+       line visibly left on narrow screens once the rotwrap itself is centered — center the word
+       inside its reserved box instead */
+    .hero .rotwrap #rot{text-align:center}
+  }
+  /* ~820 band (large phones / small tablets): the globe sits high, so drop the hint low — into
+     the gap between the globe and the About block, just above the separator (overrides the
+     lifted ≤820 rule above; true phones ≤560 keep the higher position). */
+  @media(min-width:561px) and (max-width:820px){
+    .hero .enter-hint{bottom:clamp(30px,6vh,78px);top:auto}
+  }
+  .hero .eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:12.5px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--cyan);border:1px solid var(--line);border-radius:999px;padding:7px 15px;background:rgba(10,15,28,.5);margin-bottom:26px}
+  :root[data-theme="light"] .hero .eyebrow{background:rgba(255,255,255,.6)}
+  .hero .eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}
+  .hero h1{font-size:clamp(38px,7vw,74px);line-height:1.03;letter-spacing:-.02em;font-weight:800;margin-bottom:22px}
+  .hero p.sub{font-size:clamp(16px,2.2vw,20px);color:var(--muted);max-width:640px;margin:0 auto 34px}
+  .hero p.sub b{color:var(--fg);font-weight:600}
+  .hero .actions{display:flex;gap:18px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:26px}
+  .hero .actions .cta{padding:13px 22px;font-size:15px}
+  .hero .actions .txt{color:var(--muted);font-size:14.5px;font-weight:500;text-decoration:none;
+    border-bottom:1px solid transparent;padding-bottom:1px;transition:color .2s,border-color .2s}
+  .hero .actions .txt:hover{color:var(--fg);border-bottom-color:rgba(127,212,255,.5)}
+  .hero .actions .txt span{color:var(--cyan)}
+  .scrollhint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:2;color:var(--muted);font-size:12px;letter-spacing:.2em;text-transform:uppercase;
+    display:flex;flex-direction:column;align-items:center;gap:8px;animation:bob 2.4s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,7px)}}
+
+  /* ---------- sections ---------- */
+  section{padding:100px 0;position:relative}
+  /* a quiet separator between blocks — a hairline that fades at both ends, with a soft center node */
+  section + section:not(.contact)::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);
+    width:min(var(--maxw),86%);height:1px;background:linear-gradient(90deg,transparent,rgba(150,178,245,.30) 22%,rgba(150,178,245,.30) 78%,transparent)}
+  section + section:not(.contact)::after{content:"";position:absolute;top:-2px;left:50%;transform:translateX(-50%) rotate(45deg);
+    width:5px;height:5px;background:var(--cyan);border-radius:1px;box-shadow:0 0 10px 1px rgba(127,212,255,.6)}
+  .kicker{font-size:12.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan);margin-bottom:14px;font-weight:600}
+  .sec-title{font-size:clamp(26px,4vw,40px);font-weight:800;letter-spacing:-.02em;line-height:1.1;margin-bottom:18px}
+  /* inline pill link next to a section title — same look as the hero's "Click the globe" hint */
+  .title-row{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:18px}
+  .title-row .sec-title{margin-bottom:0}
+  .pill-link{display:inline-flex;align-items:center;gap:9px;padding:9px 18px;border-radius:999px;
+    font-size:12.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#eaf7ff;
+    background:linear-gradient(135deg,rgba(127,212,255,.16),rgba(182,155,255,.16));
+    border:1px solid rgba(127,212,255,.6);backdrop-filter:blur(6px);
+    box-shadow:0 0 30px rgba(127,212,255,.3);animation:hintpulse 2.1s ease-in-out infinite;white-space:nowrap}
+  .pill-link .arr{animation:hintarr 1.5s ease-in-out infinite;display:inline-block}
+  /* pulsing pills carry light-on-dark text; in light mode flip to dark text on a white base */
+  :root[data-theme="light"] .pill-link,:root[data-theme="light"] .hero .enter-hint{
+    color:#0b3550;background:linear-gradient(135deg,rgba(255,255,255,.75),rgba(255,255,255,.55))}
+  .lead{color:var(--muted);font-size:clamp(15px,2vw,18px);max-width:680px}
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+  /* impact stats band */
+  #scale{padding-top:8px}
+  .statband{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .statband .stat{border:1px solid var(--card-line);border-radius:16px;padding:22px 20px;
+    background:linear-gradient(180deg,var(--card),var(--card2));box-shadow:var(--elev);
+    display:flex;flex-direction:column;gap:5px;text-align:left}
+  .statband .num{font-size:clamp(30px,4.4vw,46px);font-weight:800;line-height:1;letter-spacing:-.02em;
+    background:linear-gradient(120deg,var(--cyan),var(--violet) 75%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .statband .lbl{font-size:14px;font-weight:600;color:var(--fg);margin-top:4px}
+  .statband .sub{font-size:12.5px;color:var(--muted);line-height:1.4}
+  .statnote{margin-top:16px;font-size:13px;color:var(--muted);text-align:center}
+  .statnote a{color:var(--cyan);text-decoration:none;border-bottom:1px solid transparent;transition:border-color .2s}
+  .statnote a:hover{border-bottom-color:rgba(127,212,255,.5)}
+  @media(max-width:720px){ .statband{grid-template-columns:repeat(2,1fr)} }
+  /* selected work case-study cards */
+  .work{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .workcard{border:1px solid var(--card-line);border-radius:16px;padding:24px 22px;
+    background:linear-gradient(180deg,var(--card),var(--card2));box-shadow:var(--elev);
+    display:flex;flex-direction:column;gap:14px;text-decoration:none;color:var(--fg);
+    transition:border-color .2s,transform .2s,box-shadow .2s}
+  .workcard:hover{border-color:rgba(127,212,255,.5);transform:translateY(-3px);box-shadow:0 18px 44px -14px rgba(0,0,0,.5)}
+  /* proof banner: a real screenshot of the map view the card links to, bleeding to the card
+     edges. Deliberately dark in both themes — it reads as a window into the 3D map. */
+  .wk-thumb{margin:-24px -22px 0;border-radius:16px 16px 0 0;overflow:hidden;aspect-ratio:16/6;background:#070b16}
+  .wk-thumb img{width:100%;height:100%;object-fit:cover;object-position:center;display:block;opacity:.92;transition:opacity .2s,transform .3s}
+  .workcard:hover .wk-thumb img{opacity:1;transform:scale(1.03)}
+  .wk-eyebrow{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--cyan)}
+  .wk-title{font-size:18px;font-weight:700;line-height:1.28;margin:0}
+  .wk-par{margin:0;display:flex;flex-direction:column;gap:11px}
+  .wk-par dt{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+  .wk-par dd{margin:0;font-size:13.5px;line-height:1.5;color:var(--fg2,var(--muted))}
+  .wk-go{margin-top:auto;font-size:13.5px;font-weight:600;color:var(--cyan)}
+  .workcard:hover .wk-go{text-decoration:underline}
+  @media(max-width:860px){
+    /* a swipeable snap deck replaces the stacked column. The JS wraps cards into .wslide
+       pages — one card per page on phones, TWO on tablets (601-860px). The bare .workcard
+       rule below is the no-JS fallback (cards stay direct children and simply fill). */
+    .work{display:flex;grid-template-columns:unset;overflow-x:auto;scroll-snap-type:x mandatory;
+      -webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}
+    .work::-webkit-scrollbar{display:none}
+    .work>.workcard{flex:0 0 100%;scroll-snap-align:start}
+    /* 93% pages: the next card peeks in from the right — the built-in "this swipes" hint */
+    .wslide{flex:0 0 93%;scroll-snap-align:start;display:grid;grid-template-columns:1fr;gap:16px}
+    /* decks equalize card heights per page — clamp the longest paragraphs so short cards
+       don't trail a page of empty space before their footer link */
+    .wk-par dd{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  }
+  @media(min-width:601px) and (max-width:860px){
+    .wslide{grid-template-columns:repeat(2,1fr)}   /* tablets: two cards per page */
+  }
+  /* testimonials (hidden until TESTIMONIALS is filled) */
+  .quotes{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+  .quote{border:1px solid var(--card-line);border-radius:16px;padding:22px;background:linear-gradient(180deg,var(--card),var(--card2));box-shadow:var(--elev);margin:0}
+  .quote blockquote{margin:0}
+  .quote p{font-size:15px;line-height:1.6;color:var(--fg)}
+  .quote .who{margin-top:14px;font-size:13px;color:var(--muted)}
+  .quote .who b{color:var(--fg);font-weight:700}
+  /* career-impact strip (real numbers, inside Experience) */
+  .impact{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:4px 0 30px}
+  .impact .imp{border-left:2px solid var(--cyan);padding:4px 0 4px 14px}
+  .impact .imp b{display:block;font-size:clamp(22px,3vw,30px);font-weight:800;letter-spacing:-.02em;
+    background:linear-gradient(120deg,var(--cyan),var(--violet) 80%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .impact .imp span{display:block;font-size:12.5px;color:var(--muted);line-height:1.4;margin-top:3px}
+  @media(max-width:720px){ .impact{grid-template-columns:repeat(2,1fr)} }
+  /* for-recruiters fit card */
+  .fit{border:1px solid var(--card-line);border-radius:18px;padding:24px 24px 22px;
+    background:linear-gradient(180deg,var(--card),var(--card2));box-shadow:var(--elev)}
+  .fit-head{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+  .fit-head .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}
+  .fit-head b{font-size:15px;font-weight:700}
+  .fit-head .muted{color:var(--muted);font-size:13px;font-weight:500}
+  .fit-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px 22px}
+  .fit-grid .f dt{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+  .fit-grid .f dd{margin:0;font-size:14px;font-weight:600;color:var(--fg);line-height:1.4}
+  .fit-cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+  /* recruiters card OVER the globe (desktop): a runtime clone of the single-source #fit-section
+     card, riding the hero stage — fades in with the globe, clickable once visible */
+  .fit-over{position:absolute;z-index:3;right:clamp(16px,3.5vw,52px);bottom:clamp(18px,6vh,52px);
+    width:min(440px,42vw);opacity:0;pointer-events:none;transition:opacity .25s}
+  .fit-over .fit{padding:16px 18px 14px;background:rgba(10,15,28,.84);backdrop-filter:blur(12px);
+    border-color:rgba(127,212,255,.28)}
+  .fit-over .fit-grid{grid-template-columns:repeat(2,1fr);gap:10px 18px}
+  .fit-over .fit-grid .f dd{font-size:13px}
+  .fit-over .fit-head{margin-bottom:12px}
+  .fit-over .fit-head .muted{display:none}
+  .fit-over .fit-cta{margin-top:14px}
+  :root[data-theme="light"] .fit-over .fit{background:rgba(246,248,252,.92);border-color:rgba(14,121,176,.35)}
+  /* #fit-section is now purely the clone SOURCE — never shown in flow. Desktop renders the
+     .fit-over clone over the globe; mobile drops the card entirely (per request). */
+  #fit-section{display:none}
+  @media(max-width:820px){.fit-over{display:none}}
+  .fit-cta a{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:600;text-decoration:none;
+    padding:9px 15px;border-radius:10px;border:1px solid var(--card-line);color:var(--fg);transition:border-color .2s,background .2s,transform .15s}
+  .fit-cta a:hover{border-color:rgba(127,212,255,.55);transform:translateY(-1px)}
+  .fit-cta a.primary{color:#06121f;border-color:transparent;background:linear-gradient(135deg,var(--cyan),var(--violet) 70%)}
+  @media(max-width:720px){ .fit-grid{grid-template-columns:repeat(2,1fr)} }
+  /* skills matrix — proof links per category */
+  .stack .card .proof{margin-top:14px;font-size:12.5px;font-weight:600;color:var(--cyan);text-decoration:none;display:inline-flex;gap:5px;align-items:center}
+  .stack .card .proof:hover{text-decoration:underline}
+  /* JD role-fit matcher */
+  #match .fitbox{border:1px solid var(--card-line);border-radius:18px;padding:22px;background:linear-gradient(180deg,var(--card),var(--card2));box-shadow:var(--elev)}
+  #match textarea{width:100%;min-height:130px;resize:vertical;border-radius:12px;border:1px solid var(--card-line);
+    background:var(--bg2);color:var(--fg);padding:14px 15px;font:14px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  #match textarea:focus{outline:2px solid var(--cyan);outline-offset:-1px;border-color:transparent}
+  #match .mrow{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:14px}
+  #match .mbtn{font:inherit;font-size:14px;font-weight:700;cursor:pointer;border:none;border-radius:11px;padding:11px 22px;
+    color:#06121f;background:linear-gradient(135deg,var(--cyan),var(--violet) 70%);transition:filter .2s,transform .15s}
+  #match .mbtn:hover{filter:brightness(1.06);transform:translateY(-1px)}
+  #match .mhint{color:var(--muted);font-size:13px}
+  #match .mbtn.ghost{background:transparent;color:var(--fg);border:1px solid var(--card-line);font-weight:600}
+  #match .mbtn.ghost:hover{border-color:rgba(127,212,255,.55)}
+  #match .mchip .mwhy{font-weight:400;color:var(--muted);font-size:11.5px}
+  #match .mres{margin-top:20px;display:none}
+  #match .mres.show{display:block}
+  #match .mscore{font-size:15px;font-weight:600;margin-bottom:14px}
+  #match .mscore b{background:linear-gradient(120deg,var(--cyan),var(--violet) 80%);-webkit-background-clip:text;background-clip:text;color:transparent;font-size:19px}
+  #match .mchips{display:flex;flex-wrap:wrap;gap:9px}
+  #match .mchip{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;text-decoration:none;
+    padding:7px 13px;border-radius:9px;border:1px solid var(--card-line);color:var(--fg);transition:border-color .2s,background .2s}
+  #match .mchip:hover{border-color:rgba(127,212,255,.55);background:rgba(127,212,255,.06)}
+  #match .mchip.matched{border-color:rgba(52,211,153,.5)}
+  #match .mchip .tick{color:var(--green);font-weight:800}
+  #match .mgap{margin-top:16px;font-size:13px;color:var(--muted)}
+  #match .mgap .mchip{margin:6px 6px 0 0}
+
+  /* about */
+  .about-grid{display:grid;grid-template-columns:1.3fr .9fr;gap:48px;align-items:start;margin-top:36px}
+  .about-grid p{color:var(--fg2);margin-bottom:16px}
+  .about-grid p b{color:var(--fg)}
+  .facts{border:1px solid var(--card-line);border-radius:16px;padding:22px;background:linear-gradient(180deg,var(--card),var(--card2));box-shadow:var(--elev)}
+  .facts .row{display:flex;justify-content:space-between;gap:14px;padding:12px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .facts .row:last-child{border-bottom:0}
+  .facts .row span{color:var(--muted)}
+  .facts .row b{color:var(--fg);text-align:right;font-weight:600}
+  @media(max-width:760px){.about-grid{grid-template-columns:1fr;gap:28px}}
+
+  /* timeline */
+  .timeline{margin-top:40px;position:relative;padding-left:26px}
+  .timeline::before{content:"";position:absolute;left:6px;top:6px;bottom:6px;width:2px;background:linear-gradient(180deg,var(--cyan),var(--violet) 60%,transparent)}
+  .job{position:relative;padding:0 0 34px 0}
+  .job::before{content:"";position:absolute;left:-26px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--cyan);box-shadow:0 0 0 4px rgba(127,212,255,.1)}
+  .job.current::before{background:var(--green);border-color:var(--green);box-shadow:0 0 0 4px rgba(52,211,153,.16),0 0 14px var(--green)}
+  .job .when{font-size:12.5px;color:var(--cyan);letter-spacing:.04em;font-weight:600;margin-bottom:5px}
+  .job h3{font-size:18px;font-weight:700;margin-bottom:3px}
+  .job .co{font-size:14px;color:var(--muted);margin-bottom:10px}
+  .job .co .tag,.job h3 .tag{display:inline-block;margin-left:8px;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--green);border:1px solid rgba(52,211,153,.4);border-radius:6px;padding:1px 7px;vertical-align:middle}
+  .job p{color:var(--fg2);font-size:14.5px;max-width:660px}
+  .job ul{color:var(--fg2);font-size:14px;margin:8px 0 0 18px;max-width:660px}
+  .job ul li{margin-bottom:4px}
+  /* promotion sub-point: an earlier role at the SAME company, nested under the current one */
+  .job .promo{margin:18px 0 0 6px;padding-left:20px;border-left:2px dashed rgba(52,211,153,.45);position:relative;max-width:660px}
+  .job .promo::before{content:"";position:absolute;left:-7px;top:2px;width:12px;height:12px;border-radius:50%;
+    background:var(--bg);border:2px solid rgba(52,211,153,.7)}
+  .job .promo .plabel{display:inline-flex;align-items:center;gap:7px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--green);font-weight:700;margin-bottom:7px}
+  .job .promo h3{font-size:15.5px;font-weight:700;margin-bottom:3px;color:var(--fg)}
+  .job .promo p{font-size:14px}
+  .earlier{color:var(--muted);font-size:14px;padding-left:2px}
+
+  /* stack */
+  .stack{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-top:40px}
+  .card{border:1px solid var(--card-line);border-radius:16px;padding:22px;background:linear-gradient(180deg,var(--card),var(--card2));box-shadow:var(--elev);transition:border-color .2s,transform .2s,box-shadow .2s}
+  .card:hover{border-color:rgba(127,212,255,.5);transform:translateY(-3px);box-shadow:var(--elev-hi)}
+  .card h3{font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:9px}
+  .card h3 .ic{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:14px;background:rgba(127,212,255,.1);border:1px solid var(--line)}
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{font-size:12.5px;color:var(--fg2);border:1px solid var(--line);border-radius:8px;padding:5px 10px;background:rgba(127,212,255,.04)}
+
+  /* compact tool rows (plugins, contributions) — demoted from cards on purpose */
+  .tlist{margin-top:10px;display:flex;flex-direction:column;max-width:760px}
+  .tlist a{display:flex;align-items:baseline;gap:14px;padding:9px 6px;border-bottom:1px solid var(--line);font-size:14px;transition:background .15s}
+  .tlist a:last-child{border-bottom:0}
+  .tlist a:hover{background:rgba(127,212,255,.05)}
+  .tlist .tn{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;color:var(--cyan);font-weight:600;min-width:180px}
+  .tlist .td{color:var(--muted);flex:1;font-size:13.5px}
+  .tlist .tg{color:var(--dim);font-size:12.5px;white-space:nowrap}
+  .tlist a:hover .tg{color:var(--cyan)}
+  /* borderless daily-drivers line (tools I use, not mine) */
+  .drivers{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:22px;font-size:14px;color:var(--muted)}
+  .drivers b{color:var(--fg)}
+
+  /* landscape tiles — the CNCF tools in production, each linking its article in the map */
+  .lgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px;margin-top:36px}
+  /* landscape pagination — the grid outgrew one screen (20+ tools), so it pages (8 per page).
+     Without JS every tile simply shows (the pager stays [hidden]). */
+  .lpager{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:22px}
+  .lpager .lpg{width:36px;height:36px;border-radius:10px;border:1px solid var(--card-line);cursor:pointer;
+    background:linear-gradient(180deg,var(--card),var(--card2));color:var(--fg);font-size:17px;line-height:1;
+    display:inline-flex;align-items:center;justify-content:center;transition:border-color .15s,transform .12s}
+  .lpager .lpg:hover:not(:disabled){border-color:var(--cyan);transform:translateY(-1px)}
+  .lpager .lpg:disabled{opacity:.35;cursor:default}
+  .lpager .ldots{display:flex;gap:8px}
+  .lpager .ldot{width:9px;height:9px;border-radius:50%;border:0;padding:0;cursor:pointer;background:var(--card-line);transition:background .15s,transform .15s}
+  .lpager .ldot.on{background:var(--cyan);transform:scale(1.25)}
+  @media(max-width:860px){
+    /* one swipeable page at a time — the JS wraps tiles into .lslide groups: 4 (2×2) on
+       phones, 6 (3×2) on tablets (601-860px, matching the wider screen) */
+    .lgrid{display:flex;grid-template-columns:unset;overflow-x:auto;scroll-snap-type:x mandatory;
+      -webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}
+    .lgrid::-webkit-scrollbar{display:none}
+    .lslide{flex:0 0 93%;scroll-snap-align:start;display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  }
+  @media(min-width:601px) and (max-width:860px){
+    .lslide{grid-template-columns:repeat(3,1fr)}
+  }
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  /* below-the-fold sections skip layout/paint until scrolled near — the page is ~8000px tall,
+     so this meaningfully cuts first-render work. The intrinsic-size placeholder keeps the
+     scrollbar and anchor positions stable; the hero and the first sections stay eager so
+     arriving at / or #about never pops. */
+  @supports (content-visibility:auto){
+    #work,#experience,#stack,#match,#landscape,#articles,#tools,#contact{
+      content-visibility:auto;contain-intrinsic-size:auto 900px}
+  }
+  .ltile{border:1px solid var(--card-line);border-radius:14px;padding:16px 18px;background:linear-gradient(180deg,var(--card),var(--card2));box-shadow:var(--elev);
+    transition:border-color .2s,transform .2s,box-shadow .2s;display:flex;flex-direction:column;gap:7px}
+  .ltile:hover{border-color:rgba(52,211,153,.55);transform:translateY(-3px);box-shadow:var(--elev-hi)}
+  .ltile h3{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
+  .ltile p{color:var(--muted);font-size:13px;flex:1}
+  .ltile .go{color:var(--cyan);font-size:12.5px;font-weight:600}
+
+  /* writing / tools cards */
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-top:40px}
+  .post{border:1px solid var(--card-line);border-radius:16px;padding:24px;background:linear-gradient(180deg,var(--card),var(--card2));box-shadow:var(--elev);
+    transition:border-color .2s,transform .2s,box-shadow .2s;display:flex;flex-direction:column;gap:10px}
+  .post:hover{border-color:rgba(182,155,255,.5);transform:translateY(-3px);box-shadow:var(--elev-hi)}
+  .post .tagrow{display:flex;gap:8px;flex-wrap:wrap}
+  .post .t{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--violet);border:1px solid var(--line);border-radius:6px;padding:2px 8px}
+  .post h3{font-size:18px;font-weight:700}
+  .post p{color:var(--muted);font-size:14px;flex:1}
+  .post .go{color:var(--cyan);font-size:13.5px;font-weight:600;display:inline-flex;align-items:center;gap:6px}
+
+  /* contact */
+  .contact{text-align:center;border-top:1px solid var(--line);margin-top:20px}
+  /* avatar: a real headshot (assets/profile.jpg) covers the gradient monogram once it's added;
+     until then the "FR" monogram shows — no broken image, and it upgrades automatically */
+  .contact .avatar{width:94px;height:94px;border-radius:50%;margin:0 auto 24px;position:relative;
+    display:grid;place-items:center;overflow:hidden;
+    background:linear-gradient(135deg,rgba(127,212,255,.92),rgba(182,155,255,.92));
+    box-shadow:0 0 0 1px rgba(127,212,255,.35),0 16px 44px rgba(80,130,240,.3)}
+  .contact .avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .contact .avatar .mono{font-size:33px;font-weight:800;letter-spacing:.02em;color:#0a0f1e}
+  .contact .sec-title{margin-bottom:14px}
+  .contact .avail{display:inline-flex;align-items:center;gap:9px;margin-top:22px;
+    font-size:12.5px;letter-spacing:.04em;color:var(--muted);
+    border:1px solid var(--line);border-radius:999px;padding:7px 15px;background:rgba(10,15,28,.5)}
+  :root[data-theme="light"] .contact .avail{background:rgba(255,255,255,.6)}
+  .contact .avail .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}
+  .contact .links{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:30px}
+  .contact .links a{display:inline-flex;align-items:center;gap:9px;padding:12px 20px;border:1px solid var(--line);border-radius:12px;
+    font-size:15px;font-weight:600;color:var(--fg);transition:border-color .2s,background .2s,transform .15s}
+  .contact .links a:hover{border-color:rgba(127,212,255,.5);background:rgba(127,212,255,.06);transform:translateY(-2px)}
+  .contact .links a svg{width:18px;height:18px}
+  /* Email is the primary intent here — filled, so it leads; the rest stay as quiet secondary links */
+  .contact .links a.primary{color:#06121f;border-color:transparent;
+    background:linear-gradient(135deg,var(--cyan),var(--violet) 70%);box-shadow:0 6px 22px rgba(127,212,255,.22)}
+  .contact .links a.primary:hover{background:linear-gradient(135deg,var(--cyan),var(--violet) 70%);
+    border-color:transparent;box-shadow:0 10px 30px rgba(127,212,255,.34)}
+
+  footer{padding:38px 24px;border-top:1px solid var(--line);text-align:center;color:var(--muted);font-size:13px}
+  footer .grad{font-weight:700}
+
+  /* accessibility: honour "reduce motion" — kill CSS animation/transition AND present the hero
+     as a normal, steady section (no sticky scroll-scrub). The scrub JS is skipped in this mode,
+     so these rules define the static resting state the globe + copy sit in. */
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;
+      transition-duration:.01ms!important;scroll-behavior:auto!important}
+    .hero{height:100vh}
+    .hero .stage{position:relative}
+    .hero .globe{opacity:.42;transform:none}       /* globe present but pushed back so the copy leads */
+    .hero .globe-skeleton{opacity:0}
+    .hero .globe-hit{pointer-events:auto}          /* still a link into the map */
+    .hero .veil{opacity:.72}                        /* darken behind the copy for contrast */
+    .hero .content{transform:none;opacity:1}
+    .hero .enter-hint{opacity:1;bottom:clamp(20px,4vh,40px)}
+    .hero .scrollhint{display:none}
+  }
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Person","name":"Francisco Roa","jobTitle":"Senior (AI) Platform Engineer","url":"https://franroa.github.io/platform-engineer/","description":"Senior (AI) Platform Engineer — Azure, Kubernetes and AI platforms.","knowsAbout":["Platform Engineering","Kubernetes","Terraform","Azure","Observability","AI platforms","GitOps"]},{"@type":"WebSite","name":"Francisco Roa · Platform Engineering","url":"https://franroa.github.io/platform-engineer/","author":{"@type":"Person","name":"Francisco Roa"},"description":"Interactive 3D map of a production developer platform, plus long-form platform-engineering writing."}]}</script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <script src="nav.js" data-page="home"></script>
+  <!-- docked access CTA — hidden until the hero text scrolls away, then the big Access button
+       collapses into this small icon-only circle in the corner (driven by scrub(); see below) -->
+  <a class="dock-cta" href="ultraplatform.html" aria-label="Access Ultraplatform" title="Access Ultraplatform">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-opacity=".4" stroke-width="1"/><g transform="rotate(-24 12 12)"><ellipse cx="12" cy="12" rx="10" ry="3.7" stroke="currentColor" stroke-width="1.2"/><circle cx="21.5" cy="12" r="1.5" fill="currentColor"/></g><path d="M12 6 17.2 9 17.2 15 12 18 6.8 15 6.8 9Z" fill="currentColor"/></svg>
+  </a>
+
+  <!-- ---------------- HERO ---------------- -->
+  <header class="hero" id="top">
+    <div class="stage">
+      <!-- deferred: the globe is invisible until you scroll, so the heavy Three.js iframe
+           loads on first scroll (or shortly after idle) — the landing paints instantly -->
+      <!-- lightweight wireframe stand-in: arrives on scroll with the globe, fades once the real Three.js globe has booted (graceful on slow links) -->
+      <div class="globe-skeleton" aria-hidden="true">
+        <svg viewBox="0 0 200 200" role="presentation">
+          <defs><radialGradient id="gsk" cx="42%" cy="36%" r="72%">
+            <stop offset="0%" stop-color="#1b2d54"/><stop offset="68%" stop-color="#0e1830"/><stop offset="100%" stop-color="#0a0f1e"/>
+          </radialGradient></defs>
+          <circle cx="100" cy="100" r="86" fill="url(#gsk)" stroke="rgba(127,212,255,.34)" stroke-width="1"/>
+          <g fill="none" stroke="rgba(127,212,255,.16)" stroke-width="1">
+            <ellipse cx="100" cy="100" rx="86" ry="30"/><ellipse cx="100" cy="100" rx="86" ry="58"/>
+            <ellipse cx="100" cy="100" rx="30" ry="86"/><ellipse cx="100" cy="100" rx="58" ry="86"/>
+            <line x1="14" y1="100" x2="186" y2="100"/>
+          </g>
+        </svg>
+      </div>
+      <iframe class="globe" data-src="ultraplatform.html?embed=globe" title="Live 3D platform globe" scrolling="no" tabindex="-1"></iframe>
+      <div class="veil"></div>
+      <a class="globe-hit" href="ultraplatform.html" aria-label="Open the Ultraplatform map" tabindex="-1"></a>
+      <div class="content">
+        <span class="eyebrow"><span class="dot"></span> Senior (AI) Platform Engineer</span>
+        <h1>Turning cloud complexity<br>into <span class="grad">golden paths</span>.</h1>
+        <p class="sub">Azure · Kubernetes · AI Platforms. I design and scale the cloud infrastructure and developer experience behind mission-critical microservices and next-generation <b>AI platforms</b> — then map it so anyone can understand it.</p>
+        <div class="rotwrap">Currently deep in <span id="rot" class="grad">Kubernetes</span></div>
+        <div class="actions">
+          <a class="cta" href="ultraplatform.html"><svg class="ci" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-opacity=".4" stroke-width="1"/><g transform="rotate(-24 12 12)"><ellipse cx="12" cy="12" rx="10" ry="3.7" stroke="currentColor" stroke-width="1.2"/><circle cx="21.5" cy="12" r="1.5" fill="currentColor"/></g><path d="M12 6 17.2 9 17.2 15 12 18 6.8 15 6.8 9Z" fill="currentColor"/></svg>Access Ultraplatform <span aria-hidden="true">↗</span></a>
+          <a class="txt" href="#experience">or see my experience <span aria-hidden="true">↓</span></a>
+        </div>
+      </div>
+      <div class="scrollhint">Scroll<span aria-hidden="true">↓</span></div>
+      <div class="enter-hint">Click the globe to explore <span class="arr" aria-hidden="true">↗</span></div>
+    </div>
+  </header>
+
+  <main id="main">
+  <!-- ---------------- IMPACT STATS ---------------- -->
+  <section id="scale" aria-label="Platform scale">
+    <div class="wrap reveal">
+      <div class="statband">
+        <div class="stat"><span class="num" id="stat-regions">4</span><span class="lbl">active regions</span><span class="sub">multi-region, one control plane</span></div>
+        <div class="stat"><span class="num" id="stat-repos">33</span><span class="lbl">platform repositories</span><span class="sub">modules, services, identity, GitOps</span></div>
+        <div class="stat"><span class="num" id="stat-tenants">4</span><span class="lbl">isolated tenants</span><span class="sub">shared infra, separate blast radius</span></div>
+        <div class="stat"><span class="num">0</span><span class="lbl">standing admins</span><span class="sub">access is code · PIM on activation</span></div>
+      </div>
+      <p class="statnote">Numbers describe <b>Ultraplatform</b> — the reference platform I model in the <a href="ultraplatform.html">3D map</a>, kept in sync by its live engine. My real-world career impact lives on the <a href="cv.html">CV</a>.</p>
+    </div>
+  </section>
+
+  <!-- ---------------- FOR RECRUITERS ---------------- -->
+  <section id="fit-section" aria-label="For recruiters">
+    <div class="wrap reveal">
+      <div class="fit">
+        <div class="fit-head"><span class="dot"></span><b>For recruiters — the 10-second version</b><span class="muted">everything you need to place me, fast</span></div>
+        <dl class="fit-grid">
+          <div class="f"><dt>Role</dt><dd>Senior (AI) Platform Engineer</dd></div>
+          <div class="f"><dt>Level</dt><dd>Senior / Staff</dd></div>
+          <div class="f"><dt>Availability</dt><dd>Open to new opportunities</dd></div>
+          <div class="f"><dt>Location</dt><dd>Remote (Europe) or on-site · EU / Americas</dd></div>
+          <div class="f"><dt>Core stack</dt><dd>Azure · AKS · Terraform · GitOps · OPA</dd></div>
+          <div class="f"><dt>Also</dt><dd>AI platforms · DevEx · FinOps · resilience testing</dd></div>
+          <div class="f"><dt>Experience</dt><dd>15+ years · multi-cloud</dd></div>
+          <div class="f"><dt>Languages</dt><dd>Spanish · English</dd></div>
+        </dl>
+        <div class="fit-cta">
+          <a class="primary" href="mailto:franciscoroaprieto@gmail.com">✉ Email me</a>
+          <a href="cv.html">↓ CV / PDF</a>
+          <a href="https://www.linkedin.com/in/francisco-roa-prieto" target="_blank" rel="noopener">in · LinkedIn</a>
+          <a href="#match">Match your role ↓</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------- ABOUT ---------------- -->
+  <section id="about">
+    <div class="wrap reveal">
+      <div class="kicker">About</div>
+      <h2 class="sec-title">Platform engineering at the intersection of<br>scale and the AI revolution.</h2>
+      <div class="about-grid">
+        <div>
+          <p>I'm a <b>Senior (AI) Platform Engineer</b> working where large-scale platform engineering meets the AI revolution — designing, scaling and optimizing the cloud infrastructure behind mission-critical microservices and a company's next-generation <b>AI platforms</b>.</p>
+          <p>My focus is <b>Developer Experience (DevEx)</b>: abstracting Azure and AKS so product teams ship safely without being infrastructure experts — golden paths, self-service, policy-as-code guardrails and observability by default.</p>
+          <p>Over fifteen years I've gone from full-stack product engineering (Klarna, Berlin) to multi-cloud infrastructure (AWS/EKS &amp; Azure/AKS) to designing platforms end-to-end. I care about <b>cost-aware architecture</b>, test-driven infrastructure and making complex systems legible — which is what <a class="grad" href="ultraplatform.html">Ultraplatform</a>, my interactive map, is for.</p>
+          <p>Off the clock I'm a happy father of three. I love learning, good conversations and weekends in the mountains with my family. My wife is from El Salvador — a country I love for its nature and its people. I value teamwork, and roles where I can help others do their best work.</p>
+        </div>
+        <div class="facts">
+          <div class="row"><span>Role</span><b>Senior (AI) Platform Engineer</b></div>
+          <div class="row"><span>Focus</span><b>Azure · AKS · AI Platform · DevEx</b></div>
+          <div class="row"><span>Based in</span><b>Castilla y León, Spain</b></div>
+          <div class="row"><span>Experience</span><b>15+ years</b></div>
+          <div class="row"><span>Languages</span><b>Spanish · English</b></div>
+          <div class="row"><span>Also builds</span><b>Developer tooling (OSS-style)</b></div>
+          <div class="row"><span>Off the clock</span><b>Family, friends and nature</b></div>
+          <div class="row"><span>Explore</span><b><a class="grad" href="ultraplatform.html">The Ultraplatform map ↗</a></b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------- SELECTED WORK ---------------- -->
+  <section id="work">
+    <div class="wrap reveal">
+      <div class="kicker">Selected work</div>
+      <h2 class="sec-title">Six problems, and the paved roads<br>that made them stop hurting.</h2>
+      <p class="lead" style="margin-bottom:30px">Patterns from the platform I model in the map — each one a problem teams kept hitting, the design that turned it into something self-service, and a link to the proof.</p>
+      <div class="work">
+        <a class="workcard" href="writing.html#read=blog-golden-path">
+          <div class="wk-thumb"><img src="assets/work/reuse.webp" alt="" loading="lazy" decoding="async" width="640" height="400"></div>
+          <span class="wk-eyebrow">Developer experience</span>
+          <h3 class="wk-title">A new service ships through one merge request</h3>
+          <dl class="wk-par">
+            <div><dt>Problem</dt><dd>Onboarding a service meant tickets, hand-offs and copy-pasted CI that drifted from every neighbour.</dd></div>
+            <div><dt>Approach</dt><dd>A golden path: three files in a template wire CI, cloud auth, state isolation and a namespace — all reviewed as an MR.</dd></div>
+            <div><dt>Result</dt><dd>Teams provision themselves; the guardrails are inherited, not remembered.</dd></div>
+          </dl>
+          <span class="wk-go">Read the write-up <span aria-hidden="true">→</span></span>
+        </a>
+        <a class="workcard" href="writing.html#read=blog-tenant-isolation">
+          <div class="wk-thumb"><img src="assets/work/scopes.webp" alt="" loading="lazy" decoding="async" width="640" height="400"></div>
+          <span class="wk-eyebrow">Multi-tenancy</span>
+          <h3 class="wk-title">Shared infrastructure, separate blast radius</h3>
+          <dl class="wk-par">
+            <div><dt>Problem</dt><dd>Many teams on shared clusters — one team's mistake must never reach another team's data.</dd></div>
+            <div><dt>Approach</dt><dd>Per-tenant AD groups, resource groups, Key Vaults and namespaces from Terraform; RBAC as the fence.</dd></div>
+            <div><dt>Result</dt><dd>Multi-tenant efficiency without multi-tenant leakage — isolation you can audit, where a 403 is the design working.</dd></div>
+          </dl>
+          <span class="wk-go">Read the write-up <span aria-hidden="true">→</span></span>
+        </a>
+        <a class="workcard" href="ultraplatform.html#d=ai-ultraplatform">
+          <div class="wk-thumb"><img src="assets/work/globe.webp" alt="" loading="lazy" decoding="async" width="640" height="400"></div>
+          <span class="wk-eyebrow">AI platform</span>
+          <h3 class="wk-title">One governed front door to the models</h3>
+          <dl class="wk-par">
+            <div><dt>Problem</dt><dd>Every team wanted LLM access, and each was re-solving auth, rate limits and routing on its own.</dd></div>
+            <div><dt>Approach</dt><dd>An AI gateway that authenticates callers, enforces per-tenant limits and routing, then forwards to the model backend.</dd></div>
+            <div><dt>Result</dt><dd>A single paved road to AI — governed, observable and per-tenant instead of a scatter of keys.</dd></div>
+          </dl>
+          <span class="wk-go">Open in the 3D map <span aria-hidden="true">↗</span></span>
+        </a>
+        <a class="workcard" href="writing.html#read=blog-finops-cost-gates">
+          <div class="wk-thumb"><img src="assets/work/tiers.webp" alt="" loading="lazy" decoding="async" width="640" height="400"></div>
+          <span class="wk-eyebrow">FinOps</span>
+          <h3 class="wk-title">The cost of a change is visible before it merges</h3>
+          <dl class="wk-par">
+            <div><dt>Problem</dt><dd>Cloud spend was a monthly surprise — nobody saw the cost of a change until the invoice arrived.</dd></div>
+            <div><dt>Approach</dt><dd>Infracost prices every Terraform plan in the MR; OpenCost meters the running cluster by tenant and namespace — estimate and reality, side by side.</dd></div>
+            <div><dt>Result</dt><dd>Cost review moved from a monthly post-mortem to a number in the diff — the same shift-left move the safety gate made for risk.</dd></div>
+          </dl>
+          <span class="wk-go">Read the write-up <span aria-hidden="true">→</span></span>
+        </a>
+        <a class="workcard" href="ultraplatform.html#d=security-opa">
+          <div class="wk-thumb"><img src="assets/work/security.webp" alt="" loading="lazy" decoding="async" width="640" height="400"></div>
+          <span class="wk-eyebrow">Security</span>
+          <h3 class="wk-title">Infrastructure can't change unless policy says it may</h3>
+          <dl class="wk-par">
+            <div><dt>Problem</dt><dd>A destructive change (a dropped database, a deleted network) was one wrong <code>terraform apply</code> away, caught only if someone noticed in review.</dd></div>
+            <div><dt>Approach</dt><dd>An OPA/rego gate evaluates every plan before apply; safety levels block destroys by data sensitivity, composed per cloud provider.</dd></div>
+            <div><dt>Result</dt><dd>Safety is a wall the change physically cannot pass, not a habit someone might forget — the safe choice is the one you get for free.</dd></div>
+          </dl>
+          <span class="wk-go">Open in the 3D map <span aria-hidden="true">↗</span></span>
+        </a>
+        <a class="workcard" href="ultraplatform.html#v=failure-modes">
+          <div class="wk-thumb"><img src="assets/work/failure.webp" alt="" loading="lazy" decoding="async" width="640" height="400"></div>
+          <span class="wk-eyebrow">Resilience</span>
+          <h3 class="wk-title">The scariest failure is rehearsed, not feared</h3>
+          <dl class="wk-par">
+            <div><dt>Problem</dt><dd>One shared gateway per cluster is deliberately a shared-fate zone — if it breaks, that's every tenant's outage at once.</dd></div>
+            <div><dt>Approach</dt><dd>A PodDisruptionBudget floors disruption, and Litmus kills gateway pods on a schedule while a continuous probe proves traffic keeps flowing — the hypothesis and its test, both in code.</dd></div>
+            <div><dt>Result</dt><dd>"Degraded but serving" is an engineered state, verified monthly — and a clickable failure-mode lens shows what every outage scenario actually takes down.</dd></div>
+          </dl>
+          <span class="wk-go">Open the failure-mode lens <span aria-hidden="true">↗</span></span>
+        </a>
+      </div>
+      <div class="lpager" id="wpager" hidden>
+        <button class="lpg" id="wprev" type="button" aria-label="Previous card">‹</button>
+        <span class="ldots" id="wdots" role="group" aria-label="Work pages"></span>
+        <button class="lpg" id="wnext" type="button" aria-label="Next card">›</button>
+        <span class="sr-only" id="wpage-status" aria-live="polite"></span>
+      </div>
+      <script>
+        // mobile/tablet: a horizontally swipeable, snap-scrolling deck of workcards (desktop keeps
+        // the 3-col grid, untouched). Cards are wrapped into .wslide pages — ONE card per page on
+        // phones, TWO on tablets (601-860px) — and the pager hides itself whenever a single page
+        // holds everything. Dots/prev/next scrollTo a page; a scroll listener keeps them honest
+        // when the visitor swipes instead of clicking. Mirrors the landscape carousel below.
+        (function(){
+          var grid=document.querySelector('#work .work'); if(!grid)return;
+          var cards=[].slice.call(grid.children);
+          var mq=window.matchMedia('(max-width:860px)');    // the same breakpoint .work already uses
+          var mqTab=window.matchMedia('(min-width:601px) and (max-width:860px)');
+          var RM=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+          var pager=document.getElementById('wpager'), dots=document.getElementById('wdots'),
+              prev=document.getElementById('wprev'), next=document.getElementById('wnext');
+          var page=0, active=false, raf=0, slides=[];
+          function gap(){ return parseFloat(getComputedStyle(grid).columnGap)||16; }
+          function build(){
+            var per=mqTab.matches?2:1;
+            grid.innerHTML=''; slides=[];
+            for(var i=0;i<cards.length;i+=per){
+              var s=document.createElement('div'); s.className='wslide';
+              cards.slice(i,i+per).forEach(function(c){ c.hidden=false; s.appendChild(c); });
+              grid.appendChild(s); slides.push(s);
+            }
+            dots.innerHTML='';
+            slides.forEach(function(_,i){
+              var d=document.createElement('button'); d.type='button'; d.className='ldot';
+              d.setAttribute('aria-label','Page '+(i+1)+' of '+slides.length);
+              d.dataset.p=i; d.addEventListener('click',function(){go(+this.dataset.p);});
+              dots.appendChild(d);
+            });
+            pager.hidden=slides.length<2;   // everything fits one page → no pager
+            page=0; grid.scrollLeft=0; updateUI();
+          }
+          function updateUI(){
+            prev.disabled=page===0; next.disabled=page===slides.length-1;
+            [].forEach.call(dots.children,function(d,i){ d.classList.toggle('on',i===page); });
+            var st=document.getElementById('wpage-status');
+            if(st)st.textContent='Page '+(page+1)+' of '+slides.length;
+          }
+          function go(p){
+            page=Math.max(0,Math.min(slides.length-1,p));
+            grid.scrollTo({left:slides[page].offsetLeft-grid.offsetLeft,behavior:RM?'auto':'smooth'});
+            updateUI();
+          }
+          // a manual swipe doesn't call go() — this keeps dots/buttons in sync with wherever
+          // scroll-snap actually lands (rAF-throttled so it costs nothing on every scroll tick)
+          function onScroll(){
+            if(raf)return; raf=requestAnimationFrame(function(){ raf=0;
+              var sw=(slides[0]?slides[0].getBoundingClientRect().width:grid.clientWidth)+gap();
+              var idx=Math.round(grid.scrollLeft/(sw||1));
+              idx=Math.max(0,Math.min(slides.length-1,idx));
+              if(idx!==page){ page=idx; updateUI(); } });
+          }
+          function enable(){ if(active)return; active=true; build();
+            grid.setAttribute('aria-roledescription','carousel'); grid.setAttribute('aria-label','Selected work');
+            grid.addEventListener('scroll',onScroll,{passive:true}); }
+          function disable(){ if(!active)return; active=false; pager.hidden=true;
+            grid.removeAttribute('aria-roledescription'); grid.removeAttribute('aria-label');
+            grid.removeEventListener('scroll',onScroll);
+            grid.innerHTML=''; cards.forEach(function(c){ c.hidden=false; grid.appendChild(c); }); } // back to the flat grid
+          function sync(){ mq.matches?enable():disable(); }
+          function resize(){ if(active)build(); }    // phone ⇄ tablet: page size changes → rebuild
+          prev.addEventListener('click',function(){go(page-1);});
+          next.addEventListener('click',function(){go(page+1);});
+          // keyboard: arrows page the deck while focus is anywhere inside the pager
+          pager.addEventListener('keydown',function(e){
+            if(e.key==='ArrowLeft'){e.preventDefault();go(page-1);}
+            else if(e.key==='ArrowRight'){e.preventDefault();go(page+1);}
+          });
+          (mq.addEventListener?mq.addEventListener('change',sync):mq.addListener(sync));
+          (mqTab.addEventListener?mqTab.addEventListener('change',resize):mqTab.addListener(resize));
+          sync();
+        })();
+      </script>
+    </div>
+  </section>
+
+  <!-- ---------------- EXPERIENCE ---------------- -->
+  <section id="experience" style="background:linear-gradient(180deg,transparent,var(--band),transparent)">
+    <div class="wrap reveal">
+      <div class="kicker">Experience</div>
+      <h2 class="sec-title">Fifteen years building &amp; scaling systems.</h2>
+      <p class="lead">From full-stack product work to multi-cloud platforms — the throughline is reliability, cost-awareness and developer experience.</p>
+      <div class="impact">
+        <div class="imp"><b>~90%</b><span>cloud cost cut by right-sizing compute (~€1,500/week per env)</span></div>
+        <div class="imp"><b>15+ yrs</b><span>full-stack product → DevOps → platform engineering</span></div>
+        <div class="imp"><b>2 clouds</b><span>AWS/EKS &amp; Azure/AKS migrated and run at scale</span></div>
+        <div class="imp"><b>TDI</b><span>built an own Test-Driven Infrastructure framework in Go</span></div>
+      </div>
+      <div class="timeline">
+
+        <div class="job current">
+          <div class="when">Jun 2026 — Present</div>
+          <h3>Senior (AI) Platform Engineer <span class="tag" style="margin-left:0">Current</span></h3>
+          <div class="co">Technosylva · Azure &amp; Kubernetes · AI Platform</div>
+          <p>Design, scale and optimize the cloud infrastructure powering mission-critical microservices and the company's next-generation AI platforms. Lead Developer Experience: abstracting Azure/AKS complexity behind golden paths, self-service and policy-as-code. <a class="grad" href="ultraplatform.html">Explore the platform I build →</a></p>
+          <ul>
+            <li>AKS at scale — hub-and-spoke networking, tenancy isolation, GitOps delivery</li>
+            <li>Terraform modules, OPA/rego policy gates, secretless CI/CD</li>
+            <li>Foundations for an internal AI platform &amp; AI-assisted developer tooling</li>
+          </ul>
+          <div class="promo">
+            <div class="plabel">↑ Promoted · in Technosylva</div>
+            <div class="when">Feb 2025 — Jun 2026</div>
+            <h3>Platform Engineer — Azure &amp; Kubernetes</h3>
+            <p>Built and operated the Azure/AKS developer platform: reusable Terraform modules, GitLab CI components, multi-region clusters, and the guardrails that keep tenant teams safe by default.</p>
+          </div>
+        </div>
+
+        <div class="job">
+          <div class="when">Apr 2024 — Dec 2024</div>
+          <h3>Software Architect</h3>
+          <div class="co">XERIDIA</div>
+          <p>Designed clean, maintainable architectures for enterprise applications (incl. OutSystems), focusing on separation of concerns and long-term maintainability.</p>
+        </div>
+
+        <div class="job">
+          <div class="when">Oct 2023 — Apr 2024</div>
+          <h3>Masters Director — Business Analytics</h3>
+          <div class="co">Esden Business School</div>
+          <p>Directed the Business Analytics master's programme — curriculum and mentoring bridging data, analytics and engineering practice.</p>
+        </div>
+
+        <div class="job">
+          <div class="when">Oct 2019 — Dec 2023</div>
+          <h3>DevOps — Kubernetes &amp; AWS</h3>
+          <div class="co">SYNAOS · Hannover (Remote)</div>
+          <p>Migrated infrastructure to AWS (EKS) and Azure (AKS): Packer + Ansible base images, Terraform for the infrastructure, and an own <b>Test-Driven Infrastructure (TDI)</b> framework in Go. Adopted the AWS Well-Architected Framework.</p>
+          <ul>
+            <li>Multi-account governance (Control Tower + SSO across Azure/AWS), aws-nuke cleanup</li>
+            <li>Cost-aware design (region/instance/storage/scheduling) — up to <b>90% savings</b> on instance choices, ~1,500€/week/env</li>
+            <li>Flux &amp; ArgoCD, GitLab Runners on Kubernetes, a DevSecOps pipeline, and always-improving observability</li>
+          </ul>
+        </div>
+
+        <div class="job">
+          <div class="when">Jan 2017 — Aug 2019</div>
+          <h3>Full-Stack Engineer — Java &amp; React</h3>
+          <div class="co">Klarna · Berlin</div>
+          <p>Google Pay API integration and a merchant onboarding API (OAuth2). Built an own TDD testing framework; microservices in Java 11 / Spring Boot with React/Redux front-ends, Kafka, and Jenkins CI/CD.</p>
+        </div>
+
+        <div class="job">
+          <div class="when">2011 — 2016</div>
+          <h3>Software Engineer — earlier roles</h3>
+          <div class="co">Targetic · Hieronymus · DADA Company · AVANZO</div>
+          <p>Full-stack PHP/JS (Zend, MySQL, jQuery plugins), database engineering for a social platform, an iOS game (cocos2d / Objective-C), and SCORM e-learning courseware.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------- STACK ---------------- -->
+  <section id="stack">
+    <div class="wrap reveal">
+      <div class="kicker">Stack</div>
+      <h2 class="sec-title">The tools I reach for.</h2>
+      <p class="lead">Platform, cloud and delivery — plus the product-engineering background that makes the platform actually usable.</p>
+      <div class="stack">
+        <div class="card"><h3><span class="ic">☁️</span>Cloud &amp; Compute</h3><div class="chips"><span class="chip">Azure (AKS)</span><span class="chip">AWS (EKS)</span><span class="chip">Kubernetes</span><span class="chip">Docker</span><span class="chip">Helm</span></div><a class="proof" href="ultraplatform.html">↳ see it in the 3D map</a></div>
+        <div class="card"><h3><span class="ic">🏗️</span>Infrastructure as Code</h3><div class="chips"><span class="chip">Terraform</span><span class="chip">Packer</span><span class="chip">Ansible</span><span class="chip">Test-Driven Infra (Go)</span></div><a class="proof" href="writing.html#read=blog-golden-path">↳ the golden path is three files</a></div>
+        <div class="card"><h3><span class="ic">🚀</span>Delivery &amp; GitOps</h3><div class="chips"><span class="chip">GitLab CI</span><span class="chip">ArgoCD</span><span class="chip">Flux</span><span class="chip">Jenkins</span><span class="chip">DevSecOps</span></div><a class="proof" href="writing.html#read=blog-local-remote-ci">↳ run the pipeline before you push it</a></div>
+        <div class="card"><h3><span class="ic">🛡️</span>Policy &amp; Security</h3><div class="chips"><span class="chip">OPA / Rego</span><span class="chip">Well-Architected</span><span class="chip">SSO / PIM</span><span class="chip">Secretless OIDC</span></div><a class="proof" href="writing.html#read=blog-defense-in-depth">↳ defense in depth</a></div>
+        <div class="card"><h3><span class="ic">🔭</span>Observability</h3><div class="chips"><span class="chip">Grafana</span><span class="chip">Loki</span><span class="chip">Mimir</span><span class="chip">Datadog</span><span class="chip">Splunk</span></div><a class="proof" href="writing.html#read=blog-slo-error-budgets">↳ SLOs &amp; error budgets</a></div>
+        <div class="card"><h3><span class="ic">⌨️</span>Languages</h3><div class="chips"><span class="chip">Go</span><span class="chip">TypeScript / JS</span><span class="chip">Java · Spring Boot</span><span class="chip">Python</span><span class="chip">PHP</span></div><a class="proof" href="terminal.html">↳ poke around my terminal</a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------- ROLE-FIT MATCHER ---------------- -->
+  <section id="match">
+    <div class="wrap reveal">
+      <div class="kicker">Role fit</div>
+      <h2 class="sec-title">Hiring for a platform role?<br>Paste the description.</h2>
+      <p class="lead">It runs entirely in your browser — nothing is sent anywhere — and shows which of my core areas your role touches, each with a link to proof.</p>
+      <div class="fitbox">
+        <textarea id="jd" placeholder="Paste a job description, or a few requirement bullets…" aria-label="Paste a job description"></textarea>
+        <div class="mrow"><button class="mbtn" id="jd-go">Check the match</button><button class="mbtn ghost" id="jd-sample" type="button">Try a sample role</button><span class="mhint">Private &amp; instant — nothing leaves this page. <kbd style="font:11px ui-monospace,monospace;border:1px solid var(--card-line);border-radius:4px;padding:1px 5px">Ctrl↵</kbd> works too.</span></div>
+        <div class="mres" id="jd-res" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------- LANDSCAPE ---------------- -->
+  <section id="landscape">
+    <div class="wrap reveal">
+      <div class="kicker">Landscape</div>
+      <div class="title-row">
+        <h2 class="sec-title">The CNCF landscape I actually run.</h2>
+        <a class="pill-link" href="ultraplatform.html#d=landscape-index">Read the notes <span class="arr" aria-hidden="true">↗</span></a>
+      </div>
+      <p class="lead">Not a logo wall — every tool here runs in the platform today and has an article
+        explaining the job it does and what I'd tell you before adopting it.</p>
+      <div class="lgrid">
+        <a class="ltile" href="writing.html#read=landscape-helm"><h3>⛵ Helm</h3><p>The packaging grammar — one chart library, consumed everywhere.</p><span class="go">Read →</span></a>
+        <a class="ltile" href="writing.html#read=landscape-argocd"><h3>🐙 Argo CD</h3><p>GitOps delivery — the cluster state is a repo, not a memory.</p><span class="go">Read →</span></a>
+        <a class="ltile" href="writing.html#read=landscape-kyverno"><h3>🛡️ Kyverno</h3><p>In-cluster policy: validate, mutate, generate — safe namespaces by default.</p><span class="go">Read →</span></a>
+        <a class="ltile" href="writing.html#read=landscape-external-secrets"><h3>🔑 External Secrets</h3><p>Key Vault → Kubernetes secrets, without humans in the loop.</p><span class="go">Read →</span></a>
+        <a class="ltile" href="writing.html#read=landscape-reloader"><h3>🔄 Reloader</h3><p>Config and secret changes actually reach running pods.</p><span class="go">Read →</span></a>
+        <a class="ltile" href="writing.html#read=landscape-external-dns"><h3>🌐 External DNS</h3><p>DNS records follow the ingresses that need them.</p><span class="go">Read →</span></a>
+        <a class="ltile" href="writing.html#read=landscape-keda"><h3>📈 KEDA</h3><p>Scale on real signals — queues and events, including to zero.</p><span class="go">Read →</span></a>
+        <a class="ltile" href="writing.html#read=landscape-opentelemetry"><h3>🔭 OpenTelemetry</h3><p>One instrumentation standard every tenant inherits.</p><span class="go">Read →</span></a>
+        <a class="ltile" href="writing.html#read=landscape-telepresence"><h3>🔌 Telepresence</h3><p>Debug against the real cluster from the laptop.</p><span class="go">Read →</span></a>
+        <a class="ltile" href="writing.html#read=landscape-karpenter"><h3>⚡ Karpenter</h3><p>Just-in-time, right-sized nodes — provisioned in seconds, consolidated when idle.</p><span class="go">Read →</span></a>
+        <a class="ltile" href="writing.html#read=landscape-grafana"><h3>📊 Grafana</h3><p>Dashboards, alerts and Explore as code — one pane over Mimir & Loki.</p><span class="go">Read →</span></a>
+        <a class="ltile" href="writing.html#read=landscape-backstage"><h3>🎭 Backstage</h3><p>The developer portal — software catalog, golden-path scaffolder and TechDocs.</p><span class="go">Read →</span></a>
+        <a class="ltile" href="writing.html#read=landscape-buildpacks"><h3>📦 Buildpacks</h3><p>Images without Dockerfiles — one hardened builder, no per-repo drift.</p><span class="go">Read →</span></a>
+        <a class="ltile" href="writing.html#read=res-cert-manager"><h3>📜 cert-manager</h3><p>Certificates as a controller — TLS issued and renewed automatically.</p><span class="go">Read →</span></a>
+        <a class="ltile" href="writing.html#read=landscape-trivy"><h3>🛡️ Trivy</h3><p>Continuous vulnerability scanning — CVEs found after deploy, not just at build.</p><span class="go">Read →</span></a>
+        <a class="ltile" href="writing.html#read=landscape-policy-reporter"><h3>📋 Policy Reporter</h3><p>One dashboard for every policy engine's reports — Kyverno and Trivy in one pane.</p><span class="go">Read →</span></a>
+        <a class="ltile" href="writing.html#read=landscape-opencost"><h3>💰 OpenCost</h3><p>Cost allocation per tenant and namespace — the bill made visible.</p><span class="go">Read →</span></a>
+        <a class="ltile" href="writing.html#read=security-opa"><h3>⚖️ OPA / rego</h3><p>Infrastructure can't change unless policy says it may — a plan-time safety gate.</p><span class="go">Read →</span></a>
+        <a class="ltile" href="writing.html#read=landscape-falco"><h3>🦅 Falco</h3><p>Runtime security — catching what admission policy and image scans can't see.</p><span class="go">Read →</span></a>
+        <a class="ltile" href="writing.html#read=landscape-litmus"><h3>🧪 Litmus</h3><p>Chaos as a reviewed experiment — never ambient, always opt-in.</p><span class="go">Read →</span></a>
+        <a class="ltile" href="writing.html#read=landscape-openfeature"><h3>🚩 OpenFeature</h3><p>Decouple the deploy from the release — vendor-neutral feature flags.</p><span class="go">Read →</span></a>
+        <a class="ltile" href="writing.html#read=landscape-cilium"><h3>🐝 Cilium</h3><p>The eBPF CNI, chosen at cluster creation — L3-L7 policy and Hubble visibility.</p><span class="go">Read →</span></a>
+        <a class="ltile" href="writing.html#read=landscape-dapr"><h3>🧩 Dapr</h3><p>Sidecar building blocks — pub/sub, state, durable workflow, one API.</p><span class="go">Read →</span></a>
+        <a class="ltile" href="writing.html#read=landscape-traefik"><h3>🚦 Traefik</h3><p>One shared gateway, many tenant routes — SSO by sidecar, not by app code.</p><span class="go">Read →</span></a>
+      </div>
+      <div class="lpager" id="lpager" hidden>
+        <button class="lpg" id="lprev" type="button" aria-label="Previous projects">‹</button>
+        <span class="ldots" id="ldots" role="group" aria-label="Landscape pages"></span>
+        <button class="lpg" id="lnext" type="button" aria-label="More projects">›</button>
+        <span class="sr-only" id="lpage-status" aria-live="polite"></span>
+      </div>
+      <script>
+        // desktop: the grid outgrew one screen (20+ tools), so it pages — click prev/next/dots,
+        // 8 tiles/page, tiles simply toggle [hidden]. Mobile switches to a true horizontally
+        // swipeable deck instead: tiles get wrapped into .lslide groups of 4 (a 2×2 screenful),
+        // and the SAME grid becomes the scroll-snap container — prev/next/dots scrollTo a slide,
+        // and a scroll listener keeps them honest when the visitor swipes instead of clicking.
+        // No-JS fallback: the grid stays flat and every tile simply shows.
+        (function(){
+          var grid=document.querySelector('#landscape .lgrid'); if(!grid)return;
+          var tiles=[].slice.call(grid.children);   // the flat tile list is the source of truth
+          var mq=window.matchMedia('(max-width:860px)');
+          var mqTab=window.matchMedia('(min-width:601px) and (max-width:860px)');
+          var RM=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+          var pager=document.getElementById('lpager'), dots=document.getElementById('ldots'),
+              prev=document.getElementById('lprev'), next=document.getElementById('lnext');
+          var mode=null, units=[], page=0, raf=0, SIZE=8;
+
+          function buildDots(n,goFn){
+            dots.innerHTML='';
+            for(var i=0;i<n;i++){
+              var d=document.createElement('button'); d.type='button'; d.className='ldot';
+              d.setAttribute('aria-label','Page '+(i+1)+' of '+n);
+              d.dataset.p=i; d.addEventListener('click',function(){goFn(+this.dataset.p);});
+              dots.appendChild(d);
+            }
+          }
+          function updateUI(){
+            var n=units.length;
+            prev.disabled=page===0; next.disabled=page===n-1;
+            [].forEach.call(dots.children,function(d,i){ d.classList.toggle('on',i===page); });
+            var st=document.getElementById('lpage-status');
+            if(st)st.textContent='Landscape page '+(page+1)+' of '+n;
+          }
+          // ---- desktop: hidden-toggle pagination over the flat tile list ----
+          function goDesktop(p){
+            page=Math.max(0,Math.min(units.length-1,p));
+            tiles.forEach(function(t,i){ t.hidden=(i<page*SIZE||i>=(page+1)*SIZE); });
+            updateUI();
+          }
+          function enableDesktop(){
+            grid.removeAttribute('aria-roledescription'); grid.removeAttribute('aria-label');
+            grid.innerHTML=''; tiles.forEach(function(t){grid.appendChild(t);});   // unwrap any mobile slides
+            SIZE=8; units=new Array(Math.ceil(tiles.length/SIZE));
+            if(units.length<2){ pager.hidden=true; tiles.forEach(function(t){t.hidden=false;}); return; }
+            buildDots(units.length,goDesktop); pager.hidden=false; page=0; goDesktop(0);
+          }
+          // ---- mobile: horizontal scroll-snap over .lslide groups of 4 ----
+          function goMobile(p){
+            page=Math.max(0,Math.min(units.length-1,p));
+            grid.scrollTo({left:units[page].offsetLeft-grid.offsetLeft,behavior:RM?'auto':'smooth'});
+            updateUI();
+          }
+          function onScroll(){
+            if(raf)return; raf=requestAnimationFrame(function(){ raf=0;
+              var gp=parseFloat(getComputedStyle(grid).columnGap)||14;
+              var sw=(units[0]&&units[0].getBoundingClientRect?units[0].getBoundingClientRect().width:grid.clientWidth)+gp;
+              var idx=Math.round(grid.scrollLeft/(sw||1));
+              idx=Math.max(0,Math.min(units.length-1,idx));
+              if(idx!==page){ page=idx; updateUI(); } });
+          }
+          function enableMobile(){
+            grid.removeEventListener('scroll',onScroll);   // idempotent: re-run on breakpoint change
+            grid.setAttribute('aria-roledescription','carousel'); grid.setAttribute('aria-label','CNCF landscape tools');
+            var S=mqTab.matches?6:4;                       // tablets get a 3×2 page, phones 2×2
+            grid.innerHTML=''; units=[];
+            for(var i=0;i<tiles.length;i+=S){
+              var slide=document.createElement('div'); slide.className='lslide';
+              tiles.slice(i,i+S).forEach(function(t){ t.hidden=false; slide.appendChild(t); });
+              grid.appendChild(slide); units.push(slide);
+            }
+            if(units.length<2){ pager.hidden=true; }       // one page holds everything → no pager
+            else { buildDots(units.length,goMobile); pager.hidden=false; }
+            grid.addEventListener('scroll',onScroll,{passive:true});
+            page=0; grid.scrollLeft=0; updateUI();
+          }
+          function sync(){
+            var wantMode=mq.matches?'mobile':'desktop'; if(wantMode===mode)return;
+            grid.removeEventListener('scroll',onScroll);
+            mode=wantMode; mode==='mobile'?enableMobile():enableDesktop();
+          }
+          function resize(){ if(mode==='mobile')enableMobile(); }  // phone ⇄ tablet: page size changes
+          (mqTab.addEventListener?mqTab.addEventListener('change',resize):mqTab.addListener(resize));
+          prev.addEventListener('click',function(){ mode==='mobile'?goMobile(page-1):goDesktop(page-1); });
+          next.addEventListener('click',function(){ mode==='mobile'?goMobile(page+1):goDesktop(page+1); });
+          // keyboard: arrows page the deck while focus is anywhere inside the pager
+          pager.addEventListener('keydown',function(e){
+            var d=e.key==='ArrowLeft'?-1:e.key==='ArrowRight'?1:0; if(!d)return;
+            e.preventDefault(); mode==='mobile'?goMobile(page+d):goDesktop(page+d);
+          });
+          (mq.addEventListener?mq.addEventListener('change',sync):mq.addListener(sync));
+          sync();
+        })();
+      </script>
+    </div>
+  </section>
+
+  <!-- ---------------- WRITING ---------------- -->
+  <section id="articles" style="background:linear-gradient(180deg,transparent,var(--band),transparent)">
+    <div class="wrap reveal">
+      <div class="kicker">Articles</div>
+      <h2 class="sec-title">Articles from practice.</h2>
+      <p class="lead">Long-form platform-engineering posts and a tag-navigable index of notes — read the <a class="grad" href="writing.html">posts</a>, or browse the <a class="grad" href="writing.html#tab=notes">notes by topic</a>.</p>
+      <!-- ARTICLES:START (generated by make-articles.mjs from writing.html's POSTS array — do not hand-edit, run `node make-articles.mjs`) -->
+      <div class="grid2">
+        <a class="post" href="writing.html#read=blog-marketplace">
+          <div class="tagrow"><span class="t">Skills</span><span class="t">Workflow</span></div>
+          <h4>A marketplace of one — versioning your own AI skills</h4>
+          <p>Assistant skills drift and fork like dotfiles. Moving every skill, agent and hook into a local plugin marketplace — versioned plugins, symlinked single source, installed per session — makes every future session consistent.</p>
+          <span class="go">Read →</span>
+        </a>
+        <a class="post" href="writing.html#read=blog-disaster-recovery">
+          <div class="tagrow"><span class="t">Backups</span><span class="t">Platform</span></div>
+          <h4>Disaster recovery is a rehearsal, not a binder</h4>
+          <p>Region loss as a scheduled event: critical data already lives in a second geography, one region pair is the designated restore target, and a weekly pipeline rehearses the restore into an isolated resource group and asserts the data is usable.</p>
+          <span class="go">Read →</span>
+        </a>
+        <a class="post" href="writing.html#read=blog-backups">
+          <div class="tagrow"><span class="t">Backups</span><span class="t">Platform</span></div>
+          <h4>A backup is a tag, not a ticket</h4>
+          <p>One tag — data_criticality — routes every resource to the right vault pair: GeoZone-redundant with paired-region restore for critical, Zone-redundant for important. DINE policies and daily discovery enforce enrolment; nobody files a backup ticket.</p>
+          <span class="go">Read →</span>
+        </a>
+      </div>
+      <!-- ARTICLES:END -->
+      <div style="margin-top:26px;display:flex;gap:14px;flex-wrap:wrap">
+        <a class="cta ghost" href="writing.html">All <span id="posts-count">81</span> posts &amp; notes <span aria-hidden="true">↗</span></a>
+        <a class="cta ghost" href="writing.html#tab=notes">Browse notes by tag <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------- TOOLS ---------------- -->
+  <section id="tools">
+    <div class="wrap reveal">
+      <div class="kicker">Tools I build</div>
+      <div class="title-row">
+        <h2 class="sec-title">Developer tooling, local-first.</h2>
+        <a class="pill-link" href="terminal.html">Try my terminal live <span class="arr" aria-hidden="true">↗</span></a>
+      </div>
+      <p class="lead">The infrastructure I run isn't the only thing I build — I write the tools that make the day-to-day loop fast and safe.</p>
+      <div class="grid2" style="grid-template-columns:repeat(auto-fit,minmax(235px,1fr))">
+        <a class="post" href="ultraplatform.html#v=gctui">
+          <div class="tagrow"><span class="t">Go · Bubbletea</span><span class="t">CI/CD</span></div>
+          <h3>gctui — local GitLab-CI cockpit</h3>
+          <p>Run the reusable pipeline locally and diff it against remote before you push.</p>
+          <span class="go">See in the map →</span>
+        </a>
+        <a class="post" href="ultraplatform.html#v=tflocal">
+          <div class="tagrow"><span class="t">Go</span><span class="t">Terraform</span></div>
+          <h3>tflocal — run modules locally</h3>
+          <p>Apply and clean up Terraform overrides locally, faithful to the remote steps.</p>
+          <span class="go">See in the map →</span>
+        </a>
+        <a class="post" href="ultraplatform.html#v=time-tracker">
+          <div class="tagrow"><span class="t">Python</span><span class="t">tmux</span></div>
+          <h3>time-tracker (tt) — ticket-aware time</h3>
+          <p>A tmux time tracker that follows your ticket and feeds standups automatically.</p>
+          <span class="go">See in the map →</span>
+        </a>
+        <a class="post" href="https://github.com/franroa/notion-iwe-sync" target="_blank" rel="noopener">
+          <div class="tagrow"><span class="t">Python</span><span class="t">Notion · IWE</span></div>
+          <h3>notion-iwe — Notion ⇄ markdown sync</h3>
+          <p>Mirror a personal Notion workspace as a local markdown vault — both ways.</p>
+          <span class="go">View on GitHub →</span>
+        </a>
+      </div>
+
+      <p class="drivers">Daily drivers — <b>not mine</b>, just essential:
+        <span class="chip">kind</span><span class="chip">skaffold</span><span class="chip">telepresence</span>
+        <span class="chip">k9s</span><span class="chip">stern</span><span class="chip">dive</span>
+        <span class="chip">gitlab-ci-local</span>
+      </p>
+
+      <h3 style="font-size:16px;font-weight:700;margin:44px 0 2px;color:var(--fg)">⌨️ Own Neovim and IDE plugins</h3>
+      <p class="lead" style="font-size:14px;margin-bottom:2px">Grafana Alloy configures with <b>River</b> — I built its missing editor experience end to end.</p>
+      <div class="tlist">
+        <a href="https://github.com/franroa/tree-sitter-river" target="_blank" rel="noopener">
+          <span class="tn">tree-sitter-river</span><span class="td">Tree-sitter grammar — highlighting, folding, structural navigation</span><span class="tg">GitHub ↗</span></a>
+        <a href="https://github.com/franroa/river-lsp" target="_blank" rel="noopener">
+          <span class="tn">river-lsp</span><span class="td">language server — diagnostics, completion, go-to-definition</span><span class="tg">GitHub ↗</span></a>
+        <a href="https://github.com/franroa/alloy.nvim" target="_blank" rel="noopener">
+          <span class="tn">alloy.nvim</span><span class="td">the Neovim plugin wiring grammar + LSP together</span><span class="tg">GitHub ↗</span></a>
+      </div>
+
+      <h3 style="font-size:16px;font-weight:700;margin:36px 0 2px;color:var(--fg)">🤝 Open-source contributions</h3>
+      <div class="tlist">
+        <a href="https://github.com/GustavEikaas/easy-dotnet.nvim" target="_blank" rel="noopener">
+          <span class="tn">easy-dotnet.nvim</span><span class="td">.NET development inside Neovim — build, test, run</span><span class="tg">GitHub ↗</span></a>
+        <a href="https://github.com/emrearmagan/atlas.nvim" target="_blank" rel="noopener">
+          <span class="tn">atlas.nvim</span><span class="td">contributions to an open-source Neovim plugin</span><span class="tg">GitHub ↗</span></a>
+        <a href="https://github.com/agavra/tuicr" target="_blank" rel="noopener">
+          <span class="tn">tuicr</span><span class="td">contributions to a terminal-UI developer tool</span><span class="tg">GitHub ↗</span></a>
+      </div>
+
+      <p style="margin-top:22px;font-size:14px"><a class="grad" href="writing.html#tab=notes&tag=Tools">Everything, tagged → Notes ↗</a></p>
+    </div>
+  </section>
+
+  <!-- ---------------- TESTIMONIALS ---------------- -->
+  <!-- Social proof. Fill TESTIMONIALS in the script below with REAL quotes only (name, role, quote).
+       Empty by default → the whole section stays hidden. Never invent a quote. -->
+  <section id="testimonials" hidden>
+    <div class="wrap reveal">
+      <div class="kicker">Endorsements</div>
+      <h2 class="sec-title">What people I've worked with say.</h2>
+      <div class="quotes" id="quotes"></div>
+    </div>
+  </section>
+
+  <!-- ---------------- CONTACT ---------------- -->
+  <section id="contact" class="contact">
+    <div class="wrap reveal">
+      <div class="avatar">
+        <img src="assets/profile.jpg" alt="Francisco Roa" width="94" height="94" loading="lazy" decoding="async" onerror="this.remove()">
+        <span class="mono" aria-hidden="true">FR</span>
+      </div>
+      <div class="kicker">Contact</div>
+      <h2 class="sec-title">Let's build something reliable.</h2>
+      <p class="lead" style="margin:0 auto">Open to conversations about platform engineering, AI platforms, and developer experience.</p>
+      <div><span class="avail"><span class="dot"></span> Open to new opportunities · remote or on-site · Europe, North &amp; Latin America</span></div>
+      <div class="links">
+        <a class="primary" href="mailto:franciscoroaprieto@gmail.com">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+          Email
+        </a>
+        <!-- Book a call: mailto with a prefilled subject so it works today. If you have a
+             Calendly / cal.com link, swap the href for it (e.g. https://cal.com/franroa/15min). -->
+        <a href="mailto:franciscoroaprieto@gmail.com?subject=15-min%20intro%20call&amp;body=Hi%20Francisco%2C%20I%27d%20like%20to%20book%20a%20short%20intro%20call.">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>
+          Book a 15-min call
+        </a>
+        <a href="cv.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3v5h5"/><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M8 13h8M8 17h6"/></svg>
+          CV / PDF
+        </a>
+        <a href="https://github.com/franroa" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 0 0 8.8 21.5c.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.3-3.4-1.3-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.6.3-1.1.6-1.4-2.2-.2-4.6-1.1-4.6-4.9 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.6 0 0 .8-.3 2.7 1a9.4 9.4 0 0 1 5 0c1.9-1.3 2.7-1 2.7-1 .5 1.3.2 2.3.1 2.6.6.7 1 1.6 1 2.7 0 3.8-2.3 4.7-4.6 4.9.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10 10 0 0 0 12 2Z"/></svg>
+          GitHub
+        </a>
+        <a href="https://www.linkedin.com/in/francisco-roa-prieto" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5A2.5 2.5 0 1 1 5 8.5a2.5 2.5 0 0 1 0-5ZM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21H20v-5.4c0-1.3 0-2.95-1.8-2.95s-2.07 1.4-2.07 2.85V21H9z"/></svg>
+          LinkedIn
+        </a>
+        <a href="https://twitter.com/FranciscoR82204" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 3H22l-7.2 8.2L23.3 21H16.9l-5-6.5-5.7 6.5H2.9l7.7-8.8L2 3h6.6l4.5 6 5.8-6Zm-1.1 16.2h1.7L7.3 4.7H5.5l12.3 14.5Z"/></svg>
+          Twitter
+        </a>
+        <a href="ultraplatform.html">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 3.8 5.7 3.8 9S14.5 18.5 12 21c-2.5-2.5-3.8-5.7-3.8-9S9.5 5.5 12 3Z"/></svg>
+          Access Ultraplatform
+        </a>
+      </div>
+    </div>
+  </section>
+  </main>
+
+  <footer>
+    <p>© <span id="yr"></span> <span class="grad">Francisco Roa</span> · Senior (AI) Platform Engineer · Built with Three.js — <a class="grad" href="ultraplatform.html">explore the map ↗</a></p>
+    <p style="margin-top:8px;font-size:12px"><a href="#" data-cookie-settings style="color:var(--muted)">Cookie settings</a></p>
+  </footer>
+
+<script>
+  document.getElementById('yr').textContent=new Date().getFullYear();
+
+  // Testimonials — fill with REAL quotes only; an empty array keeps the section hidden. Never fabricate.
+  const TESTIMONIALS=[
+    // { quote:'He turned our Azure sprawl into a platform teams actually enjoy using.',
+    //   name:'Jane Doe', role:'Engineering Manager · Acme', href:'' },
+  ];
+  (function(){
+    if(!TESTIMONIALS.length) return;
+    const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+    document.getElementById('quotes').innerHTML=TESTIMONIALS.map(t=>
+      `<figure class="quote"><blockquote><p>“${esc(t.quote)}”</p></blockquote>`+
+      `<figcaption class="who"><b>${esc(t.name)}</b>${t.role?' · '+esc(t.role):''}</figcaption></figure>`).join('');
+    document.getElementById('testimonials').hidden=false;
+  })();
+
+  // impact stats: baked into the HTML (correct, no-JS friendly); refreshed from the live engine's
+  // snapshot so the numbers can never quietly drift from what the 3D map actually models.
+  fetch('assets/live-snapshot.json').then(r=>r.ok?r.json():null).then(d=>{
+    if(!d)return;
+    const set=(id,v)=>{ const el=document.getElementById(id); if(el&&v!=null) el.textContent=v; };
+    set('stat-regions',(d.liveRegions||[]).length||null);
+    set('stat-repos',(d.repos||[]).length||null);
+    set('stat-tenants',(d.apps&&d.apps.tenants||[]).length||null);
+  }).catch(()=>{});
+
+  // JD role-fit matcher — 100% client-side; the pasted text never leaves the page.
+  const FIT_SKILLS=[
+    {label:'Azure',kw:['azure','aks','entra','key vault','azure ad',' arm '],ev:'ultraplatform.html'},
+    {label:'Kubernetes',kw:['kubernetes','k8s','aks','eks','container orchestration','helm'],ev:'writing.html#read=blog-kubernetes'},
+    {label:'Terraform / IaC',kw:['terraform','iac','infrastructure as code','opentofu','pulumi'],ev:'writing.html#read=blog-golden-path'},
+    {label:'GitOps / CD',kw:['gitops','argo','argocd','flux','continuous delivery','progressive delivery','canary','blue-green'],ev:'writing.html#read=blog-progressive-delivery'},
+    {label:'CI/CD',kw:['ci/cd','ci cd','pipeline','gitlab','github actions','jenkins','continuous integration'],ev:'writing.html#read=blog-local-remote-ci'},
+    {label:'Policy as code',kw:['opa','rego','policy as code','policy-as-code','open policy agent','gatekeeper'],ev:'writing.html#read=blog-defense-in-depth'},
+    {label:'Identity & access',kw:['rbac','iam','identity','pim','sso','oidc','least privilege','active directory'],ev:'writing.html#read=blog-access-as-code'},
+    {label:'Multi-tenancy',kw:['multi-tenant','multitenant','tenant isolation','namespace','tenancy'],ev:'writing.html#read=blog-tenant-isolation'},
+    {label:'Networking',kw:['networking','hub-and-spoke','hub and spoke','vnet','vpc','dns','load balanc','ingress','peering'],ev:'writing.html#read=blog-dns'},
+    {label:'Observability / SRE',kw:['observability','prometheus','grafana','loki','mimir','slo','sli','error budget','monitoring','datadog','splunk','tracing','on-call','reliability'],ev:'writing.html#read=blog-slo-error-budgets'},
+    {label:'Cost / FinOps',kw:['cost','finops','cost optimization','right-siz','budget','spend'],ev:'writing.html#read=blog-finops-governance'},
+    {label:'AI platform',kw:[' ai ','llm','machine learning','mlops','ml platform','gpt','rag','inference','genai'],ev:'ultraplatform.html#d=ai-ultraplatform'},
+    {label:'Developer experience',kw:['developer experience','devex',' dx ','self-service','golden path','platform engineering','internal developer platform','idp','backstage'],ev:'writing.html#read=blog-golden-path'},
+    {label:'Security',kw:['security','tls','certificate','secrets','vault','zero trust','hardening','compliance'],ev:'writing.html#read=blog-tls-rotation'},
+    {label:'Resilience / chaos',kw:['resilien','chaos','litmus','disaster recovery','high availability','failover','incident','rto','rpo','business continuity'],ev:'writing.html#read=blog-failure-modes'},
+    {label:'Gateway / traffic',kw:['gateway','ingress','traefik','nginx','api management','service mesh','waf','oauth','rate limit'],ev:'writing.html#read=blog-traefik-oauth'},
+    {label:'Go / Python',kw:['golang',' go ','python','scripting'],ev:'ultraplatform.html#d=gctui'}
+  ];
+  const jdGo=document.getElementById('jd-go'), jdTa=document.getElementById('jd'), jdRes=document.getElementById('jd-res');
+  if(jdGo){
+    const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+    // matched chips carry their evidence twice: the link (proof) and the JD terms that hit
+    // (shown inline, so the match is verifiable rather than a black box)
+    const chip=(s,m,terms)=>`<a class="mchip${m?' matched':''}" href="${s.ev}"${terms&&terms.length?` title="your text mentions: ${esc(terms.join(', '))}"`:''}>`+
+      `${m?'<span class="tick">✓</span>':''}${esc(s.label)}${terms&&terms.length?` <span class="mwhy">· ${esc(terms.slice(0,3).join(', ').trim())}</span>`:''}</a>`;
+    function runMatch(source){
+      source=source==='sample'?'sample':'user';
+      const text=' '+(jdTa.value||'').toLowerCase().replace(/[\s]+/g,' ')+' ';
+      if(text.trim().length<12){ jdRes.className='mres show'; jdRes.innerHTML='<div class="mscore">Paste a few requirement lines and I’ll map them to my experience — or press “Try a sample role”.</div>'; return; }
+      const scored=FIT_SKILLS.map(s=>({s,terms:s.kw.filter(k=>text.includes(k)).map(k=>k.trim())}));
+      const matched=scored.filter(x=>x.terms.length).sort((a,b)=>b.terms.length-a.terms.length);
+      const missing=scored.filter(x=>!x.terms.length);
+      let html='';
+      if(matched.length){
+        html+=`<div class="mscore">Your role touches <b>${matched.length}</b> of my ${FIT_SKILLS.length} core areas — strongest first, each with proof:</div>`;
+        html+='<div class="mchips">'+matched.map(x=>chip(x.s,true,x.terms)).join('')+'</div>';
+      } else {
+        html+='<div class="mscore">No direct keyword hits — the vocabulary may just differ. Here’s my toolkit:</div>';
+      }
+      if(missing.length){
+        html+='<div class="mgap">'+(matched.length?'Also in my toolkit: ':'')+missing.map(x=>chip(x.s,false)).join('')+'</div>';
+      }
+      jdRes.className='mres show'; jdRes.innerHTML=html;
+      // source separates curiosity clicks (sample) from real hiring interest (user paste) —
+      // only the latter is a signal worth reading. NEVER send the pasted text itself.
+      if(window.upTrack) window.upTrack('jd_match',{areas:matched.length,source});
+    }
+    jdGo.addEventListener('click',()=>runMatch('user'));
+    jdTa.addEventListener('keydown',e=>{ if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){ e.preventDefault(); runMatch('user'); } });
+    // a recruiter without a JD at hand still gets to see the feature work
+    const sample=document.getElementById('jd-sample');
+    if(sample)sample.addEventListener('click',()=>{
+      jdTa.value=[
+        'We are looking for a Senior Platform Engineer to grow our internal developer platform.',
+        '- Deep experience with Kubernetes (AKS or EKS) and Terraform in production',
+        '- GitOps delivery (Argo CD), golden paths and self-service for product teams',
+        '- Policy as code, secrets management and least-privilege identity (OIDC, RBAC)',
+        '- Observability: Prometheus/Grafana, SLOs and error budgets',
+        '- You care about cost visibility (FinOps) and chaos/resilience testing',
+        '- Bonus: Go or Python tooling, API gateway / ingress experience',
+      ].join('\n');
+      runMatch('sample'); jdTa.focus();
+    });
+  }
+
+  // enable smooth scrolling only once the page (and any arrival fragment jump) has settled —
+  // see the CSS comment above for why this can't just be a static html{scroll-behavior:smooth}
+  addEventListener('load',()=>{ document.documentElement.style.scrollBehavior='smooth'; });
+
+  // hero scroll-scrub: on entry the paragraph is alone; as you scroll the text shrinks/fades and
+  // the globe rushes in "from far away" (scale + fade), pinned by the sticky stage.
+  const hero=document.querySelector('.hero'),
+        globe=hero.querySelector('.globe'), veil=hero.querySelector('.veil'),
+        content=hero.querySelector('.content'), hint=hero.querySelector('.scrollhint'),
+        globeHit=hero.querySelector('.globe-hit'), enter=hero.querySelector('.enter-hint'),
+        skel=hero.querySelector('.globe-skeleton'), dock=document.querySelector('.dock-cta');
+  // a visitor who asked their OS to reduce motion gets the globe presented STEADY: no scroll-scrub
+  // travel/scale/parallax and no auto-rotating keyword. The CSS reduced-motion block styles the
+  // static hero; here we just skip the motion wiring and show the globe immediately.
+  const RM = window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches;
+  // recruiters card rides the globe (desktop): clone the SINGLE-SOURCE card from #fit-section
+  // into the stage — content is authored once, the overlay is presentation only
+  let fitOver=null;
+  (function(){ const src=document.querySelector('#fit-section .fit'); if(!src)return;
+    fitOver=document.createElement('div'); fitOver.className='fit-over';
+    fitOver.appendChild(src.cloneNode(true));
+    hero.querySelector('.stage').appendChild(fitOver);
+    if(RM){ fitOver.style.opacity=1; fitOver.style.pointerEvents='auto'; }  // steady hero: card present at once
+  })();
+  let _skelGone=false, _glFailed=false;
+  // if the globe iframe can't get a WebGL context (hw accel off, blacklisted GPU), it tells us so —
+  // keep the wireframe as the permanent stand-in instead of retiring it into a blank hero
+  addEventListener('message',(e)=>{ if(e.data==='ultraglobe:failed'){ _glFailed=true; _skelGone=false; if(skel)skel.classList.remove('gone'); } });
+  // once the real globe iframe is up, give Three.js a moment to paint then retire the wireframe stand-in
+  globe.addEventListener('load',()=>{ setTimeout(()=>{ if(_glFailed)return; _skelGone=true; if(skel)skel.classList.add('gone'); },1500); });
+  // deferred globe load: kick it off on the first scroll, or after a short idle on a fast link
+  let globeLoaded=false;
+  // the embed paints its own backdrop to match the hero's theme: passed at load, and theme.js
+  // postMessages 'up-theme:<t>' into every iframe on toggle (the embed listens and repaints)
+  function loadGlobe(){ if(globeLoaded)return; globeLoaded=true;
+    globe.src=globe.dataset.src+(document.documentElement.dataset.theme==='light'?'&theme=light':''); }
+  if(RM){ loadGlobe(); globeHit.style.pointerEvents='auto'; globeHit.tabIndex=0; } // steady hero: globe present + clickable at once
+  else {
+    addEventListener('scroll',loadGlobe,{passive:true,once:true});
+    // warm the heavy Three.js iframe during idle right after first paint, so its shader
+    // compile happens before the visitor scrolls rather than janking the hero mid-interaction
+    (window.requestIdleCallback||((f)=>setTimeout(f,1200)))(loadGlobe,{timeout:1800});
+  }
+  // parallax: the globe leans toward the cursor, the words drift the opposite way (depth)
+  let _mx=0,_my=0,_heroTop=0,_heroH=0,_raf=0;
+  function measure(){_heroTop=hero.offsetTop;_heroH=hero.offsetHeight;} // read layout once, not every frame
+  function requestScrub(){ if(_raf)return; _raf=requestAnimationFrame(()=>{_raf=0;scrub();}); }
+  if(!RM) addEventListener('pointermove',e=>{_mx=(e.clientX/innerWidth-0.5)*2;_my=(e.clientY/innerHeight-0.5)*2;requestScrub();},{passive:true});
+  function scrub(){
+    const range=_heroH-innerHeight;
+    const p=range>0?Math.min(1,Math.max(0,(scrollY-_heroTop)/range)):0;
+    const g=Math.min(1,p/0.92);                        // globe travel 0→1
+    globe.style.opacity=(g*0.95).toFixed(3);
+    globe.style.transform='scale('+(0.32+0.68*g).toFixed(3)+') rotateX('+(-_my*7).toFixed(2)+'deg) translate3d(0px,'+(_my*20).toFixed(1)+'px,0)'; // no horizontal parallax — globe stays centered regardless of cursor
+    if(skel&&!_skelGone){ skel.style.opacity=(0.16+g*0.79).toFixed(3); skel.style.transform='scale('+(0.32+0.68*g).toFixed(3)+') translate3d(0px,'+(_my*20).toFixed(1)+'px,0)'; } // faint at rest, brightens as the globe arrives
+    veil.style.opacity=(g*0.9).toFixed(3);
+    // the words shrink and rise, and fade out EARLY — gone well before the globe reaches focus,
+    // so nothing lingers over the top of the globe
+    content.style.transform='translate(0px,calc('+(-p*37).toFixed(1)+'vh + '+(-_my*7).toFixed(1)+'px)) scale('+(1-0.44*p).toFixed(3)+')'; // no horizontal parallax — text stays centered
+    content.style.opacity=Math.max(0,1-p*3.4).toFixed(3); // fully faded by p≈0.29, before the globe arrives
+    hint.style.opacity=Math.max(0,1-p*3).toFixed(3);
+    // globe is clickable (→ the map) once it has arrived; hint fades in with it
+    const armed=g>0.25;
+    globeHit.style.pointerEvents=armed?'auto':'none';
+    globeHit.tabIndex=armed?0:-1; // keep it out of tab order while invisible/disabled
+    enter.style.opacity=Math.min(1,Math.max(0,(g-0.28)/0.32)).toFixed(3); // prominent once globe is in
+    // docked CTA: eases into the bottom-left corner as the hero text disappears (p≈0.16→0.29),
+    // collapsed to icon-only. Stays put for the rest of the page; retracts if you scroll back up.
+    if(dock){
+      const d=Math.min(1,Math.max(0,(p-0.16)/0.13));
+      dock.style.opacity=d.toFixed(3);
+      dock.style.transform='scale('+(1.5-0.5*d).toFixed(3)+')'; // starts big, shrinks into the corner circle
+      dock.style.pointerEvents=d>0.5?'auto':'none';
+    }
+    if(fitOver){ // the recruiters card lands a beat after the globe settles
+      const fo=Math.min(1,Math.max(0,(g-0.55)/0.3));
+      fitOver.style.opacity=fo.toFixed(3);
+      fitOver.style.pointerEvents=fo>0.5?'auto':'none';
+    }
+  }
+  // rotating focus keyword — held static under reduced-motion (the swap is JS, not a CSS animation)
+  if(!RM) (function(){const rot=document.getElementById('rot');
+    const words=['Kubernetes','Azure & AKS','AI Platforms','Developer Experience','Terraform','GitOps','Observability'];
+    let i=0; setInterval(()=>{i=(i+1)%words.length; rot.style.opacity=0;
+      setTimeout(()=>{rot.textContent=words[i]; rot.style.opacity=1;},300);},2200);})();
+  // scrollspy — the nav shows which section you're in (same active style as the other pages)
+  const spyLinks=[...document.querySelectorAll('nav .links a[href^="#"]')];
+  const spySecs=spyLinks.map(a=>document.getElementById(a.getAttribute('href').slice(1))).filter(Boolean);
+  function spy(){
+    let cur=null;
+    for(const s of spySecs) if(s.offsetTop<=scrollY+140) cur=s.id;
+    if(innerHeight+scrollY>=document.body.offsetHeight-80) cur=spySecs[spySecs.length-1].id; // bottom → last section
+    spyLinks.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+cur));
+  }
+  if(RM){ // static hero: keep only the nav scrollspy, never the scroll-scrub transforms
+    addEventListener('scroll',spy,{passive:true}); addEventListener('resize',spy,{passive:true}); spy();
+  } else {
+    addEventListener('scroll',()=>{requestScrub();spy();},{passive:true});
+    addEventListener('resize',()=>{measure();scrub();},{passive:true}); measure(); scrub(); spy();
+  }
+  const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // (nav + its mobile hamburger are injected by nav.js)
+</script>
+</body>
+</html>

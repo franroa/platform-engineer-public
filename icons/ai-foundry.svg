@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18">
+  <defs>
+    <linearGradient id="aifA" x1="3" y1="15" x2="15" y2="3" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0078d4"/>
+      <stop offset=".55" stop-color="#5ea0ef"/>
+      <stop offset="1" stop-color="#a78bfa"/>
+    </linearGradient>
+    <linearGradient id="aifB" x1="9" y1="17" x2="9" y2="7" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7c3aed"/>
+      <stop offset="1" stop-color="#c4b5fd"/>
+    </linearGradient>
+  </defs>
+  <!-- folded "foundry" ribbon -->
+  <path fill="url(#aifA)" d="M2 15.5 9 1.8l3.4 6.7-3.4 7Z"/>
+  <path fill="url(#aifB)" d="m12.4 8.5 3.6 7H9Z"/>
+  <!-- model spark -->
+  <circle cx="13.9" cy="4.4" r="1.15" fill="#e9d5ff"/>
+  <path fill="#e9d5ff" d="m13.9 1.9.5 1.4 1.4.5-1.4.5-.5 1.4-.5-1.4-1.4-.5 1.4-.5Z" opacity=".85"/>
+</svg>

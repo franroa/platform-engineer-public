@@ -1,0 +1,943 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<script>(function(){try{var t=localStorage.getItem('up-theme');if(!t)t=(window.matchMedia&&matchMedia('(prefers-color-scheme:light)').matches)?'light':'dark';document.documentElement.dataset.theme=t;}catch(e){}})();</script>
+<meta name="theme-color" content="#0a0f1e" data-dark="#0a0f1e" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<title>Terminal · Francisco Roa</title>
+<meta name="description" content="An interactive emulation of my tmux + Claude agent workflow — prefix keys, agentsview, statusline signals and a local CI pipeline." />
+<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+<link rel="canonical" href="https://franroa.github.io/platform-engineer/terminal.html" />
+<link rel="alternate" type="application/rss+xml" title="Francisco Roa — Posts" href="feed.xml" />
+<script defer src="analytics.js"></script>
+<script defer src="theme.js"></script>
+<!-- social cards -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Francisco Roa · Platform Engineering" />
+<meta property="og:title" content="My terminal, emulated — try it live" />
+<meta property="og:description" content="An interactive emulation of a tmux + AI-agent workflow: real keybindings, a local CI cockpit, agentsview and a guided tour." />
+<meta property="og:url" content="https://franroa.github.io/platform-engineer/terminal.html" />
+<meta property="og:image" content="https://franroa.github.io/platform-engineer/assets/og.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="My terminal, emulated — try it live" />
+<meta name="twitter:description" content="An interactive emulation of a tmux + AI-agent workflow: real keybindings, a local CI cockpit, agentsview and a guided tour." />
+<meta name="twitter:image" content="https://franroa.github.io/platform-engineer/assets/og.png" />
+<!-- /social -->
+<style>
+  :root{
+    --bg:#06090f; --bg2:#0a0f1c; --panel:rgba(13,19,36,.6); --line:rgba(130,160,230,.16);
+    --fg:#e8eefc; --muted:#8b97b8; --dim:#727c9f;
+    --cyan:#7fd4ff; --violet:#b69bff; --amber:#ffb36b; --green:#34d399; --red:#f87171; --yellow:#ffd166;
+  }
+  /* light theme — the PAGE goes light; the terminal window itself stays a dark terminal
+     (like a real terminal app on a light desktop): its vars are re-pinned dark below */
+  :root[data-theme="light"]{
+    --bg:#f6f8fc; --bg2:#eef2f9; --panel:rgba(255,255,255,.75); --line:rgba(30,52,96,.15);
+    --fg:#0f1a33; --muted:#54617e; --dim:#616c88;
+    --cyan:#0e79b0; --violet:#6d4fd0; --amber:#b45f17; --green:#0e9e6a; --red:#c03535; --yellow:#8a6d00;
+    color-scheme:light;
+  }
+  /* the dark-terminal palette, restored inside the window + its dark popups in light mode */
+  :root[data-theme="light"] :where(.term,.tourtip,.tourbox,.tourarr,.kmenu){
+    --panel:rgba(13,19,36,.6); --line:rgba(130,160,230,.16);
+    --fg:#e8eefc; --muted:#8b97b8; --dim:#727c9f;
+    --cyan:#7fd4ff; --violet:#b69bff; --amber:#ffb36b; --green:#34d399; --red:#f87171; --yellow:#ffd166;
+  }
+  :root[data-theme="light"] .pill-link{color:#0b3550;background:linear-gradient(135deg,rgba(255,255,255,.75),rgba(255,255,255,.55))}
+  *{margin:0;padding:0;box-sizing:border-box}
+  /* accessible keyboard focus — visible only for keyboard users, never on mouse click */
+  a:focus-visible,button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:6px}
+  a{color:inherit;text-decoration:none}
+  body{background:var(--bg);color:var(--fg);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;min-height:100vh}
+  .mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+
+  /* nav bar (markup + styling + mobile) lives in nav.js */
+
+  .page{max-width:1060px;margin:0 auto;padding:104px 20px 60px}
+  .kicker{font-size:12.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan);margin-bottom:12px;font-weight:600}
+  h1{font-size:clamp(26px,4vw,40px);font-weight:800;letter-spacing:-.02em;margin-bottom:12px}
+  /* headline row with the guided-tour pill (same look as the landing-page pill links) */
+  .title-row{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:12px}
+  .title-row h1{margin-bottom:0}
+  .pill-link{display:inline-flex;align-items:center;gap:9px;padding:9px 18px;border-radius:999px;
+    font-size:12.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#eaf7ff;
+    background:linear-gradient(135deg,rgba(127,212,255,.16),rgba(182,155,255,.16));
+    border:1px solid rgba(127,212,255,.6);backdrop-filter:blur(6px);cursor:pointer;font-family:inherit;
+    box-shadow:0 0 30px rgba(127,212,255,.3);animation:hintpulse 2.1s ease-in-out infinite;white-space:nowrap}
+  .pill-link .arr{animation:hintarr 1.5s ease-in-out infinite;display:inline-block}
+  @keyframes hintpulse{0%,100%{box-shadow:0 0 22px rgba(127,212,255,.25);border-color:rgba(127,212,255,.5)}
+    50%{box-shadow:0 0 44px rgba(127,212,255,.6);border-color:rgba(182,155,255,.85)}}
+  @keyframes hintarr{0%,100%{transform:translate(0,0)}50%{transform:translate(4px,-2px)}}
+  .lead{color:var(--muted);max-width:720px;margin-bottom:18px}
+  .lead a{color:var(--cyan)}
+  .keys{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+  .keys .kchip{border:1px solid var(--line);border-radius:9px;padding:6px 11px;font-size:12.5px;color:var(--muted);background:var(--panel);cursor:pointer}
+  .keys .kchip:hover{border-color:rgba(127,212,255,.5);color:var(--fg)}
+  .keys kbd{font-family:ui-monospace,monospace;color:var(--cyan);font-size:12px}
+
+  /* ---------- the terminal window ---------- */
+  /* the terminal reads as a raised, lit device: soft ambient cyan glow, a top highlight, deep drop shadow */
+  .term{border:1px solid rgba(127,212,255,.20);border-radius:14px;overflow:hidden;background:#050810;outline:none;
+    box-shadow:0 1px 0 rgba(255,255,255,.06) inset, 0 40px 90px -34px rgba(0,0,0,.8), 0 0 70px -26px rgba(127,212,255,.30);
+    transition:border-color .2s,box-shadow .2s}
+  .term.focus{border-color:rgba(127,212,255,.5);box-shadow:0 1px 0 rgba(255,255,255,.08) inset, 0 44px 96px -34px rgba(0,0,0,.82), 0 0 84px -22px rgba(127,212,255,.42)}
+  .tbar{display:flex;align-items:center;gap:8px;padding:9px 14px;background:linear-gradient(180deg,rgba(22,31,54,.95),rgba(10,15,28,.92));border-bottom:1px solid var(--line);font-size:12px;color:var(--dim)}
+  .tbar .dot{width:11px;height:11px;border-radius:50%}
+  .prefixind{margin-left:auto;font-family:ui-monospace,monospace;font-size:11.5px;color:var(--dim);border:1px solid transparent;border-radius:7px;padding:2px 8px;transition:.15s;cursor:pointer}
+  .prefixind.on{color:#06121f;background:var(--yellow);border-color:var(--yellow);font-weight:700}
+  .prefixind.auto{color:#06121f;background:var(--green);border-color:var(--green);font-weight:700}
+
+  .screen{position:relative;height:430px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.8px;line-height:1.5}
+  /* tasteful device character: faint static scanlines — above the panes, below the demo pop-ups (z5+) */
+  .screen::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:3;
+    background:repeating-linear-gradient(0deg,rgba(150,180,255,.022) 0 1px,transparent 1px 3px)}
+  .sess{position:absolute;inset:0;display:none}
+  .sess.on{display:flex}
+  /* one pane visible at a time — prefix-O cycles the session's panes */
+  .pane{flex:1;display:none;flex-direction:column;min-width:0;border:1px solid rgba(127,212,255,.3);margin:6px;border-radius:8px;overflow:hidden}
+  .pane.on{display:flex}
+  .pane .ptitle{font-size:10.5px;color:var(--dim);padding:4px 10px;border-bottom:1px solid rgba(130,160,230,.08);letter-spacing:.08em;text-transform:uppercase}
+  .pane .pbody{flex:1;overflow:hidden;padding:8px 12px;white-space:pre-wrap;word-break:break-word}
+  .pane .pbody .ln{display:block;min-height:19px}
+
+  .c-user{color:var(--cyan)} .c-dim{color:var(--dim)} .c-tool{color:var(--violet)}
+  .c-ok{color:var(--green)} .c-warn{color:var(--yellow)} .c-err{color:var(--red)} .c-mut{color:var(--muted)}
+  .spin{color:var(--amber)}
+
+  /* yas statusline at the bottom of the claude pane */
+  .yas{border-top:1px solid rgba(130,160,230,.12);padding:5px 12px;font-size:11.5px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap;background:rgba(10,15,28,.7)}
+  .yas b{color:var(--fg);font-weight:600}
+  .yas .ctx{color:var(--cyan)}
+  .yas.blink{animation:blink 1s steps(2,start) infinite}
+  @keyframes blink{0%{background:rgba(52,211,153,.22)}50%{background:rgba(10,15,28,.7)}}
+  .yas.blink-input{animation:blinkin 1s steps(2,start) infinite}
+  @keyframes blinkin{0%{background:rgba(255,209,102,.22)}50%{background:rgba(10,15,28,.7)}}
+
+  /* tmux status bar */
+  .tmuxbar{display:flex;align-items:center;gap:14px;padding:5px 12px;background:#0b1122;border-top:1px solid var(--line);font-family:ui-monospace,monospace;font-size:11.5px;color:var(--muted)}
+  .tmuxbar .tab{padding:1px 8px;border-radius:5px;cursor:pointer}
+  .tmuxbar .tab.cur{background:rgba(127,212,255,.18);color:var(--cyan);font-weight:700}
+  .tmuxbar .right{margin-left:auto;display:flex;gap:12px;align-items:center}
+  /* per-session local-pipeline state, rendered inside the session name (gctui tmux-poll style) */
+  .tmuxbar .tab .tci{margin-left:6px;font-weight:700}
+  .tmuxbar .tab .tci.ok{color:var(--green)} .tmuxbar .tab .tci.run{color:var(--amber)} .tmuxbar .tab .tci.idle{color:var(--dim)}
+  /* 🦊 remote-check badge lives INSIDE the claude pane (yas), not in status-right */
+  .gl.ok{color:var(--green)} .gl.run{color:var(--amber)} .gl.idle{color:var(--dim)}
+  .tmuxbar .todo{color:var(--muted)}
+  /* session-name blink: green = todo/work finished · red = agent needs input */
+  .tmuxbar .tab.blink-g{animation:tblinkg 1s steps(2,start) 4}
+  .tmuxbar .tab.blink-r{animation:tblinkr 1s steps(2,start) infinite}
+  @keyframes tblinkg{0%{color:#06121f;background:var(--green)}50%{color:var(--green);background:transparent}}
+  @keyframes tblinkr{0%{color:#06121f;background:var(--red)}50%{color:var(--red);background:transparent}}
+  .blink-once{animation:tblinkg 1s steps(2,start) 4;border-radius:4px}
+  /* change highlights: the element you just moved TO flashes cyan */
+  .tmuxbar .tab.hl{animation:tabhl 1s ease 1}
+  @keyframes tabhl{0%{background:rgba(127,212,255,.65);color:#06121f}60%{background:rgba(127,212,255,.3)}100%{background:rgba(127,212,255,.18)}}
+  .pane.hl{animation:panehl 1s ease 1}
+  @keyframes panehl{0%{border-color:var(--cyan);box-shadow:0 0 0 2px rgba(127,212,255,.55),0 0 30px rgba(127,212,255,.35)}
+    100%{border-color:rgba(127,212,255,.3);box-shadow:none}}
+
+  /* ---------- guided tour ---------- */
+  .tourbox{position:fixed;display:none;z-index:60;pointer-events:none;border:2px solid var(--cyan);border-radius:10px;
+    box-shadow:0 0 0 6000px rgba(4,7,14,.55),0 0 26px rgba(127,212,255,.55);transition:left .25s ease,top .25s ease,width .25s ease,height .25s ease}
+  .tourarr{position:fixed;display:none;z-index:62;font-size:22px;color:var(--cyan);pointer-events:none;
+    text-shadow:0 0 12px rgba(127,212,255,.8);animation:tourbob 1.2s ease-in-out infinite}
+  @keyframes tourbob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+  .tourtip{position:fixed;display:none;z-index:61;width:min(370px,92vw);background:#0c1326;border:1px solid rgba(127,212,255,.5);
+    border-radius:12px;padding:14px 16px;box-shadow:0 24px 60px rgba(0,0,0,.6);font-size:13.5px;--ax:40px}
+  .tourtip::before{content:"";position:absolute;width:12px;height:12px;background:#0c1326;transform:rotate(45deg);left:var(--ax);margin-left:-6px}
+  .tourtip.below::before{top:-7px;border-left:1px solid rgba(127,212,255,.5);border-top:1px solid rgba(127,212,255,.5)}
+  .tourtip.above::before{bottom:-7px;border-right:1px solid rgba(127,212,255,.5);border-bottom:1px solid rgba(127,212,255,.5)}
+  .tourtip h5{color:var(--cyan);font-size:13px;margin-bottom:6px;display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+  .tourtip h5 .stp{color:var(--dim);font-weight:600;font-family:ui-monospace,monospace;font-size:11px}
+  .tourtip p{color:#c4cee6;margin-bottom:10px}
+  .tourtip .btns{display:flex;gap:8px;justify-content:flex-end}
+  .tourtip button{font-family:inherit;font-size:12px;font-weight:600;color:var(--fg);background:rgba(127,212,255,.1);
+    border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:pointer}
+  .tourtip button:hover{border-color:rgba(127,212,255,.6)}
+  .tourtip button.pri{color:#06121f;background:linear-gradient(135deg,var(--cyan),var(--violet) 70%);border:0;font-weight:700}
+
+  /* gctui TUI (pane + popup): Local/Remote tabs, boxed stages joined by arrows */
+  .gtabs{display:flex;align-items:center;gap:10px;margin:2px 0 10px;font-weight:700}
+  .gtabs .gtab{padding:1px 10px;color:var(--dim)}
+  .gtabs .gtab.on{background:var(--green);color:#06121f;border-radius:3px}
+  .gtabs .gwho{margin-left:auto;font-weight:400;color:var(--dim);font-size:11px}
+  .gflow{display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap;border:1px solid rgba(130,160,230,.22);border-radius:8px;padding:12px}
+  .gstage{border:1px solid rgba(130,160,230,.4);border-radius:8px;padding:7px 12px;min-width:96px}
+  .gstage .gjob{display:block;white-space:nowrap;padding:0 4px}
+  .gstage .gjob.sel{background:rgba(52,211,153,.3);border-radius:3px}
+  .garr{align-self:center;color:var(--green)}
+  .gmeta{margin-top:10px;line-height:1.6}
+
+  /* gctui popup (prefix-G) */
+  .gp{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(860px,96%);min-height:78%;background:#0b1122;border:1px solid rgba(252,109,38,.5);
+    border-radius:12px;padding:18px 22px;font-family:ui-monospace,monospace;font-size:13px;box-shadow:0 30px 70px rgba(0,0,0,.6);display:flex;flex-direction:column}
+  .gp>div:nth-child(2){flex:1}
+  .gp h4{color:var(--amber);font-size:12px;margin-bottom:9px}
+  .gp .hint{margin-top:10px;color:var(--dim);font-size:11px}
+
+  /* overlays: which-key + agentsview */
+  .overlay{position:absolute;inset:0;background:rgba(4,7,14,.55);backdrop-filter:blur(2px);display:none;z-index:5}
+  .overlay.on{display:block}
+  .wk{position:absolute;left:0;right:0;bottom:0;background:#0b1122;border-top:1px solid var(--line);padding:12px 18px;font-family:ui-monospace,monospace;font-size:12.5px}
+  .wk h4{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
+  .wk .row{display:flex;gap:22px;flex-wrap:wrap}
+  .wk .it{color:var(--muted)} .wk .it kbd{color:var(--yellow);margin-right:7px}
+  .wk .it.hot kbd{color:var(--cyan)} .wk .it.hot{color:var(--fg)}
+  .av{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(760px,96%);min-height:78%;background:#0b1122;border:1px solid rgba(127,212,255,.35);
+    border-radius:12px;padding:18px 22px;font-family:ui-monospace,monospace;font-size:13px;box-shadow:0 30px 70px rgba(0,0,0,.6);display:flex;flex-direction:column}
+  .av #av-rows{flex:1}
+  .av h4{color:var(--cyan);font-size:12px;margin-bottom:9px}
+  .av .q{display:flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:7px;padding:4px 10px;margin-bottom:8px;color:var(--muted)}
+  .av .q.on{border-color:rgba(255,209,102,.55)}
+  .av .q .cur{display:inline-block;width:7px;height:14px;background:var(--yellow);opacity:0;vertical-align:-2px}
+  .av .q.on .cur{opacity:1;animation:qblink 1s steps(2,start) infinite}
+  @keyframes qblink{50%{opacity:0}}
+  .av .arow{display:flex;gap:14px;padding:4px 8px;border-radius:6px;color:var(--muted)}
+  .av .arow.sel{background:rgba(127,212,255,.14);color:var(--fg)}
+  .av .adet{margin:2px 8px 8px 26px;padding:8px 12px;border-left:2px solid rgba(127,212,255,.35);color:var(--muted);font-size:11.8px;line-height:1.6}
+  .av .adet b{color:var(--fg);font-weight:600}
+  .av .grade-A{color:var(--green)} .av .grade-B{color:var(--yellow)} .av .grade-C{color:var(--red)}
+  .av .hint{margin-top:10px;color:var(--dim);font-size:11px}
+
+  /* screenkey-style key display: every (real or demoed) keypress floats up from the bottom */
+  .skey{position:absolute;left:50%;bottom:44px;transform:translateX(-50%);z-index:9;display:flex;gap:8px;pointer-events:none}
+  .skey .k{font-family:ui-monospace,monospace;font-size:15px;font-weight:700;color:#eaf7ff;background:rgba(10,16,32,.92);
+    border:1px solid rgba(127,212,255,.55);border-radius:9px;padding:6px 12px;box-shadow:0 8px 24px rgba(0,0,0,.5);
+    animation:skfade 1.5s ease forwards}
+  @keyframes skfade{0%{opacity:0;transform:translateY(8px)}12%,70%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-4px)}}
+  /* demoed keys HOLD until the example finishes (no fade) */
+  .skey .k.hold{animation:skpop .25s ease}
+  @keyframes skpop{0%{opacity:0;transform:translateY(8px)}100%{opacity:1;transform:none}}
+
+  /* keys-demo selection menu: pick ONE keybinding, watch ONLY that example */
+  .kwrap{position:relative;display:inline-flex}
+  .kmenu{position:absolute;top:calc(100% + 10px);left:0;z-index:70;display:none;min-width:300px;
+    background:#0c1326;border:1px solid rgba(127,212,255,.5);border-radius:12px;padding:8px;
+    box-shadow:0 24px 60px rgba(0,0,0,.6)}
+  .kmenu.on{display:block}
+  .kmenu .kh{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);padding:4px 10px 8px}
+  .kmenu .ki{display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:8px;cursor:pointer;
+    font-size:13px;color:var(--muted)}
+  .kmenu .ki:hover{background:rgba(127,212,255,.1);color:var(--fg)}
+  .kmenu .ki kbd{font-family:ui-monospace,monospace;color:var(--cyan);font-size:12px;background:rgba(127,212,255,.08);
+    border:1px solid var(--line);border-radius:6px;padding:2px 8px;white-space:nowrap;min-width:118px;text-align:center}
+
+  .note{margin-top:16px;color:var(--dim);font-size:12.5px}
+  footer{padding:38px 24px;border-top:1px solid var(--line);text-align:center;color:var(--muted);font-size:13px;margin-top:50px}
+  @media(max-width:760px){.sess.on{flex-direction:column}.screen{height:620px}}
+
+  /* accessibility: still the decorative animation for users who ask for reduced motion */
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;
+      transition-duration:.01ms!important;scroll-behavior:auto!important}
+  }
+</style>
+</head>
+<body>
+  <script src="nav.js" data-page="terminal"></script>
+
+  <main class="page">
+    <div class="kicker">Terminal · live emulation</div>
+    <div class="title-row">
+      <h1>How my terminal works — try it.</h1>
+      <button class="pill-link" id="tourbtn" type="button">Guided tour <span class="arr" aria-hidden="true">➜</span></button>
+      <span class="kwrap">
+        <button class="pill-link" id="kdemobtn" type="button">Keys demo <span class="arr" aria-hidden="true">⌨</span></button>
+        <div class="kmenu" id="kmenu" role="menu"></div>
+      </span>
+    </div>
+    <p class="lead">A small emulation of my daily cockpit: a <b>Claude agent</b> working in one tmux pane, a
+      <b>local CI pipeline</b> (gctui) in the other, the <b>yas statusline</b> with my wrapper badges, and the real
+      keybindings. Click the terminal, then drive it with the keys below — the <b>prefix is applied
+      for you</b> (press <span class="mono">o</span>/<span class="mono">n</span>/<span class="mono">p</span>/<span class="mono">Space</span>/<span class="mono">G</span> directly; click the green
+      <span class="mono">prefix: auto</span> indicator for the real Ctrl-b behaviour) — or use the chips.
+      The concepts behind it are in the <a href="writing.html#tag=Workflow">Workflow articles</a>.</p>
+    <div class="keys">
+      <span class="kchip" data-act="prefix" id="chip-prefix"><kbd>Ctrl-b</kbd> prefix: auto ✓</span>
+      <span class="kchip" data-act="o"><kbd>prefix o</kbd> next pane</span>
+      <span class="kchip" data-act="n"><kbd>prefix n</kbd> next session</span>
+      <span class="kchip" data-act="p"><kbd>prefix p</kbd> prev session</span>
+      <span class="kchip" data-act="space"><kbd>prefix Space</kbd> which-key</span>
+      <span class="kchip" data-act="K"><kbd>… K</kbd> agentsview</span>
+      <span class="kchip" data-act="G"><kbd>prefix G</kbd> gctui</span>
+      <span class="kchip" data-act="gtab"><kbd>Tab</kbd> gctui local⇄remote</span>
+    </div>
+
+    <div class="term" id="term" tabindex="0" aria-label="Interactive terminal emulation">
+      <div class="tbar">
+        <span class="dot" style="background:#f87171"></span><span class="dot" style="background:#ffd166"></span><span class="dot" style="background:#34d399"></span>
+        <span class="mono">tmux · aoe</span>
+        <span class="prefixind" id="prefixind">prefix</span>
+      </div>
+      <div class="screen" id="screen">
+
+        <!-- session 0: work (claude + gctui panes — prefix-O cycles) -->
+        <div class="sess on" id="s0">
+          <div class="pane on" id="pane-claude">
+            <div class="ptitle">claude · up-network · 🌳 personal · pane 1/2 — prefix-O → gctui</div>
+            <div class="pbody" id="claude-body"></div>
+            <div class="yas" id="yas">
+              <span>🌳 <b>personal</b></span><span>📄 <b id="yfiles">0</b></span><span>🧠 <b>4</b></span>
+              <span>⏵ <b>Opus</b></span><span class="ctx" id="yctx">▱▱▱▱ 8%</span>
+              <span class="gl idle" id="gl-glyph">🦊 —</span>
+              <span class="c-dim" id="ydir">~/dev/up-network ·  main</span>
+            </div>
+          </div>
+          <div class="pane" id="pane-gctui">
+            <div class="ptitle">gctui · local⇄remote pipelines (press Tab) · pane 2/2 — prefix-O → claude</div>
+            <div class="pbody" id="gctui-body"></div>
+          </div>
+        </div>
+
+        <!-- session 1: map (2 panes — prefix-O cycles) -->
+        <div class="sess" id="s1">
+          <div class="pane on" id="pane-map"><div class="ptitle">platform map · live sync · pane 1/2 — prefix-O → reconcile</div>
+            <div class="pbody"><span class="ln c-mut">$ curl -s localhost:8787/health</span>
+<span class="ln c-ok">{ ok:true, group:"nimbus/ultraplatform", live:true }</span>
+<span class="ln"> </span>
+<span class="ln c-mut">[sync #142] 103 repos · argocd: FOUND · unmapped: 0 · 12:04:31</span>
+<span class="ln c-dim">views: Identity · Network · VPN · Security &amp; OPA · Kubernetes · Helm Charts …</span>
+<span class="ln c-dim">regions: eu01 · us01 · ca01   tiers: live · sandbox · test</span>
+<span class="ln"> </span>
+<span class="ln c-mut">→ the 3D map renders this state: <span class="c-user">ultraplatform.html</span></span></div></div>
+          <div class="pane" id="pane-map2"><div class="ptitle">cli · reconcile watch · pane 2/2 — prefix-O → map</div>
+            <div class="pbody"><span class="ln c-mut">$ node cli.mjs --once</span>
+<span class="ln c-dim">views 14/14 mapped · repos 30 · security scan ✓</span>
+<span class="ln c-warn">⚠ drift: 2 unmapped (legacy/old-watchtower, tools/rune-scratchpad)</span>
+<span class="ln c-warn">⚠ 1 expected-but-absent: AI / ai-gateway</span>
+<span class="ln"> </span>
+<span class="ln c-mut">→ node cli.mjs --suggest   <span class="c-dim">(LLM plan → view-map overlay)</span></span></div></div>
+        </div>
+
+        <!-- session 2: logs (2 panes) -->
+        <div class="sess" id="s2">
+          <div class="pane on" id="pane-logs"><div class="ptitle">logs · loki · pane 1/2 — prefix-O → alerts</div>
+            <div class="pbody" id="logs-body"><span class="ln c-dim">{namespace="up-observability"} …</span></div></div>
+          <div class="pane" id="pane-logs2"><div class="ptitle">alerts · mimir · pane 2/2 — prefix-O → logs</div>
+            <div class="pbody"><span class="ln c-mut">ALERTS · firing 1 · pending 2</span>
+<span class="ln c-err">🔥 HighErrorRate      tenant-a/api        5m</span>
+<span class="ln c-warn">⏳ PodRestartLoop     up-observability    2m</span>
+<span class="ln c-warn">⏳ CertExpirySoon     ingress · eu01      13d</span>
+<span class="ln"> </span>
+<span class="ln c-mut">$ amtool silence add alertname=CertExpirySoon -d 24h</span>
+<span class="ln c-dim">→ waiting on the loki-labels cleanup (UP-133) before tuning these</span></div></div>
+        </div>
+
+        <!-- session 3: claude in a docker sandbox (2 panes) -->
+        <div class="sess" id="s3">
+          <div class="pane on" id="pane-sbx">
+            <div class="ptitle">claude · docker sandbox 🐳 · pane 1/2 — prefix-O → inspect</div>
+            <div class="pbody" id="sbx-body"><span class="ln c-user">❯ sbx run claude ~/dev/up-dep-bumps</span>
+<span class="ln c-dim">✻ sandbox from template image · mounts: project + profile + vault (pre-declared)</span>
+<span class="ln c-mut">🐳 hardening: --cap-drop ALL · no-new-privileges · network: sbx-net · creds TTL 55m</span>
+<span class="ln"> </span>
+<span class="ln c-tool">⏺ Bash(npm audit fix) — contained; host filesystem not visible</span>
+<span class="ln c-ok">☑ todo · bump 3 vulnerable transitive deps</span>
+<span class="ln c-dim">⎿ results come back as a git remote: git fetch sandbox-up-dep-bumps</span></div>
+            <div class="yas"><span>🐳 <b>sandbox</b></span><span>🌳 <b>personal</b></span><span>📄 <b>6/9</b></span><span>🧠 <b>2</b></span><span>⏵ <b>Sonnet</b></span><span class="ctx">▰▱▱▱ 23%</span></div>
+          </div>
+          <div class="pane" id="pane-sbx2"><div class="ptitle">sbx · inspect · pane 2/2 — prefix-O → claude</div>
+            <div class="pbody"><span class="ln c-mut">$ sbx inspect up-dep-bumps</span>
+<span class="ln c-ok">CapDrop: ALL · SecurityOpt: no-new-privileges</span>
+<span class="ln c-dim">Mounts: project rw · profile ro · vault rw</span>
+<span class="ln c-dim">Network: sbx-net · egress via proxy only</span>
+<span class="ln c-warn">Creds: federated, expire in 42m</span>
+<span class="ln"> </span>
+<span class="ln c-mut">$ git fetch sandbox-up-dep-bumps</span>
+<span class="ln c-ok">✓ 3 commits — review on the host, merge when green</span></div></div>
+        </div>
+
+        <!-- session 4: tenant onboarding (namespace claim → route → sidecar; 2 panes) -->
+        <div class="sess" id="s4">
+          <div class="pane on" id="pane-tenant">
+            <div class="ptitle">claude · onboard tenant wingtip · pane 1/2 — prefix-O → argo watch</div>
+            <div class="pbody"><span class="ln c-user">❯ claude "onboard tenant wingtip: namespace + route + SSO sidecar"</span>
+<span class="ln c-dim">✻ a new tenant is three files and one MR — the gateway is never touched</span>
+<span class="ln"> </span>
+<span class="ln c-tool">⏺ Write(up-namespaces/namespaces/wingtip.yml)     <span class="c-dim">tenant: wingtip · clusters: eu01 us01</span></span>
+<span class="ln c-tool">⏺ Write(up-gateway/routes/wingtip-shop.yaml)      <span class="c-dim">HTTPRoute · parentRef shared-gateway → :4180</span></span>
+<span class="ln c-tool">⏺ Write(up-gateway/workloads/wingtip-shop.yaml)   <span class="c-dim">app :8080 + oauth2-proxy sidecar :4180</span></span>
+<span class="ln c-tool">⏺ Bash(gctui run validate) — plan → OPA gate → exit 0</span>
+<span class="ln c-ok">☑ todo · MR ready: feat/tenant-wingtip</span>
+<span class="ln c-dim">⎿ ONE shared gateway per cluster — tenants attach routes, they don't add doors</span></div>
+          </div>
+          <div class="pane" id="pane-tenant2"><div class="ptitle">argo · publish path watch · pane 2/2 — prefix-O → claude</div>
+            <div class="pbody"><span class="ln c-mut">$ argocd app wait wingtip --sync</span>
+<span class="ln c-ok">✓ ns wingtip created (claim: tenant: wingtip)</span>
+<span class="ln c-ok">✓ HTTPRoute wingtip-shop attached — parentRef gateway/shared-gateway</span>
+<span class="ln c-ok">✓ deploy wingtip-shop 2/2 ready (app + oauth2-proxy sidecar)</span>
+<span class="ln"> </span>
+<span class="ln c-mut">$ curl -sI https://shop.wingtip.example/ | head -1</span>
+<span class="ln c-warn">HTTP/2 302 → login (SSO — the Service only exposes :4180)</span>
+<span class="ln c-dim">a route at the app port would show up as drift, not as traffic</span></div></div>
+        </div>
+
+        <!-- session 5: gateway chaos rehearsal (litmus pod-kill + the probe staying green; 2 panes) -->
+        <div class="sess" id="s5">
+          <div class="pane on" id="pane-chaos">
+            <div class="ptitle">litmus · gateway pod-kill · pane 1/2 — prefix-O → probe</div>
+            <div class="pbody"><span class="ln c-user">❯ kubectl apply -f up-gateway/chaos/gateway-pod-kill.yaml</span>
+<span class="ln c-dim">✻ the scary one, on purpose: kill the ONE gateway's pods while users watch</span>
+<span class="ln"> </span>
+<span class="ln c-mut">chaosengine.litmuschaos.io/gateway-pod-kill created</span>
+<span class="ln c-tool">⏺ pod-delete · ns gateway · app.kubernetes.io/name=traefik · 120s, a kill every 20s</span>
+<span class="ln c-err">✂ traefik-7d4b9-x2kfp killed</span><span class="ln c-ok">↻ rescheduled (PDB minAvailable: 1 held)</span>
+<span class="ln c-err">✂ traefik-7d4b9-m9qwl killed</span><span class="ln c-ok">↻ rescheduled (zone-2 replica kept serving)</span>
+<span class="ln"> </span>
+<span class="ln c-ok">☑ verdict: Pass — steady-state hypothesis held for the full 120s</span>
+<span class="ln c-dim">⎿ a failed probe here is a design bug filed against up-gateway — not an incident</span></div>
+          </div>
+          <div class="pane" id="pane-chaos2"><div class="ptitle">probe · through the gateway · pane 2/2 — prefix-O → litmus</div>
+            <div class="pbody"><span class="ln c-mut">$ watch -n1 curl -so /dev/null -w '%{http_code}' https://status.internal.nimbus.example/healthz</span>
+<span class="ln c-ok">200 200 200 200 200 200 200 200 200 200</span>
+<span class="ln c-ok">200 200 200 200 200 200 200 200 200 200   ← pods dying the whole time</span>
+<span class="ln c-ok">200 200 200 200 200 200 200 200 200 200</span>
+<span class="ln"> </span>
+<span class="ln c-mut">$ kubectl -n gateway get pdb traefik</span>
+<span class="ln c-dim">NAME      MIN AVAILABLE   ALLOWED DISRUPTIONS   AGE</span>
+<span class="ln c-dim">traefik   1               1                     212d</span>
+<span class="ln c-warn">amber, not red: degraded-but-serving is a state you engineer, then rehearse</span></div></div>
+        </div>
+
+        <!-- overlays -->
+        <div class="overlay" id="ov-wk">
+          <div class="wk">
+            <h4>which-key · agents &amp; workflow</h4>
+            <div class="row">
+              <span class="it hot"><kbd>K</kbd>agentsview</span>
+              <span class="it hot"><kbd>G</kbd>gctui</span>
+              <span class="it"><kbd>s</kbd>swarm</span>
+              <span class="it"><kbd>r</kbd>MR review</span>
+              <span class="it"><kbd>m</kbd>monitor</span>
+              <span class="it"><kbd>w</kbd>workflow</span>
+              <span class="it"><kbd>Esc</kbd>close</span>
+            </div>
+          </div>
+        </div>
+        <div class="overlay" id="ov-av">
+          <div class="av">
+            <h4>agentsview · sessions <span class="c-dim">(reads transcripts — agents are never interrupted)</span></h4>
+            <div class="q" id="av-q"><span class="c-warn">/</span><span id="av-query"></span><span class="cur"></span></div>
+            <div id="av-rows"></div>
+            <div class="hint">j/k move · <span class="c-warn">/</span> search · Tab expand summary · <span class="c-warn">o</span> attach · Esc close</div>
+          </div>
+        </div>
+        <div class="overlay" id="ov-gp">
+          <div class="gp">
+            <h4>gctui · local pipeline <span class="c-dim">(prefix-G popup — same state as the pane)</span></h4>
+            <div id="gp-body"></div>
+            <div class="hint">Esc close</div>
+          </div>
+        </div>
+        <div class="skey" id="skey" aria-hidden="true"></div>
+      </div>
+
+      <div class="tmuxbar">
+        <span class="tab cur" data-s="0" id="tab0">0:UP-142·helm-view<span class="tci" id="tci0"></span></span>
+        <span class="tab" data-s="1" id="tab1">1:UP-97·map-3d<span class="tci ok">✓</span></span>
+        <span class="tab" data-s="2" id="tab2">2:UP-133·obs-logs<span class="tci idle">—</span></span>
+        <span class="tab" data-s="3" id="tab3">3:UP-150·sbx-deps<span class="tci idle">—</span></span>
+        <span class="tab" data-s="4" id="tab4">4:UP-161·tenant-onb<span class="tci ok">✓</span></span>
+        <span class="tab" data-s="5" id="tab5">5:UP-163·gw-chaos<span class="tci ok">✓</span></span>
+        <span class="right" id="statusright">
+          <span class="todo" id="todo-glyph">☑ 0/3</span>
+          <span id="clock">12:04</span>
+        </span>
+      </div>
+    </div>
+
+    <p class="note">This is a simplified emulation — the real setup is tmux + which-key menus, <b>agentsview</b>
+      (a context inspector reading Claude transcript JSONL), <b>aoe</b> (session/worktree/profile manager),
+      <b>gctui</b> (local↔remote GitLab CI cockpit) and <b>yas</b> with a wrapper that adds the 📄/🧠/profile/🐳 badges.
+      Read the details: <a class="c-user" href="writing.html#read=blog-agent-cockpit">cockpit</a> ·
+      <a class="c-user" href="writing.html#read=blog-claude-signals">signals</a> ·
+      <a class="c-user" href="writing.html#read=blog-agent-of-empires">aoe</a> ·
+      <a class="c-user" href="writing.html#read=blog-local-remote-ci">local CI</a>.</p>
+  </main>
+
+  <!-- guided tour: spotlight + bobbing arrow + tooltip -->
+  <div class="tourbox" id="tourbox"></div>
+  <div class="tourarr" id="tourarr">⬇</div>
+  <div class="tourtip" id="tourtip">
+    <h5><span id="tourtitle"></span><span class="stp" id="tourstep"></span></h5>
+    <p id="tourtext"></p>
+    <div class="btns">
+      <button type="button" id="tour-end">End</button>
+      <button type="button" id="tour-prev">← Back</button>
+      <button type="button" class="pri" id="tour-next">Next →</button>
+    </div>
+  </div>
+
+  <footer><p>© <span id="yr"></span> <span style="font-weight:700">Francisco Roa</span> · Senior (AI) Platform Engineer</p></footer>
+
+<script>
+  document.getElementById('yr').textContent=new Date().getFullYear();
+  const $=id=>document.getElementById(id);
+  const term=$('term'), screen=$('screen');
+
+  // ---------- clock ----------
+  const tick=()=>{const d=new Date();$('clock').textContent=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');};
+  tick(); setInterval(tick,15000);
+
+  // ---------- claude agent emulation ----------
+  const cbody=$('claude-body'), yas=$('yas');
+  // blink helpers: the SESSION NAME blinks — green on finished work, red while input is needed
+  function blinkEl(el){el.classList.remove('blink-once');void el.offsetWidth;el.classList.add('blink-once');}
+  function tabGreen(i){const t=$('tab'+i);t.classList.remove('blink-g');void t.offsetWidth;t.classList.add('blink-g');}
+  function tabRed(i,on){$('tab'+i).classList.toggle('blink-r',on);}
+
+  // the agent runs my pipeline-tdd skill, which drives gctui — meta: {todo, ci, input, inputDone, pipeline, done}
+  const SCRIPT=[
+    ['c-user','❯ /pipeline-tdd — make the helm-view job pass',700],
+    ['c-dim','✻ Skill(pipeline-tdd) — run the job locally until green, then the whole pipeline, then MR',1000],
+    ['c-tool','⏺ Read(config/platform.config.json)',700],
+    ['c-tool','⏺ Bash(curl -s localhost:8787/live | jq .views)',900],
+    ['c-mut','  ⎿ "Helm Charts": { repos: [] }   ← empty, repo name mismatch',800],
+    ['c-ok','☑ todo · diagnose why the view is empty',600,{todo:1}],
+    ['c-tool','⏺ Edit(config/platform.config.json)  up-charts → up-helm-charts',900],
+    ['c-ok','☑ todo · fix the view mapping',600,{todo:1}],
+    ['c-tool','⏺ Bash(gctui run validate)',400,{ci:'run'}],
+    ['spin','  ⟳ validate — running locally…',1600],
+    ['c-ok','  ⎿ validate ✓ (exit 0)',700,{ci:'ok'}],
+    ['c-warn','⚠ needs input — job is green; run the full pipeline + open the MR? (y/n)',3200,{input:true}],
+    ['c-user','❯ y',500,{inputDone:true}],
+    ['c-tool','⏺ Bash(gctui run-pipeline)   → watch it: prefix-O or prefix-G',300,{pipeline:true}],
+    ['c-ok','☑ todo · full local pipeline green · remote !42 ✓',600,{todo:1}],
+    ['c-ok','✓ Done — view populated · 1 file changed · MR !42',400],
+  ];
+  let ctx=8, todosDone=0;
+  const TODOS_TOTAL=3;
+  function bar(p){const f=Math.round(p/25);return '▰'.repeat(f)+'▱'.repeat(4-f)+' '+p+'%';}
+  function agentLoop(i=0){
+    if(i===0){cbody.innerHTML='';yas.classList.remove('blink','blink-input');ctx=8;todosDone=0;
+      $('yfiles').textContent='0';$('todo-glyph').textContent='☑ 0/'+TODOS_TOTAL;
+      const t0=$('tci0');t0.textContent='';t0.className='tci';
+      $('gl-glyph').textContent='🦊 —';$('gl-glyph').className='gl idle';
+      if(typeof gcReset==='function')gcReset();}
+    if(i>=SCRIPT.length){
+      yas.classList.add('blink');                       // done → the yas strip blinks (in-pane)
+      setTimeout(()=>agentLoop(0),7000); return;
+    }
+    const [cls,txt,dur,meta]=SCRIPT[i], m=meta||{};
+    const ln=document.createElement('span');ln.className='ln '+cls;ln.textContent=txt;cbody.appendChild(ln);
+    while(cbody.children.length>12)cbody.removeChild(cbody.firstChild);
+    if(m.todo){todosDone++;$('todo-glyph').textContent='☑ '+todosDone+'/'+TODOS_TOTAL;}
+    if(m.ci==='run'){$('tci0').textContent='⟳';$('tci0').className='tci run';
+      GC.flat[0][0].sl='run';GC.sel=[0,0];GC.note='❯ gctui run validate';renderGctui();}
+    if(m.ci==='ok'){$('tci0').textContent='✓';$('tci0').className='tci ok';
+      GC.flat[0][0].sl='ok';GC.note='validate ✓ (exit 0)';renderGctui();}
+    if(m.input){yas.classList.add('blink-input');}       // blocked → the yas strip blinks yellow (in-pane)
+    if(m.inputDone){yas.classList.remove('blink-input');}
+    ctx=Math.min(64,ctx+4);$('yctx').textContent=bar(ctx);
+    $('yfiles').textContent=Math.min(14,(i+1)*2)+'/18';
+    if(m.pipeline){pipeLoop(0,()=>agentLoop(i+1));return;}              // the skill runs gctui; resume when remote ✓
+    setTimeout(()=>agentLoop(i+1),dur);
+  }
+
+  // ---------- gctui — the real TUI, emulated: Local/Remote tabs (d), boxed stages with arrows, remote check ----------
+  const gbody=$('gctui-body');
+  // each job: sl = status in the Local run, sr = status in the Remote (!42) pipeline
+  const GC={mode:'local', sel:[0,0], mr:'—', mrCls:'c-dim',
+    note:'idle — the agent drives me via /pipeline-tdd',
+    stages:[{jobs:[{n:'validate'}]},
+            {jobs:[{n:'plan'},{n:'opa-check'}]},
+            {jobs:[{n:'test'},{n:'secret_detection'}]},
+            {jobs:[{n:'apply'}]}]};
+  GC.flat=GC.stages.flatMap((st,si)=>st.jobs.map((j,ji)=>{j.sl='idle';j.sr='idle';return [j,si,ji];}));
+  const GICON={idle:['○','c-dim'],run:['⟳','spin'],ok:['✓','c-ok']};
+  function renderGctui(){
+    const remote=GC.mode==='remote';
+    let h='<div class="gtabs"><span class="gtab'+(remote?'':' on')+'">Local</span>'
+      +'<span class="gtab'+(remote?' on':'')+'">Remote</span>'
+      +'<span class="gwho">up-network ·  fix/helm-charts-view'+(remote?' · !42':'')+'</span></div>';
+    h+='<div class="gflow">';
+    GC.stages.forEach((st,si)=>{
+      if(si)h+='<span class="garr">→</span>';
+      h+='<div class="gstage">'+st.jobs.map((j,ji)=>{
+        const [ic,cls]=GICON[remote?j.sr:j.sl];
+        const sel=(si===GC.sel[0]&&ji===GC.sel[1])?' sel':'';
+        const name=j.n==='apply'?('apply · '+GC.mode):j.n;
+        return '<span class="gjob'+sel+'"><span class="'+cls+'">'+ic+'</span> '+name+'</span>';
+      }).join('')+'</div>';
+    });
+    h+='</div>';
+    h+='<div class="gmeta"><span class="c-dim">D diff Local↔Remote · 0 divergences · vars 12 local / 12 remote</span><br>'
+      +'🦊 remote: <span class="'+GC.mrCls+'">'+GC.mr+'</span><br><span class="c-mut">'+GC.note+'</span></div>';
+    h+='<div class="gmeta c-dim">r run · P pipeline · <span class="c-warn">Tab</span> Local⇄Remote · D diff · j/k move · q quit</div>';
+    gbody.innerHTML=h;
+  }
+  function gcToggle(){GC.mode=GC.mode==='local'?'remote':'local';
+    GC.note=GC.mode==='local'?'Tab → Local: the same pipeline run by gitlab-ci-local on this laptop'
+                             :'Tab → Remote: the MR pipeline on GitLab (deploys for real · GCTUI_DEPLOY)';
+    renderGctui();}
+  function gcMove(dir){const n=GC.flat.length;
+    let i=GC.flat.findIndex(([,si,ji])=>si===GC.sel[0]&&ji===GC.sel[1]);
+    i=(i+dir+n)%n;GC.sel=[GC.flat[i][1],GC.flat[i][2]];renderGctui();}
+  function gcReset(){GC.mode='local';GC.sel=[0,0];GC.mr='—';GC.mrCls='c-dim';
+    GC.note='idle — the agent drives me via /pipeline-tdd';
+    GC.flat.forEach(([j])=>{j.sl='idle';j.sr='idle';});renderGctui();}
+  function pipeLoop(j,onDone){
+    if(j===0){GC.flat.forEach(([x])=>{x.sl='idle';x.sr='idle';});GC.mr='—';GC.mrCls='c-dim';
+      GC.note='❯ gctui run-pipeline';renderGctui();
+      $('tci0').textContent='⟳';$('tci0').className='tci run';
+      $('gl-glyph').textContent='🦊 —';$('gl-glyph').className='gl idle';}
+    if(j>=GC.flat.length){
+      GC.note='● pipeline passed (Local) — safe to push';renderGctui();
+      $('tci0').textContent='✓';$('tci0').className='tci ok';
+      setTimeout(()=>remoteCheck(onDone),1400);return;
+    }
+    const [job,si,ji]=GC.flat[j];job.sl='run';GC.sel=[si,ji];renderGctui();
+    setTimeout(()=>{job.sl='ok';pipeLoop(j+1,onDone);},1100+j*250);
+  }
+  // the GitLab check: remote-poll watches the real MR pipeline after push
+  function remoteCheck(onDone){
+    GC.flat.forEach(([x])=>x.sr='run');
+    GC.mr='!42 ⟳ pipeline running — remote-poll watching…';GC.mrCls='spin';
+    GC.note='❯ git push && glab mr create → !42   (d shows the Remote tab)';renderGctui();
+    $('gl-glyph').textContent='🦊 !42 ⟳';$('gl-glyph').className='gl run';
+    setTimeout(()=>{
+      GC.flat.forEach(([x])=>x.sr='ok');
+      GC.mr='!42 ✓ passed — the local prediction held';GC.mrCls='c-ok';renderGctui();
+      $('gl-glyph').textContent='🦊 !42 ✓';$('gl-glyph').className='gl ok';blinkEl($('gl-glyph'));
+      if(onDone)setTimeout(onDone,800);
+    },3800);
+  }
+  renderGctui();
+  agentLoop();  // one storyline: the agent's skill drives the pipeline
+
+  // ambient session-name blinks — sparse, so they read as signals, not noise:
+  // session 0 blinks GREEN now and then (work finished), session 2 RED now and then (agent waiting)
+  setTimeout(()=>{tabGreen(0);setInterval(()=>tabGreen(0),16000);},5000);
+  setTimeout(()=>{const red=()=>{tabRed(2,true);setTimeout(()=>tabRed(2,false),3200);};
+    red();setInterval(red,23000);},11000);
+
+  // ---------- logs session filler ----------
+  const LOGS=['level=info msg="scrape ok" job=up-grafana','level=info msg="apply complete" repo=up-network',
+    'level=warn msg="rate limited, backing off" src=gitlab','level=info msg="namespace synced" ns=tenant-a'];
+  setInterval(()=>{const b=$('logs-body');const ln=document.createElement('span');ln.className='ln '+(Math.random()<.2?'c-warn':'c-dim');
+    ln.textContent=new Date().toISOString().slice(11,19)+' '+LOGS[Math.floor(Math.random()*LOGS.length)];
+    b.appendChild(ln);while(b.children.length>12)b.removeChild(b.firstChild);},2200);
+
+  // ---------- tmux: prefix, panes, sessions ----------
+  let prefix=false, prefixT=null, sess=0, wk=false, av=false, avSel=0, gp=false, gpIv=null;
+  // the prefix is APPLIED BY DEFAULT (visitor-friendly): keys act directly.
+  // Click the indicator (or the Ctrl-b chip) to switch to manual mode — real-tmux feel.
+  let autoPrefix=true;
+  // one pane visible per session; prefix-O cycles the current session's panes
+  const NSESS=6;
+  const SESS_PANES=[['pane-claude','pane-gctui'],['pane-map','pane-map2'],
+                    ['pane-logs','pane-logs2'],['pane-sbx','pane-sbx2'],
+                    ['pane-tenant','pane-tenant2'],['pane-chaos','pane-chaos2']];
+  const paneIdx=[0,0,0,0,0,0];
+  function renderPrefix(){const el=$('prefixind');
+    el.classList.toggle('auto',autoPrefix);
+    el.classList.toggle('on',!autoPrefix&&prefix);
+    el.textContent=autoPrefix?'prefix: auto':'prefix';
+    el.title=autoPrefix?'The prefix is applied for you — keys act directly. Click to require Ctrl-b (real tmux).'
+                       :'Ctrl-b arms the prefix, then one key acts. Click to switch back to auto.';}
+  function setPrefix(v){prefix=v;renderPrefix();clearTimeout(prefixT);
+    if(v)prefixT=setTimeout(()=>setPrefix(false),2500);}
+  function setAuto(v){autoPrefix=v;prefix=false;clearTimeout(prefixT);renderPrefix();
+    const c=$('chip-prefix');if(c)c.innerHTML='<kbd>Ctrl-b</kbd> prefix: '+(v?'auto ✓':'manual');}
+  $('prefixind').addEventListener('click',()=>setAuto(!autoPrefix));
+  setAuto(true);   // default: the prefix is applied for you
+  // flash the element you just moved TO (session name on n/p, pane frame on o)
+  function flash(el){if(!el)return;el.classList.remove('hl');void el.offsetWidth;el.classList.add('hl');
+    setTimeout(()=>el.classList.remove('hl'),1100);}
+  function setSess(n){const t=(n+NSESS)%NSESS;const changed=t!==sess;sess=t;
+    document.querySelectorAll('.sess').forEach((e,i)=>e.classList.toggle('on',i===sess));
+    document.querySelectorAll('.tmuxbar .tab').forEach((t2,i)=>t2.classList.toggle('cur',i===sess));
+    if(changed)flash(document.querySelectorAll('.tmuxbar .tab')[sess]);}
+  function nextPane(){const ps=SESS_PANES[sess];if(ps.length<2)return;
+    paneIdx[sess]=(paneIdx[sess]+1)%ps.length;
+    ps.forEach((p,i)=>$(p).classList.toggle('on',i===paneIdx[sess]));
+    flash($(ps[paneIdx[sess]]));}
+  function openWk(v){wk=v;$('ov-wk').classList.toggle('on',v);}
+  // prefix-G — gctui in a popup (mirrors the pane's live state, like my display-popup binding)
+  function openGp(v){gp=v;$('ov-gp').classList.toggle('on',v);clearInterval(gpIv);
+    if(v){const sync=()=>{$('gp-body').innerHTML=gbody.innerHTML;};sync();gpIv=setInterval(sync,400);}}
+  const AGENTS=[
+    {n:'work-helm-view', g:'A', ctx:42, m:'opus',  s:0, act:'2m',
+     d:{ticket:'UP-142 · helm-view', task:'Fix the empty Helm Charts view (repo name mismatch)', todos:'2/3 done',
+        files:'📄 14/18 · 🧠 4', branch:'fix/helm-charts-view', last:'⏺ Bash(gctui run validate) — exit 0'}},
+    {n:'map-3d-poc',     g:'B', ctx:71, m:'sonnet',s:1, act:'12m',
+     d:{ticket:'UP-97 · map-3d', task:'Region zoom → per-resource docs in the 3D map', todos:'4/6 done',
+        files:'📄 22/31 · 🧠 3', branch:'feat/region-zoom', last:'⏺ Edit(ultraplatform.html) — camera easing'}},
+    {n:'fix-ci-loop',    g:'C', ctx:88, m:'opus',  s:2, act:'idle',
+     d:{ticket:'UP-133 · obs-logs', task:'Loki label cleanup — needs input (context 88%!)', todos:'1/4 done',
+        files:'📄 9/40 · 🧠 5', branch:'chore/loki-labels', last:'⚠ waiting on a question for 12m'}},
+    {n:'sbx-dep-bumps 🐳',g:'B', ctx:23, m:'sonnet',s:3, act:'5m',
+     d:{ticket:'UP-150 · sbx-deps', task:'Low-trust dependency upgrade — runs contained in a Docker sandbox', todos:'1/2 done',
+        files:'📄 6/9 · 🧠 2', branch:'chore/dep-bumps', last:'⏺ Bash(npm audit fix) — inside the sandbox'}},
+    {n:'tenant-onboard',  g:'A', ctx:34, m:'sonnet',s:4, act:'1m',
+     d:{ticket:'UP-161 · tenant-onb', task:'Onboard tenant wingtip — namespace claim + HTTPRoute + SSO sidecar', todos:'2/3 done',
+        files:'📄 3/5 · 🧠 2', branch:'feat/tenant-wingtip', last:'⏺ Write(up-gateway/routes/wingtip-shop.yaml)'}},
+    {n:'gw-chaos-drill',  g:'A', ctx:18, m:'haiku', s:5, act:'3m',
+     d:{ticket:'UP-163 · gw-chaos', task:'Monthly gateway pod-kill rehearsal — PDB is the hypothesis, the probe is the proof', todos:'1/1 done',
+        files:'📄 2/2 · 🧠 1', branch:'chore/gw-chaos-drill', last:'⏺ Bash(kubectl apply -f chaos/gateway-pod-kill.yaml) — verdict: Pass'}},
+  ];
+  let avQuery='', avSearch=false, avOpen=-1;
+  function avFiltered(){return AGENTS.map((a,i)=>[a,i]).filter(([a])=>a.n.includes(avQuery)||a.d.ticket.toLowerCase().includes(avQuery));}
+  function renderAv(){
+    const items=avFiltered();
+    if(avSel>=items.length)avSel=Math.max(0,items.length-1);
+    $('av-query').textContent=avQuery;
+    $('av-q').classList.toggle('on',avSearch);
+    $('av-rows').innerHTML=items.map(([a,gi],i)=>{
+      let h='<div class="arow'+(i===avSel?' sel':'')+'"><span>'+(i===avSel?'▸':' ')+'</span><span style="flex:1">'+a.n+'</span>'+
+        '<span class="grade-'+a.g+'">'+a.g+'</span><span>'+a.ctx+'%</span><span class="c-dim">'+a.m+'</span><span class="c-dim">'+a.act+'</span></div>';
+      if(avOpen===gi) h+='<div class="adet">🎫 <b>'+a.d.ticket+'</b><br>'+a.d.task+'<br>☑ '+a.d.todos+' · '+a.d.files+
+        ' ·  <b>'+a.d.branch+'</b><br><span class="c-dim">'+a.d.last+'</span></div>';
+      return h;}).join('')||'<div class="arow c-dim">no session matches “'+avQuery+'”</div>';
+  }
+  function openAv(v){av=v;$('ov-av').classList.toggle('on',v);if(v){avSel=0;avQuery='';avSearch=false;avOpen=-1;renderAv();}}
+
+  function act(key){
+    if(gp){ if(key==='Escape'||key==='q')openGp(false);
+      else if(key==='Tab')gcToggle(); else if(key==='j')gcMove(1); else if(key==='k')gcMove(-1); return; }
+    if(av){ // agentsview popup has focus (fzf-vi: / searches, j/k navigate, Tab expands, o attaches)
+      const items=avFiltered();
+      if(avSearch){ // insert mode: type to filter
+        if(key==='Escape'||key==='Enter')avSearch=false;
+        else if(key==='Backspace')avQuery=avQuery.slice(0,-1);
+        else if(/^[a-z0-9-]$/.test(key))avQuery+=key;
+        renderAv();return;
+      }
+      if(key==='/')avSearch=true;
+      else if(key==='j')avSel=Math.min(items.length-1,avSel+1);
+      else if(key==='k')avSel=Math.max(0,avSel-1);
+      else if(key==='Tab'||key==='Enter'){const it=items[avSel];if(it)avOpen=(avOpen===it[1]?-1:it[1]);}
+      else if(key==='o'||key==='O'){const it=items[avSel];if(it){openAv(false);setSess(it[0].s);return;}}
+      else if(key==='Escape'||key==='q'){openAv(false);return;}
+      renderAv();return;
+    }
+    if(wk){ // which-key menu open
+      openWk(false);
+      if(key==='K')openAv(true);
+      else if(key==='G')openGp(true);
+      return;
+    }
+    if(key==='prefix'){setPrefix(true);return;}
+    if(!prefix&&!autoPrefix)return;
+    if(prefix)setPrefix(false);
+    if(key==='o'||key==='O')nextPane();
+    else if(key==='n')setSess(sess+1);
+    else if(key==='p')setSess(sess-1);
+    else if(key==='G')openGp(true);
+    else if(key===' '||key==='space')openWk(true);
+  }
+
+  // screenkey-style display: every handled keypress floats up over the terminal
+  const skeyEl=$('skey');
+  const KLABEL={' ':'Space','Escape':'Esc','Backspace':'⌫','Enter':'⏎','Tab':'Tab'};
+  // hold=true (demo examples): the key stays visible until the example finishes
+  function showKey(label,hold){
+    const k=document.createElement('span');k.className='k'+(hold?' hold':'');k.textContent=label;
+    skeyEl.appendChild(k);while(skeyEl.children.length>(hold?8:4))skeyEl.removeChild(skeyEl.firstChild);
+    if(!hold)setTimeout(()=>{if(k.parentNode)k.parentNode.removeChild(k);},1600);
+  }
+  function skeyClear(){skeyEl.innerHTML='';}
+  term.addEventListener('keydown',e=>{
+    if(e.ctrlKey&&e.key==='b'){e.preventDefault();showKey('Ctrl+b');act('prefix');return;}
+    if(av||gp){ // popup owns the keyboard: letters filter, j/k/Tab/Enter/o navigate, Esc closes
+      if(e.key.length===1||['Tab','Enter','Backspace','Escape'].includes(e.key)){
+        e.preventDefault();showKey(KLABEL[e.key]||e.key);act(e.key);}
+      return;
+    }
+    // keys go straight to the gctui pane when it's the visible pane (like typing into the TUI)
+    if(!prefix&&!wk&&sess===0&&SESS_PANES[0][paneIdx[0]]==='pane-gctui'){
+      if(e.key==='Tab'){e.preventDefault();showKey('Tab');gcToggle();return;}
+      if(e.key==='j'){e.preventDefault();showKey('j');gcMove(1);return;}
+      if(e.key==='k'){e.preventDefault();showKey('k');gcMove(-1);return;}
+    }
+    if(['j','k','o','O','n','p','q','K','G',' ','Escape'].includes(e.key)){
+      if(prefix||wk||autoPrefix||e.key==='Escape'){
+        e.preventDefault();showKey(KLABEL[e.key]||e.key);act(e.key===' '?'space':e.key);}
+    }
+  });
+  term.addEventListener('focus',()=>term.classList.add('focus'));
+  term.addEventListener('blur',()=>term.classList.remove('focus'));
+  term.addEventListener('click',()=>term.focus({preventScroll:true}));
+  term.focus({preventScroll:true});  // the terminal is ready to drive the moment the page opens
+  // the terminal is the page's instrument: after ANY click that stays on the page (chips, tabs,
+  // tour buttons, empty space) run the click's own handler, then give focus back to the terminal
+  document.addEventListener('click',e=>{ if(!e.target.closest('a,nav,footer'))term.focus({preventScroll:true}); });
+
+  // chips drive the same actions (mobile / discoverability)
+  document.querySelectorAll('.kchip').forEach(c=>c.addEventListener('click',()=>{
+    const a=c.dataset.act;term.focus({preventScroll:true});
+    if(a==='prefix')setAuto(!autoPrefix);
+    else if(a==='K'){openWk(false);openAv(true);}
+    else if(a==='gtab'){if(!gp)openGp(true);gcToggle();}
+    else{setPrefix(true);act(a);}
+  }));
+  document.querySelectorAll('.tmuxbar .tab').forEach(t=>t.addEventListener('click',()=>setSess(+t.dataset.s)));
+
+  // ---------- guided tour: spotlight + arrow + tooltip; keybinding steps run a LIVE example ----------
+  let tourPI=null, tourGcIv=null;
+  const paneReset=()=>{paneIdx[0]=0;SESS_PANES[0].forEach((p,i)=>$(p).classList.toggle('on',i===0));};
+  const TOUR=[
+    {el:'#tab0', t:'Session name = ticket + task',
+     x:'Each tmux session is one unit of work: the ticket id (UP-142) plus a short name. The name itself blinks — green when the agent finishes a todo, red while it waits for your input. The ⟳/✓ right after it is that session’s LOCAL pipeline state (gctui tmux-poll).'},
+    {el:'#claude-body', t:'The Claude agent',
+     x:'One pane is visible per session. Here Claude runs my /pipeline-tdd skill: diagnose, fix, run the CI job locally until green, then the full pipeline, then open the MR.'},
+    {el:'#yas', t:'yas statusline + wrapper',
+     x:'The strip under the agent: profile identity (🌳 personal), 📄 context files, 🧠 memory files, model and a context gauge. 🦊 is the remote GitLab check — remote-poll watching MR !42 after push. The whole strip blinks yellow when the agent needs input, green when it’s done.'},
+    {el:'#prefixind', t:'The prefix — applied for you',
+     x:'By default the prefix is ON (green “prefix: auto”): press o, n, p, Space or G directly, no Ctrl-b needed. Want the real-tmux feel? Click the indicator — watch, we just did: it switched to MANUAL and Ctrl-b now arms it (yellow) before one key acts. Leaving this step switches auto back on.',
+     demo:()=>{setAuto(false);setPrefix(true);tourPI=setInterval(()=>setPrefix(true),2000);},
+     undo:()=>{clearInterval(tourPI);tourPI=null;setAuto(true);}},
+    {el:'#pane-gctui', t:'prefix o · cycle panes — live',
+     x:'Just happened: the session flipped to its second pane — the gctui TUI. The agent doesn’t use it by hand: the /pipeline-tdd SKILL drives it, running the whole pipeline locally for EVERY change before anything is pushed. You’re watching that run — boxed stages joined by arrows (validate → plan/opa-check → test/secret_detection → apply), with the D-diff line proving local matches remote. prefix o cycles back.',
+     demo:()=>{paneReset();nextPane();}, undo:paneReset},
+    {el:'#s1', t:'prefix n · next session — live',
+     x:'Just happened: prefix n moved to the next session — 1:UP-97·map-3d, the live platform-map sync. The status bar highlight followed.',
+     demo:()=>setSess(1), undo:()=>setSess(0)},
+    {el:'#s0', t:'prefix p · previous session — live',
+     x:'And prefix p walks back — we’re home on 0:UP-142·helm-view again. n and p make a handful of parallel agents feel like browser tabs.',
+     demo:()=>setSess(0)},
+    {el:'#ov-wk .wk', t:'prefix Space · which-key — live',
+     x:'Just opened: the which-key leader menu. No memorizing — the menu shows what each key does next: K agentsview · G gctui · s swarm · r MR review …',
+     demo:()=>openWk(true), undo:()=>openWk(false)},
+    {el:'#ov-av .av', t:'prefix Space, K · agentsview — live',
+     x:'Just opened: agentsview, the fleet cockpit. Every agent session with health grade, context fill, model and last action — j/k to move, / to search, Tab to expand a summary, o to attach. It reads transcripts, so agents are never interrupted.',
+     demo:()=>{openWk(false);openAv(true);}, undo:()=>openAv(false)},
+    {el:'#ov-gp .gp', t:'prefix G · the gctui TUI — live',
+     x:'Just opened: the real gctui TUI in a popup. This is how I work with pipelines: a skill (/pipeline-tdd) uses gctui to run the full pipeline LOCALLY on each change — only when it’s green does the change get pushed and the Remote !42 pipeline confirmed. Watch the Tab key being pressed for you, flipping between the Local run (gitlab-ci-local, byte-identical to remote) and Remote on GitLab. D diffs the two; j/k move the job cursor. Esc drops the popup.',
+     demo:()=>{openGp(true);tourGcIv=setInterval(gcToggle,1700);},
+     undo:()=>{clearInterval(tourGcIv);tourGcIv=null;if(GC.mode!=='local')gcToggle();openGp(false);}},
+    {el:'#s3', t:'Docker sandbox session 🐳 — live',
+     x:'Just switched (prefix n ×3 would do the same): low-trust work runs contained — capabilities dropped, its own network, short-lived credentials, mounts declared up front. The 🐳 badge in the statusline shows it.',
+     demo:()=>setSess(3), undo:()=>setSess(0)},
+    {el:'#statusright', t:'Status-right stays clean',
+     x:'Only session-agnostic signals live here: overall todo progress and the clock. Everything session-specific — profile, GitLab, CI — lives in the session name or inside the pane it belongs to.'},
+    {el:'.keys', t:'Now drive it yourself',
+     x:'Click the terminal and use the real keys, or click the chips. Everything the tour just did — panes, sessions, which-key, agentsview, gctui — is yours now.'},
+  ];
+  let tour=false, tourI=0;
+  function tourPlace(){
+    const s=TOUR[tourI], el=document.querySelector(s.el); if(!el)return;
+    const r=el.getBoundingClientRect(), box=$('tourbox'), tip=$('tourtip'), arr=$('tourarr');
+    box.style.display='block';
+    box.style.left=(r.left-6)+'px'; box.style.top=(r.top-6)+'px';
+    box.style.width=(r.width+12)+'px'; box.style.height=(r.height+12)+'px';
+    $('tourtitle').textContent=s.t; $('tourtext').textContent=s.x;
+    $('tourstep').textContent=(tourI+1)+' / '+TOUR.length;
+    $('tour-prev').style.visibility=tourI?'visible':'hidden';
+    $('tour-next').textContent=tourI===TOUR.length-1?'Finish ✓':'Next →';
+    tip.style.display='block'; tip.style.visibility='hidden';
+    requestAnimationFrame(()=>{
+      const th=tip.offsetHeight, tw=tip.offsetWidth;
+      let top=r.bottom+18, below=true;
+      if(top+th>innerHeight-12){top=r.top-th-18;below=false;}
+      const left=Math.min(Math.max(12,r.left+r.width/2-tw/2),innerWidth-tw-12);
+      tip.style.top=Math.max(12,top)+'px'; tip.style.left=left+'px';
+      tip.classList.toggle('below',below); tip.classList.toggle('above',!below);
+      tip.style.setProperty('--ax',Math.min(Math.max(18,r.left+r.width/2-left),tw-18)+'px');
+      tip.style.visibility='visible';
+      // bobbing arrow on the opposite side of the tooltip, pointing at the target
+      arr.style.display='block';
+      arr.style.left=(r.left+r.width/2-11)+'px';
+      if(below){arr.textContent='⬇';arr.style.top=(r.top-34)+'px';}   // tip below → arrow above, pointing down
+      else{arr.textContent='⬆';arr.style.top=(r.bottom+6)+'px';}      // tip above → arrow below, pointing up
+    });
+  }
+  function tourShow(i){
+    if(tour&&TOUR[tourI]&&TOUR[tourI].undo&&i!==tourI)TOUR[tourI].undo();  // roll back the previous live example
+    tourI=i;
+    if(TOUR[i].demo)TOUR[i].demo();                                        // run this step's live example
+    const el=document.querySelector(TOUR[i].el);
+    if(el)el.scrollIntoView({block:'center',behavior:'instant'});
+    tourPlace();
+  }
+  function tourStart(){
+    tour=true; setSess(0); paneReset();
+    tourShow(0);
+  }
+  function tourEnd(){
+    if(TOUR[tourI]&&TOUR[tourI].undo)TOUR[tourI].undo();
+    clearInterval(tourPI);tourPI=null;clearInterval(tourGcIv);tourGcIv=null;
+    openWk(false);openAv(false);openGp(false);setPrefix(false);setSess(0);paneReset();
+    tour=false;['tourbox','tourtip','tourarr'].forEach(id=>$(id).style.display='none');
+  }
+  function tourNext(){tourI<TOUR.length-1?tourShow(tourI+1):tourEnd();}
+  $('tourbtn').addEventListener('click',tourStart);
+  $('tour-next').addEventListener('click',tourNext);
+  $('tour-prev').addEventListener('click',()=>{if(tourI>0)tourShow(tourI-1);});
+  $('tour-end').addEventListener('click',tourEnd);
+  document.addEventListener('keydown',e=>{
+    if(!tour)return;
+    if(e.key==='Escape'){e.preventDefault();e.stopPropagation();tourEnd();}
+    else if(e.key==='ArrowRight'||e.key==='Enter'){e.preventDefault();e.stopPropagation();tourNext();}
+    else if(e.key==='ArrowLeft'){e.preventDefault();e.stopPropagation();if(tourI>0)tourShow(tourI-1);}
+  },true);
+  addEventListener('scroll',()=>{if(tour)tourPlace();},{passive:true});
+  addEventListener('resize',()=>{if(tour)tourPlace();},{passive:true});
+
+  // ---------- keys demo: pick ONE keybinding from the menu, watch ONLY that example ----------
+  // Each example is self-contained: silent setup, the shown keys (held on screen), silent reset.
+  const KEX=[
+    {k:'Ctrl-b o', d:'cycle panes — agent ⇄ gctui',
+     steps:[['Ctrl+b',()=>act('prefix')],['o',()=>act('o')],['Ctrl+b',()=>act('prefix')],['o',()=>act('o')]]},
+    {k:'Ctrl-b n', d:'next session',
+     steps:[['Ctrl+b',()=>act('prefix')],['n',()=>act('n')]], done:()=>setSess(0)},
+    {k:'Ctrl-b p', d:'previous session',
+     steps:[['Ctrl+b',()=>act('prefix')],['p',()=>act('p')]], done:()=>setSess(0)},
+    {k:'Ctrl-b Space → K', d:'which-key → agentsview',
+     steps:[['Ctrl+b',()=>act('prefix')],['Space',()=>act('space')],['K',()=>act('K')],
+            ['j',()=>act('j')],['Tab',()=>act('Tab')],['Esc',()=>act('Escape')]]},
+    {k:'Ctrl-b G', d:'gctui in a popup',
+     steps:[['Ctrl+b',()=>act('prefix')],['G',()=>act('G')],['Esc',()=>act('Escape')]]},
+    {k:'Tab', d:'gctui: Local ⇄ Remote',
+     setup:()=>{paneReset();nextPane();},
+     steps:[['Tab',()=>gcToggle()],['Tab',()=>gcToggle()]], done:paneReset},
+    {k:'j / k', d:'gctui: move the job cursor',
+     setup:()=>{paneReset();nextPane();},
+     steps:[['j',()=>gcMove(1)],['j',()=>gcMove(1)],['k',()=>gcMove(-1)]],
+     done:()=>{paneReset();GC.sel=[0,0];renderGctui();}},
+  ];
+  const kmenu=$('kmenu');
+  kmenu.innerHTML='<div class="kh">pick a keybinding — I\'ll press it for you</div>'+
+    KEX.map((e,i)=>'<div class="ki" role="menuitem" data-i="'+i+'"><kbd>'+e.k+'</kbd><span>'+e.d+'</span></div>').join('');
+  let kexRunning=false;
+  function runExample(ex){
+    if(kexRunning)return; kexRunning=true;
+    if(tour)tourEnd();
+    const wasAuto=autoPrefix; setAuto(false);   // examples show the REAL tmux flow: Ctrl-b, then the key
+    openWk(false);openAv(false);openGp(false);setSess(0);paneReset();skeyClear();
+    if(ex.setup)ex.setup();
+    // bring the stage on screen first — the demo is pointless if it plays below the fold
+    const tr=term.getBoundingClientRect();
+    if(tr.top<0||tr.bottom>innerHeight)
+      term.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'center'});
+    term.focus({preventScroll:true});
+    let i=0;
+    const iv=setInterval(()=>{
+      if(i>=ex.steps.length){
+        clearInterval(iv);
+        setTimeout(()=>{ if(ex.done)ex.done(); setAuto(wasAuto); skeyClear(); kexRunning=false; },1800);
+        return;
+      }
+      const [label,fn]=ex.steps[i++]; showKey(label,true); fn();
+    },900);
+  }
+  $('kdemobtn').addEventListener('click',e=>{e.stopPropagation();kmenu.classList.toggle('on');});
+  kmenu.addEventListener('click',e=>{
+    const it=e.target.closest('.ki'); if(!it)return;
+    e.stopPropagation(); kmenu.classList.remove('on'); runExample(KEX[+it.dataset.i]);
+  });
+  document.addEventListener('click',e=>{ if(!e.target.closest('.kwrap'))kmenu.classList.remove('on'); });
+
+  // (nav + its mobile hamburger are injected by nav.js)
+</script>
+</body>
+</html>

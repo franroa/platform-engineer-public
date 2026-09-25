@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18">
+  <defs>
+    <linearGradient id="bvA" x1="9" y1="2" x2="9" y2="16" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3fd0b0"/>
+      <stop offset="1" stop-color="#1a9c84"/>
+    </linearGradient>
+    <linearGradient id="bvB" x1="9" y1="4" x2="9" y2="13" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0f2b33"/>
+      <stop offset="1" stop-color="#0a1e26"/>
+    </linearGradient>
+  </defs>
+  <!-- vault body -->
+  <rect x="2.2" y="2.4" width="13.6" height="12" rx="1.4" fill="url(#bvA)"/>
+  <rect x="3.4" y="3.6" width="11.2" height="9.6" rx="0.9" fill="url(#bvB)"/>
+  <!-- vault door dial -->
+  <circle cx="9" cy="8.4" r="3.1" fill="none" stroke="#57d9a3" stroke-width="1.1"/>
+  <circle cx="9" cy="8.4" r="1.1" fill="#57d9a3"/>
+  <path stroke="#57d9a3" stroke-width="0.9" stroke-linecap="round"
+        d="M9 4.9v1.3M9 10.6v1.3M5.5 8.4h1.3M11.2 8.4h1.3"/>
+  <!-- restore arrow (circular, backups turn back time) -->
+  <path fill="none" stroke="#ffd70f" stroke-width="1.1" stroke-linecap="round"
+        d="M13.9 12.9a5.6 5.6 0 0 0 .9-3.1"/>
+  <path fill="#ffd70f" d="m14.6 13.9-1.9-.3 1.2-1.5Z"/>
+  <!-- feet -->
+  <rect x="3.6" y="14.4" width="2.2" height="1.2" rx="0.4" fill="#1a9c84"/>
+  <rect x="12.2" y="14.4" width="2.2" height="1.2" rx="0.4" fill="#1a9c84"/>
+</svg>

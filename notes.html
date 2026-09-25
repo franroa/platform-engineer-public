@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Notes → Posts &amp; notes · Francisco Roa</title>
+<meta name="robots" content="noindex" />
+<link rel="canonical" href="writing.html" />
+<!-- Notes now live as the Notes tab of the combined Posts & notes page. This shim keeps old
+     links (and #tag= deep links) working by forwarding them to writing.html#tab=notes. -->
+<script>
+  (function () {
+    var m = location.hash.match(/tag=([^&]+)/);
+    location.replace('writing.html#tab=notes' + (m ? '&tag=' + m[1] : ''));
+  })();
+</script>
+<noscript><meta http-equiv="refresh" content="0;url=writing.html#tab=notes" /></noscript>
+<style>
+  body{margin:0;background:#060910;color:#e8eefc;font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    display:grid;place-items:center;min-height:100vh;text-align:center;padding:24px}
+  a{color:#7fd4ff}
+</style>
+</head>
+<body>
+  <p>Notes moved to <a href="writing.html#tab=notes">Posts &amp; notes → Notes</a>. Redirecting…</p>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18">
+  <defs>
+    <linearGradient id="apimA" x1="9" y1="2" x2="9" y2="16" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5ea0ef"/>
+      <stop offset="1" stop-color="#0078d4"/>
+    </linearGradient>
+  </defs>
+  <!-- hexagonal service body -->
+  <path fill="url(#apimA)" d="M9 1.6 15.4 5.3v7.4L9 16.4 2.6 12.7V5.3Z"/>
+  <path fill="#0b3f74" opacity=".35" d="M9 1.6 15.4 5.3 9 9 2.6 5.3Z"/>
+  <!-- API angle brackets -->
+  <path fill="#fff" d="m6.9 6.9-2.4 2.3 2.4 2.3.9-.9-1.5-1.4 1.5-1.4Zm4.2 0-.9.9 1.5 1.4-1.5 1.4.9.9 2.4-2.3Z"/>
+  <!-- in/out connectors -->
+  <circle cx="1.4" cy="9" r="1.1" fill="#83b9f9"/>
+  <circle cx="16.6" cy="9" r="1.1" fill="#83b9f9"/>
+</svg>

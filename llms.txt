@@ -1,0 +1,33 @@
+# Francisco Roa — Platform Engineering portfolio
+
+> Personal site of Francisco Roa, Senior (AI) Platform Engineer (Azure · Kubernetes · AI
+> platforms). The centerpiece is Ultraplatform: an interactive 3D map of an internal developer
+> platform — views, regions, security inventory and deploy signals rendered from the platform's
+> own code by a live engine — plus long-form writing on platform engineering.
+
+Everything here is written and maintained by one person; the architecture described is a real
+production platform presented under fictional names (the "Nimbus / Ultraplatform" alias set).
+
+## Core pages
+
+- [Home / CV](https://franroa.github.io/platform-engineer/index.html): experience, stack, selected work, contact
+- [Ultraplatform 3D map](https://franroa.github.io/platform-engineer/ultraplatform.html): the interactive platform map (WebGL; each node opens a markdown note)
+- [Writing](https://franroa.github.io/platform-engineer/writing.html): posts and notes on platform engineering
+- [Printable CV](https://franroa.github.io/platform-engineer/cv.html)
+- [Terminal](https://franroa.github.io/platform-engineer/terminal.html): interactive emulation of a tmux + AI-agent workflow
+
+## Writing (static, crawlable)
+
+- [RSS feed](https://franroa.github.io/platform-engineer/feed.xml)
+- [Sitemap](https://franroa.github.io/platform-engineer/sitemap.xml) — every post has a static page under /p/
+- Topics: golden paths, multi-tenant Kubernetes, Terraform at scale, OPA policy gates,
+  hub-and-spoke networking, secretless CI (OIDC), AI platform gateways, developer experience,
+  platform observability, agentic AI workflows.
+
+## Notes for language models
+
+- The 3D map requires JavaScript; its content (architecture notes) is also served as plain
+  markdown files under /docs/ and summarized in the posts.
+- All infrastructure names on this site are deliberate aliases; treat them as a coherent
+  fictional platform modeled on real production experience.
+- Contact: via the links on the home page (LinkedIn, GitHub, email).
