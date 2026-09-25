@@ -140,7 +140,7 @@ footer{padding:34px 24px;border-top:1px solid var(--line);text-align:center;colo
 <h2>What I'd tell you before adopting</h2>
 <ol><li>Treat dashboards as code from day one — hand-built panels rot and nobody trusts them.</li><li>Put the tenancy label on every series and log line; it's your isolation <i>and</i> your billing.</li><li>Alert on symptoms users feel (latency, errors), not on every resource that can twitch.</li></ol>
 <h2>Where it runs</h2>
-<p><code>ns: observability</code> · the eu01 hub only (<code>platform-services/hub/</code>) · sync wave 0 · chart <code>grafana 8.8.2</code> — pinned in <a href="../ultraplatform.html#d=kubernetes"><code>up-kubernetes</code></a> <code>gitops/platform-services/</code>. Placement is a reviewed property of the cluster class, not a deploy-time decision: ONE pane over Mimir &amp; Loki — regional clusters ship telemetry, they do not each run a dashboard stack.</p>
+<p><code>ns: observability</code> · the eu01 hub only (<code>platform-services/hub/</code>) · sync wave 0 · chart <code>grafana 8.8.2</code> — pinned in <a href="../ultraplatform.html#d=kubernetes"><code>kubernetes</code></a> <code>gitops/platform-services/</code>. Placement is a reviewed property of the cluster class, not a deploy-time decision: ONE pane over Mimir &amp; Loki — regional clusters ship telemetry, they do not each run a dashboard stack.</p>
 <p><a href="../ultraplatform.html#aks=eu01&amp;d=landscape-grafana"><b>▶ See it in the cluster</b></a></p>
 <h2>If the hub dies</h2>
 <p>The honest answer to "what happens when eu01 goes down?", since Grafana, <a href="landscape-backstage.html">Backstage</a> and <a href="landscape-buildpacks.html">kpack</a> run only there:</p>
@@ -151,7 +151,7 @@ footer{padding:34px 24px;border-top:1px solid var(--line);text-align:center;colo
 <ul><li><b>Telemetry keeps flowing.</b> Regional collectors ship to the backend directly, not through the</li></ul>
 <p>  hub — you lose the <i>pane</i>, not the signals. Alert evaluation at the backend keeps paging.</p>
 <ul><li><b>Recovery is a bootstrap run, not a restore.</b> Everything in the hub is declared in</li></ul>
-<p>  <a href="../ultraplatform.html#d=kubernetes"><code>up-kubernetes</code></a> <code>platform-services/hub/</code>; promoting another cluster to hub is a   one-line cluster-class change and a sync.</p>
+<p>  <a href="../ultraplatform.html#d=kubernetes"><code>kubernetes</code></a> <code>platform-services/hub/</code>; promoting another cluster to hub is a   one-line cluster-class change and a sync.</p>
 <p>That trade is deliberate: running the panes once costs one instance; running them per region triples the cost to protect services whose outage inconveniences engineers, not users.</p>
 <h2>Related</h2>
 <p><a href="blog-grafana-cloud.html">Grafana Cloud as the backend</a> · <a href="landscape-opentelemetry.html">OpenTelemetry Operator</a> · <a href="blog-grafana-cloud-migration.html">Observability migration</a> · <a href="landscape-index.html">🗺️ landscape</a></p>

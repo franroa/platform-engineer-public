@@ -130,7 +130,7 @@ footer{padding:34px 24px;border-top:1px solid var(--line);text-align:center;colo
 <h1>🔭 Instrumentation as a platform default — the OpenTelemetry Operator</h1>
 <blockquote>💡 <b>TL;DR</b> — a design note, not a war story: the next evolution of this platform's <a href="../ultraplatform.html#d=observability">observability layer</a> is the <b>OpenTelemetry Operator</b> — collectors and auto-instrumentation declared as Kubernetes CRDs, so telemetry becomes something a tenant <i>inherits from its namespace</i> rather than something every app team wires by hand. The platform ships Grafana, Loki and Mimir as defaults today; this closes the last manual gap: getting well-formed traces and metrics <i>out of the apps</i>.</blockquote>
 <h2>1 · The gap: the backend is platform, the instrumentation isn't</h2>
-<p>Metrics, logs and dashboards ship with the platform — agents on the clusters, one Grafana per sector, tenant projections handled in <code>up-grafana-tenants</code>. But <i>tracing</i> still depends on each app team importing an SDK, configuring an exporter, and agreeing on sampling. That's exactly the copy-paste failure mode the <a href="blog-reuse-libraries.html">three libraries</a> exist to kill — telemetry config is infrastructure pretending to be app code.</p>
+<p>Metrics, logs and dashboards ship with the platform — agents on the clusters, one Grafana per sector, tenant projections handled in <code>grafana-tenants</code>. But <i>tracing</i> still depends on each app team importing an SDK, configuring an exporter, and agreeing on sampling. That's exactly the copy-paste failure mode the <a href="blog-reuse-libraries.html">three libraries</a> exist to kill — telemetry config is infrastructure pretending to be app code.</p>
 <h2>2 · The operator turns telemetry into CRDs</h2>
 <p>The OpenTelemetry Operator manages two custom resources, and both map cleanly onto the platform's existing grammar:</p>
 <ul><li><b><code>OpenTelemetryCollector</code></b> — a managed collector deployment. Scope question, as always</li></ul>
@@ -139,11 +139,11 @@ footer{padding:34px 24px;border-top:1px solid var(--line);text-align:center;colo
 <p>  auto-instrument*: language SDKs, sampler, propagators, exporter endpoint. A pod annotation   (<code>instrumentation.opentelemetry.io/inject-python: "true"</code>) and the operator injects the SDK   at admission — <b>no code change, no library import, no per-app exporter config</b>.</p>
 <h2>3 · Where it lands in this platform</h2>
 <p>The fit is what makes it attractive — every piece already has a home:</p>
-<ul><li>The <b>operator and gateway collectors</b> are cluster services → <code>up-kubernetes</code>, deployed</li></ul>
+<ul><li>The <b>operator and gateway collectors</b> are cluster services → <code>kubernetes</code>, deployed</li></ul>
 <p>  like every other platform service.</p>
 <ul><li>The <b><code>Instrumentation</code> resource is per tenant namespace</b> → declared next to the namespace</li></ul>
-<p>  itself in <code>up-namespaces</code>, so a tenant gets working traces the moment its namespace exists.</p>
-<ul><li><b>Collector charts</b> join the chart library (<code>up-helm-charts</code>); config lands in</li></ul>
+<p>  itself in <code>namespaces</code>, so a tenant gets working traces the moment its namespace exists.</p>
+<ul><li><b>Collector charts</b> join the chart library (<code>helm-charts</code>); config lands in</li></ul>
 <p>  <a href="../ultraplatform.html#d=res-namespace">Config</a> like everything else.</p>
 <ul><li>The <b>OTLP endpoint becomes a platform contract</b>: apps that <i>do</i> want manual</li></ul>
 <p>  instrumentation get one stable URL per namespace, and the collector — not forty apps —   decides sampling, redaction and routing.</p>

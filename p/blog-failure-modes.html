@@ -140,7 +140,7 @@ footer{padding:34px 24px;border-top:1px solid var(--line);text-align:center;colo
 <p>The design statement hiding in that answer: <b>a pane of glass must never be load-bearing.</b> The moment dashboards sit in the traffic path, or builds gate a restart, the hub stops being a convenience and becomes a dependency you now have to run in N regions. Keeping it red-but-harmless is what lets it be cheap.</p>
 <h2>3 · Kill the gateway pods: the scary one, on purpose</h2>
 <p>There is exactly <a href="landscape-traefik.html">ONE service gateway per cluster</a> — a shared-fate zone by construction, and the design's most attackable choice. So that answer can't be prose; it has to be machinery:</p>
-<pre><code class="language-yaml"># up-gateway/gateway/pdb.yaml — the floor
+<pre><code class="language-yaml"># gateway/gateway/pdb.yaml — the floor
 spec:
   minAvailable: 1
   selector:

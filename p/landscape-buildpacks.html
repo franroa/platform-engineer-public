@@ -147,7 +147,7 @@ footer{padding:34px 24px;border-top:1px solid var(--line);text-align:center;colo
 <ol><li>Keep an explicit escape hatch (a reviewed, rare "yes this repo needs a real Dockerfile")</li></ol>
 <p>   rather than pretending every workload fits the detected buildpacks — a forced fit becomes    the next team's support ticket.</p>
 <h2>Where it runs</h2>
-<p><code>ns: kpack</code> · the eu01 hub only (<code>platform-services/hub/</code>) — one builder, not one per region, same rationale as <a href="landscape-backstage.html">Backstage</a> and <a href="landscape-grafana.html">Grafana</a>: a build result must mean the same thing regardless of which cluster it built in. Pinned in <a href="../ultraplatform.html#d=kubernetes"><code>up-kubernetes</code></a> <code>gitops/platform-services/</code>. What a hub outage does (and doesn't) take with it: <a href="landscape-grafana.html">if the hub dies</a>.</p>
+<p><code>ns: kpack</code> · the eu01 hub only (<code>platform-services/hub/</code>) — one builder, not one per region, same rationale as <a href="landscape-backstage.html">Backstage</a> and <a href="landscape-grafana.html">Grafana</a>: a build result must mean the same thing regardless of which cluster it built in. Pinned in <a href="../ultraplatform.html#d=kubernetes"><code>kubernetes</code></a> <code>gitops/platform-services/</code>. What a hub outage does (and doesn't) take with it: <a href="landscape-grafana.html">if the hub dies</a>.</p>
 <p><a href="../ultraplatform.html#aks=eu01&amp;d=landscape-buildpacks"><b>▶ See it in the cluster</b></a></p>
 <h2>Related</h2>
 <p><a href="../ultraplatform.html#d=gitlab-runners">GitLab runners on Kubernetes</a> · <a href="blog-golden-path.html">The golden path</a> · <a href="landscape-index.html">🗺️ landscape</a></p>

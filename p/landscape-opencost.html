@@ -145,7 +145,7 @@ footer{padding:34px 24px;border-top:1px solid var(--line);text-align:center;colo
 <ol><li>Treat it as a <b>read model</b>, not a gate — cost visibility changes behavior by being seen,</li></ol>
 <p>   not by blocking a deploy the way the <a href="security-opa.html">OPA gate</a> does.</p>
 <h2>Where it runs</h2>
-<p><code>ns: opencost</code> · every cluster (<code>platform-services/base/</code>) · sync wave 0 (reads real Prometheus metrics, so it lands after <a href="landscape-opentelemetry.html">OTel Collector</a>) — pinned in <a href="../ultraplatform.html#d=kubernetes"><code>up-kubernetes</code></a> <code>gitops/platform-services/</code>. Allocation data is scraped centrally into the <a href="landscape-grafana.html">Grafana</a> hub for the one-pane view.</p>
+<p><code>ns: opencost</code> · every cluster (<code>platform-services/base/</code>) · sync wave 0 (reads real Prometheus metrics, so it lands after <a href="landscape-opentelemetry.html">OTel Collector</a>) — pinned in <a href="../ultraplatform.html#d=kubernetes"><code>kubernetes</code></a> <code>gitops/platform-services/</code>. Allocation data is scraped centrally into the <a href="landscape-grafana.html">Grafana</a> hub for the one-pane view.</p>
 <p><a href="../ultraplatform.html#aks=eu01&amp;d=landscape-opencost"><b>▶ See it in the cluster</b></a></p>
 <h2>Related</h2>
 <p><a href="landscape-karpenter.html">Karpenter — just-in-time, right-sized nodes</a> · <a href="landscape-grafana.html">Grafana — one pane, run once</a> · <a href="landscape-index.html">🗺️ landscape</a></p>

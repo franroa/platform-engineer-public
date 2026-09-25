@@ -134,12 +134,12 @@ footer{padding:34px 24px;border-top:1px solid var(--line);text-align:center;colo
 <p>  instance types from the pods' real requests, so <a href="blog-kubernetes.html">tenant workloads</a> get exactly   the shape they ask for.</p>
 <ul><li><b>Consolidation</b> — idle and under-used nodes are drained and replaced with cheaper packing;</li></ul>
 <p>  the same <a href="blog-golden-path.html">cost-aware bias</a> that KEDA applies to pods, applied to nodes.</p>
-<ul><li><b>Provisioner as code</b> — NodePool/limits live in <a href="../ultraplatform.html#d=kubernetes"><code>up-kubernetes</code></a>, reviewed like</li></ul>
+<ul><li><b>Provisioner as code</b> — NodePool/limits live in <a href="../ultraplatform.html#d=kubernetes"><code>kubernetes</code></a>, reviewed like</li></ul>
 <p>  any other guardrail, so "what can this cluster grow into" is a diff, not a console setting.</p>
 <h2>What I'd tell you before adopting</h2>
 <ol><li>Set NodePool <b>limits</b> — right-sizing without a ceiling is a right-sized surprise bill.</li><li>Make workloads honest about requests; Karpenter is only as good as the numbers pods give it.</li><li>Respect disruption budgets — consolidation moves pods, so PDBs and graceful drain matter.</li></ol>
 <h2>Where it runs</h2>
-<p><code>ns: karpenter</code> · every cluster (<code>platform-services/base/</code>) · sync wave −2 · chart <code>karpenter 0.7.3</code> (MCR OCI) — pinned in <a href="../ultraplatform.html#d=kubernetes"><code>up-kubernetes</code></a> <code>gitops/platform-services/</code>. Placement is a reviewed property of the cluster class, not a deploy-time decision: the provisioner must be watching before the first app pod goes Pending; system pools stay terraform-owned, burst capacity is karpenter-owned.</p>
+<p><code>ns: karpenter</code> · every cluster (<code>platform-services/base/</code>) · sync wave −2 · chart <code>karpenter 0.7.3</code> (MCR OCI) — pinned in <a href="../ultraplatform.html#d=kubernetes"><code>kubernetes</code></a> <code>gitops/platform-services/</code>. Placement is a reviewed property of the cluster class, not a deploy-time decision: the provisioner must be watching before the first app pod goes Pending; system pools stay terraform-owned, burst capacity is karpenter-owned.</p>
 <p><a href="../ultraplatform.html#aks=eu01&amp;d=landscape-karpenter"><b>▶ See it in the cluster</b></a></p>
 <h2>Related</h2>
 <p><a href="blog-kubernetes.html">Multi-tenant Kubernetes</a> · <a href="landscape-keda.html">KEDA — scale on real signals</a> · <a href="blog-golden-path.html">The golden path</a> · <a href="landscape-index.html">🗺️ landscape</a></p>

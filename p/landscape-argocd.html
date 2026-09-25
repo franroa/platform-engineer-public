@@ -131,7 +131,7 @@ footer{padding:34px 24px;border-top:1px solid var(--line);text-align:center;colo
 <blockquote>💡 <b>TL;DR</b> — Argo CD makes the clusters <i>declarative all the way down</i>: what runs in a cluster is what its repo says, drift is visible, and rollback is <code>git revert</code>. The map's globe literally draws an <b>Argo CD ⟵ Git</b> door from outside — it's one of the two ways anything enters the platform.</blockquote>
 <h2>The job it does here</h2>
 <ul><li><b>App-of-apps per cluster</b> — each cluster syncs a root application that fans out to the</li></ul>
-<p>  namespaces declared in <a href="blog-kubernetes.html"><code>up-namespaces</code></a>; a namespace file that names a   cluster IS the deployment intent.</p>
+<p>  namespaces declared in <a href="blog-kubernetes.html"><code>namespaces</code></a>; a namespace file that names a   cluster IS the deployment intent.</p>
 <ul><li><b>Drift as a signal, not a surprise.</b> OutOfSync is a dashboard state the platform watches</li></ul>
 <p>  — the same philosophy as the map's own <a href="blog-terraform.html">drift badge</a>.</p>
 <ul><li><b>No kubectl in pipelines.</b> CI builds and publishes; Argo pulls. The clusters have no</li></ul>
@@ -141,7 +141,7 @@ footer{padding:34px 24px;border-top:1px solid var(--line);text-align:center;colo
 <p>   app does not).</p>
 <ol><li>Sync waves and health checks are the real learning curve — invest early.</li><li>Let Argo own the namespace: manual objects in synced namespaces become drift noise.</li></ol>
 <h2>Where it runs</h2>
-<p><code>ns: argocd</code> · every cluster (<code>platform-services/base/</code>) · sync wave −3 · chart <code>argo-cd 7.7.12</code> — pinned in <a href="../ultraplatform.html#d=kubernetes"><code>up-kubernetes</code></a> <code>gitops/platform-services/</code>. Placement is a reviewed property of the cluster class, not a deploy-time decision: Argo manages Argo — terraform only seeds the first install; upgrades are a chart bump in review.</p>
+<p><code>ns: argocd</code> · every cluster (<code>platform-services/base/</code>) · sync wave −3 · chart <code>argo-cd 7.7.12</code> — pinned in <a href="../ultraplatform.html#d=kubernetes"><code>kubernetes</code></a> <code>gitops/platform-services/</code>. Placement is a reviewed property of the cluster class, not a deploy-time decision: Argo manages Argo — terraform only seeds the first install; upgrades are a chart bump in review.</p>
 <p><a href="../ultraplatform.html#aks=eu01&amp;d=landscape-argocd"><b>▶ See it in the cluster</b></a></p>
 <h2>Related</h2>
 <p><a href="blog-kubernetes.html">Multi-tenant Kubernetes</a> · <a href="blog-access-as-code.html">Nobody holds standing power</a> · <a href="landscape-index.html">🗺️ landscape</a></p>

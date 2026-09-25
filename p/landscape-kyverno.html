@@ -140,7 +140,7 @@ footer{padding:34px 24px;border-top:1px solid var(--line);text-align:center;colo
 <h2>What I'd tell you before adopting</h2>
 <ol><li>Start in <code>Audit</code> mode and watch the policy reports; flip to <code>Enforce</code> per-policy.</li><li>Policies are code: test them (kyverno-cli in CI) and version them with the platform.</li><li>Prefer generate-on-namespace over "remember to create X" — runbooks rot, policies don't.</li></ol>
 <h2>Where it runs</h2>
-<p><code>ns: kyverno-system</code> · every cluster (<code>platform-services/base/</code>) · sync wave −2 · chart <code>kyverno 3.3.4</code> — pinned in <a href="../ultraplatform.html#d=kubernetes"><code>up-kubernetes</code></a> <code>gitops/platform-services/</code>. Placement is a reviewed property of the cluster class, not a deploy-time decision: admission webhooks must exist before the first tenant namespace ever syncs — safe-by-default is a boot ORDER, not a hope.</p>
+<p><code>ns: kyverno-system</code> · every cluster (<code>platform-services/base/</code>) · sync wave −2 · chart <code>kyverno 3.3.4</code> — pinned in <a href="../ultraplatform.html#d=kubernetes"><code>kubernetes</code></a> <code>gitops/platform-services/</code>. Placement is a reviewed property of the cluster class, not a deploy-time decision: admission webhooks must exist before the first tenant namespace ever syncs — safe-by-default is a boot ORDER, not a hope.</p>
 <p><a href="../ultraplatform.html#aks=eu01&amp;d=landscape-kyverno"><b>▶ See it in the cluster</b></a></p>
 <h2>Related</h2>
 <p><a href="blog-terraform.html">Terraform at scale (the OPA gate)</a> · <a href="blog-kubernetes.html">Multi-tenant Kubernetes</a> · <a href="landscape-index.html">🗺️ landscape</a></p>

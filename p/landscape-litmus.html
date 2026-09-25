@@ -137,7 +137,7 @@ footer{padding:34px 24px;border-top:1px solid var(--line);text-align:center;colo
 <ul><li><b>Turns on-call folklore into a runbook.</b> "We think we handle a dependency timeout" becomes</li></ul>
 <p>  a repeatable experiment with a pass/fail result — feeding real gaps into the   <a href="../ultraplatform.html#d=runbook-drift-response">runbook set</a>, not just a war story.</p>
 <ul><li><b>The flagship experiment guards the scariest shared-fate zone.</b></li></ul>
-<p>  <code>up-gateway/chaos/gateway-pod-kill.yaml</code> kills <a href="landscape-traefik.html">the ONE gateway's</a> pods   every 20 s for two minutes while a <b>Continuous httpProbe</b> asserts the status page keeps   answering <i>through</i> the gateway — the PDB and zone-spread replicas are the hypothesis, the   probe is the proof. See <a href="../ultraplatform.html#d=failure-modes">failure modes</a> for how this renders in the map.</p>
+<p>  <code>gateway/chaos/gateway-pod-kill.yaml</code> kills <a href="landscape-traefik.html">the ONE gateway's</a> pods   every 20 s for two minutes while a <b>Continuous httpProbe</b> asserts the status page keeps   answering <i>through</i> the gateway — the PDB and zone-spread replicas are the hypothesis, the   probe is the proof. See <a href="../ultraplatform.html#d=failure-modes">failure modes</a> for how this renders in the map.</p>
 <h2>What I'd tell you before adopting</h2>
 <ol><li><b>Opt-in only, always.</b> No experiment runs without an explicit, reviewed <code>ChaosEngine</code> —</li></ol>
 <p>   ambient chaos in a shared cluster is an incident generator, not a practice.</p>
@@ -146,7 +146,7 @@ footer{padding:34px 24px;border-top:1px solid var(--line);text-align:center;colo
 <ol><li><b>A chaos experiment without a hypothesis is just an outage.</b> Write down what you expect</li></ol>
 <p>   to happen and what "pass" means <i>before</i> running it, or the result teaches nothing.</p>
 <h2>Where it runs</h2>
-<p><code>ns: litmus</code> · every cluster (<code>platform-services/base/</code>) · sync wave 1 (after the platform's other controllers are stable — chaos targets a settled system, not one still converging) — pinned in <a href="../ultraplatform.html#d=kubernetes"><code>up-kubernetes</code></a> <code>gitops/platform-services/</code>. The <b>operator</b> is always-on; <b>experiments</b> are zero by default until someone reviews one in.</p>
+<p><code>ns: litmus</code> · every cluster (<code>platform-services/base/</code>) · sync wave 1 (after the platform's other controllers are stable — chaos targets a settled system, not one still converging) — pinned in <a href="../ultraplatform.html#d=kubernetes"><code>kubernetes</code></a> <code>gitops/platform-services/</code>. The <b>operator</b> is always-on; <b>experiments</b> are zero by default until someone reviews one in.</p>
 <p><a href="../ultraplatform.html#aks=eu01&amp;d=landscape-litmus"><b>▶ See it in the cluster</b></a></p>
 <h2>Related</h2>
 <p><a href="landscape-karpenter.html">Karpenter — just-in-time, right-sized nodes</a> · <a href="blog-tenant-isolation.html">A 403 is usually the fence doing its job</a> · <a href="landscape-index.html">🗺️ landscape</a></p>

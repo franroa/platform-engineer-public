@@ -145,7 +145,7 @@ footer{padding:34px 24px;border-top:1px solid var(--line);text-align:center;colo
 <ol><li><b>Evaluate close to the decision, not at startup</b> — a flag cached at boot defeats the</li></ol>
 <p>   entire point of deploy/release decoupling.</p>
 <h2>Where it runs</h2>
-<p><code>ns: openfeature</code> (the <code>flagd</code> provider) · every cluster (<code>platform-services/base/</code>) · sync wave −1 — pinned in <a href="../ultraplatform.html#d=kubernetes"><code>up-kubernetes</code></a> <code>gitops/platform-services/</code>. Applications consume it through the OpenFeature SDK; the provider is swappable without touching app code.</p>
+<p><code>ns: openfeature</code> (the <code>flagd</code> provider) · every cluster (<code>platform-services/base/</code>) · sync wave −1 — pinned in <a href="../ultraplatform.html#d=kubernetes"><code>kubernetes</code></a> <code>gitops/platform-services/</code>. Applications consume it through the OpenFeature SDK; the provider is swappable without touching app code.</p>
 <p><a href="../ultraplatform.html#aks=eu01&amp;d=landscape-openfeature"><b>▶ See it in the cluster</b></a></p>
 <h2>Related</h2>
 <p><a href="blog-progressive-delivery.html">Blue-green &amp; canary — progressive delivery</a> · <a href="landscape-opentelemetry.html">OpenTelemetry — instrument once, everywhere</a> · <a href="landscape-index.html">🗺️ landscape</a></p>

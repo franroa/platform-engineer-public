@@ -134,9 +134,9 @@ footer{padding:34px 24px;border-top:1px solid var(--line);text-align:center;colo
 <p>Every platform team has written the "how to ship a service" wiki page, and every wiki page has drifted from reality within a quarter. The version that works is <b>executable</b>: the path <i>is</i> the <a href="blog-reuse-libraries.html">reusable libraries</a>, and following it means composing them. There's nothing to keep in sync because there's no second copy of the truth.</p>
 <h2>2 · What the app team actually touches</h2>
 <p>The <a href="../ultraplatform.html#d=build-an-app">creation story</a> runs Region → Cluster → Tenant → App, and the first three levels are the platform's job. By the time a team ships, it inherits a peered network, a running cluster with ingress and observability, a namespace with RBAC, PIM-backed groups, and a <a href="blog-tenant-keyvaults.html">Key Vault it can use but not break</a>. The app repo (<a href="../ultraplatform.html#d=example-app">worked example</a>) adds only:</p>
-<ul><li><b><code>.gitlab-ci.yml</code></b> — <code>include:</code> the <code>terraform-tenant-deploy</code> component → plan → OPA → apply.</li><li><b><code>infra/main.tf</code></b> — <code>module</code> blocks from <code>up-modules</code> → a database, secrets written into</li></ul>
+<ul><li><b><code>.gitlab-ci.yml</code></b> — <code>include:</code> the <code>terraform-tenant-deploy</code> component → plan → OPA → apply.</li><li><b><code>infra/main.tf</code></b> — <code>module</code> blocks from <code>modules</code> → a database, secrets written into</li></ul>
 <p>  the tenant-region vault.</p>
-<ul><li><b><code>chart/Chart.yaml</code></b> — <code>dependencies:</code> on <code>up-helm-charts</code> → Deployment, Service,</li></ul>
+<ul><li><b><code>chart/Chart.yaml</code></b> — <code>dependencies:</code> on <code>helm-charts</code> → Deployment, Service,</li></ul>
 <p>  HTTPRoute in the tenant namespace.</p>
 <p>That's the whole interface. What's <i>specific</i> to the app lives in the repo; what's <i>shared</i> arrives by reference.</p>
 <h2>3 · Guardrails make the path golden, not just paved</h2>

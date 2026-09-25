@@ -129,7 +129,7 @@ footer{padding:34px 24px;border-top:1px solid var(--line);text-align:center;colo
     <div class="meta"><span>Dec 30, 2025</span><span>3 min read</span><span class="t">K8s Services</span><span class="t">Kubernetes</span><span class="t">Reuse</span></div>
     <article class="md">
 <h1>⛵ Helm — the packaging grammar</h1>
-<blockquote>💡 <b>TL;DR</b> — Helm is the platform's <i>reuse</i> grammar for workloads: tenants don't write Kubernetes YAML, they compose charts from the shared library (<code>up-helm-charts</code>) as <code>Chart.yaml</code> dependencies. The chart library is one of the <a href="blog-reuse-libraries.html">three reuse libraries</a>, and the golden path is mostly "declare the chart, fill the values".</blockquote>
+<blockquote>💡 <b>TL;DR</b> — Helm is the platform's <i>reuse</i> grammar for workloads: tenants don't write Kubernetes YAML, they compose charts from the shared library (<code>helm-charts</code>) as <code>Chart.yaml</code> dependencies. The chart library is one of the <a href="blog-reuse-libraries.html">three reuse libraries</a>, and the golden path is mostly "declare the chart, fill the values".</blockquote>
 <h2>The job it does here</h2>
 <ul><li><b>A chart library, not per-app charts.</b> <code>web-service</code>, <code>postgres-connection</code>, <code>worker</code> —</li></ul>
 <p>  small, composable charts a tenant pulls in as dependencies. An app's own chart is often   ten lines of <code>Chart.yaml</code> and a <code>values.yaml</code>.</p>
@@ -142,7 +142,7 @@ footer{padding:34px 24px;border-top:1px solid var(--line);text-align:center;colo
 <p>   with extra indirection.</p>
 <ol><li>Put your defaults in the library chart, not in documentation.</li><li>Values files are an API: validate them (a JSON schema per chart pays for itself).</li></ol>
 <h2>Where it runs</h2>
-<p>Nowhere — and that is the point. Helm has <b>no controller in the cluster</b>: charts are OCI artifacts in the registry (authored in <a href="../ultraplatform.html#d=up-helm-charts"><code>up-helm-charts</code></a>) and <a href="landscape-argocd.html">Argo CD</a> renders them server-side. The only Helm "runtime" is the release inventory Argo maintains.</p>
+<p>Nowhere — and that is the point. Helm has <b>no controller in the cluster</b>: charts are OCI artifacts in the registry (authored in <a href="../ultraplatform.html#d=helm-charts"><code>helm-charts</code></a>) and <a href="landscape-argocd.html">Argo CD</a> renders them server-side. The only Helm "runtime" is the release inventory Argo maintains.</p>
 <p><a href="../ultraplatform.html#aks=eu01&amp;d=landscape-helm"><b>▶ See it in the cluster</b></a> — where every OTHER landscape service runs as a GitOps-delivered workload.</p>
 <h2>Related</h2>
 <p><a href="blog-reuse-libraries.html">Three libraries, one platform</a> · <a href="blog-golden-path.html">The golden path</a> · <a href="landscape-index.html">🗺️ landscape</a></p>

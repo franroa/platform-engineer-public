@@ -145,7 +145,7 @@ footer{padding:34px 24px;border-top:1px solid var(--line);text-align:center;colo
 <ol><li><b>Version the building-block APIs like any dependency.</b> A Dapr upgrade that changes state-</li></ol>
 <p>   store semantics is a breaking change to every workload using it, not a platform-only concern.</p>
 <h2>Where it runs</h2>
-<p><code>ns: dapr-system</code> · every cluster (<code>platform-services/base/</code>) · sync wave −1 (the sidecar-injector must exist before annotated workloads schedule) — pinned in <a href="../ultraplatform.html#d=kubernetes"><code>up-kubernetes</code></a> <code>gitops/platform-services/</code>. Injection is per-pod, by annotation — opt-in, not platform-wide.</p>
+<p><code>ns: dapr-system</code> · every cluster (<code>platform-services/base/</code>) · sync wave −1 (the sidecar-injector must exist before annotated workloads schedule) — pinned in <a href="../ultraplatform.html#d=kubernetes"><code>kubernetes</code></a> <code>gitops/platform-services/</code>. Injection is per-pod, by annotation — opt-in, not platform-wide.</p>
 <p><a href="../ultraplatform.html#aks=eu01&amp;d=landscape-dapr"><b>▶ See it in the cluster</b></a></p>
 <h2>Related</h2>
 <p><a href="blog-ai-platform.html">An AI layer for a developer platform</a> · <a href="blog-reuse-libraries.html">Three libraries, one platform</a> · <a href="landscape-index.html">🗺️ landscape</a></p>

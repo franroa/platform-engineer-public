@@ -130,7 +130,7 @@ footer{padding:34px 24px;border-top:1px solid var(--line);text-align:center;colo
     <article class="md">
 <h1>📜 cert-manager</h1>
 <blockquote>💡 <b>TL;DR</b> — certificates as a <i>controller</i>, not a calendar entry: cert-manager watches <code>Certificate</code> resources, obtains and renews TLS material automatically. Installed <b>first</b> among cluster services because everything with a hostname depends on it.</blockquote>
-<div class="tblwrap"><table><thead><tr><th>Property</th><th>Value</th></tr></thead><tbody><tr><td><b>Scope</b></td><td>cluster service (per cluster)</td></tr><tr><td><b>Created by</b></td><td><code>up-kubernetes</code> (with its ClusterIssuer)</td></tr><tr><td><b>Consumed by</b></td><td><a href="../ultraplatform.html#d=res-ingress-waf">ingress/ALB</a>, any TLS-serving workload</td></tr></tbody></table></div>
+<div class="tblwrap"><table><thead><tr><th>Property</th><th>Value</th></tr></thead><tbody><tr><td><b>Scope</b></td><td>cluster service (per cluster)</td></tr><tr><td><b>Created by</b></td><td><code>kubernetes</code> (with its ClusterIssuer)</td></tr><tr><td><b>Consumed by</b></td><td><a href="../ultraplatform.html#d=res-ingress-waf">ingress/ALB</a>, any TLS-serving workload</td></tr></tbody></table></div>
 <h2>🧠 The concept</h2>
 <p>The certificate lifecycle (CSR → issue → store → <b>renew before expiry</b>) is exactly the kind of toil humans forget. cert-manager reconciles it: declare a <code>Certificate</code> (or annotate a route), and a controller keeps a valid secret in place forever. Issuers abstract the CA — ACME/Let's Encrypt, private PKI — behind one API.</p>
 <h2>🏗️ How it's used in this platform</h2>
@@ -138,9 +138,9 @@ footer{padding:34px 24px;border-top:1px solid var(--line);text-align:center;colo
 <p>  CA secrets in-cluster).</p>
 <ul><li>App teams never <i>handle</i> certificates: an <a href="../ultraplatform.html#d=res-httproute">HTTPRoute</a> with a hostname</li></ul>
 <p>  gets TLS material delivered to the right namespace automatically.</p>
-<ul><li>Deployed by <code>up-kubernetes</code> before the ingress stack — the dependency order is explicit.</li></ul>
+<ul><li>Deployed by <code>kubernetes</code> before the ingress stack — the dependency order is explicit.</li></ul>
 <h2>⚙️ Lifecycle &amp; change</h2>
-<p>Upgrades via <code>up-kubernetes</code> (CRDs first — read release notes). Issuer changes are rare and platform-owned.</p>
+<p>Upgrades via <code>kubernetes</code> (CRDs first — read release notes). Issuer changes are rare and platform-owned.</p>
 <h2>✅ Best practices we apply</h2>
 <ul><li><b>DNS-01</b> challenges (works for private/wildcard certs; HTTP-01 needs public reachability).</li><li>Renewal at ⅔ of lifetime; alert on <code>Certificate</code> not-Ready.</li><li>One ClusterIssuer, many Certificates — no per-team issuers.</li></ul>
 <h2>⚠️ Gotchas</h2>
@@ -149,7 +149,7 @@ footer{padding:34px 24px;border-top:1px solid var(--line);text-align:center;colo
 <h2>🔗 Related</h2>
 <p><a href="../ultraplatform.html#d=res-ingress-waf">Ingress + WAF</a> · <a href="../ultraplatform.html#d=res-httproute">HTTPRoute</a> · <a href="../ultraplatform.html#d=res-private-dns">Private DNS</a> · <a href="../ultraplatform.html#d=res-aks">AKS</a></p>
 <hr>
-<p><b>Repo (map alias):</b> <code>up-kubernetes</code>.</p>
+<p><b>Repo (map alias):</b> <code>kubernetes</code>.</p>
 <p><b>📓 Runbook:</b> <a href="../ultraplatform.html#d=runbook-cert-expiry">certificate expiry / cert-manager not renewing</a></p>
 <h2>✍️ Related writing</h2>
 <p><a href="blog-tls-rotation.html">TLS is easy; rotating certificates without downtime is the real job</a> · <a href="landscape-buildpacks.html">Cloud Native Buildpacks — images without Dockerfiles</a> · <a href="landscape-index.html">The landscape — CNCF &amp; friends I actually run</a></p>

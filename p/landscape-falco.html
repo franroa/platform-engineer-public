@@ -145,7 +145,7 @@ footer{padding:34px 24px;border-top:1px solid var(--line);text-align:center;colo
 <ol><li><b>eBPF has kernel-version edges.</b> Verify the driver/BPF probe against your node image</li></ol>
 <p>   before rollout; a failed probe means silent blind spots, not a visible error.</p>
 <h2>Where it runs</h2>
-<p><code>ns: falco</code> · every cluster (<code>platform-services/base/</code>) · sync wave 0 — pinned in <a href="../ultraplatform.html#d=kubernetes"><code>up-kubernetes</code></a> <code>gitops/platform-services/</code>. A DaemonSet per node, watching the kernel directly — no per-workload configuration required.</p>
+<p><code>ns: falco</code> · every cluster (<code>platform-services/base/</code>) · sync wave 0 — pinned in <a href="../ultraplatform.html#d=kubernetes"><code>kubernetes</code></a> <code>gitops/platform-services/</code>. A DaemonSet per node, watching the kernel directly — no per-workload configuration required.</p>
 <p><a href="../ultraplatform.html#aks=eu01&amp;d=landscape-falco"><b>▶ See it in the cluster</b></a></p>
 <h2>Related</h2>
 <p><a href="landscape-kyverno.html">Kyverno — safe namespaces by default</a> · <a href="landscape-trivy.html">Trivy — continuous vulnerability scanning</a> · <a href="blog-defense-in-depth.html">Defense in depth — no single wall, because walls fall</a> · <a href="landscape-index.html">🗺️ landscape</a></p>

@@ -129,7 +129,7 @@ footer{padding:34px 24px;border-top:1px solid var(--line);text-align:center;colo
     <div class="meta"><span>Jan 6, 2026</span><span>4 min read</span><span class="t">K8s Services</span><span class="t">Kubernetes</span><span class="t">Security</span></div>
     <article class="md">
 <h1>Security &amp; Governance — the inner envelope (OPA / rego)</h1>
-<blockquote>Repos: <code>development/up-ci-toolkit</code>, <code>development/up-ci-components</code>, <code>up-policies</code>, <code>up-security-policies</code>, <code>up-guardrails</code></blockquote>
+<blockquote>Repos: <code>development/ci-toolkit</code>, <code>development/ci-components</code>, <code>policies</code>, <code>security-policies</code>, <code>guardrails</code></blockquote>
 <p>The innermost shell wraps the <b>delivery path itself</b>. Before any <code>terraform apply</code> lands, its plan is evaluated by an <b>Open Policy Agent (OPA) / rego</b> safety gate. Infrastructure doesn't change unless policy says it may.</p>
 <h2>The safety gate</h2>
 <p>The shared <code>terraform-deploy</code> CI component runs <b>plan → OPA evaluation → apply</b> as one job. A <code>safety_level</code> input picks how strict the gate is:</p>
@@ -162,7 +162,7 @@ violation[msg] {
     msg := sprintf("BLOCKED: %s (%s) would be DESTROYED", [r.address, r.type])
 }</code></pre>
 <h2>The other governance layers</h2>
-<ul><li><b><code>up-policies</code></b> — Azure Policy definitions/assignments (e.g. force the AKS Azure Policy add-on, deploy diagnostic settings). Compliance logic centralised as a product, not copied per service.</li><li><b><code>up-waf</code></b> — Web Application Firewall policies (see the WAF doc).</li><li><b><code>up-security-policies</code></b> — GitLab-native security policies (e.g. enforce a DAST scan in every pipeline on protected branches).</li><li><b><code>up-guardrails</code></b> — the umbrella for these preventive controls.</li></ul>
+<ul><li><b><code>policies</code></b> — Azure Policy definitions/assignments (e.g. force the AKS Azure Policy add-on, deploy diagnostic settings). Compliance logic centralised as a product, not copied per service.</li><li><b><code>waf</code></b> — Web Application Firewall policies (see the WAF doc).</li><li><b><code>security-policies</code></b> — GitLab-native security policies (e.g. enforce a DAST scan in every pipeline on protected branches).</li><li><b><code>guardrails</code></b> — the umbrella for these preventive controls.</li></ul>
 <h2>Why an envelope, not a checklist</h2>
 <p>Because the gate is <b>in the deploy job</b>, safety is not a habit someone might forget — it is a wall the change physically cannot pass. "high" is the default, so the safe choice is the one you get for free.</p>
 <p><b>📓 Runbook:</b> <a href="../ultraplatform.html#d=runbook-drift-response">cloud-vs-code drift triage</a></p>

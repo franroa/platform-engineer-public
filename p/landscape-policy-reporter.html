@@ -145,7 +145,7 @@ footer{padding:34px 24px;border-top:1px solid var(--line);text-align:center;colo
 <ol><li>It's a read model over reports <b>other tools already generate</b> — it adds no policy of its</li></ol>
 <p>   own, so the value is entirely in what's feeding it (this is why it's paired with    <a href="landscape-trivy.html">Trivy</a> here, not deployed alone).</p>
 <h2>Where it runs</h2>
-<p><code>ns: policy-reporter</code> · every cluster (<code>platform-services/base/</code>) · sync wave 0 (after <a href="landscape-kyverno.html">Kyverno</a> and <a href="landscape-trivy.html">Trivy</a>, the sources it reads from) — pinned in <a href="../ultraplatform.html#d=kubernetes"><code>up-kubernetes</code></a> <code>gitops/platform-services/</code>.</p>
+<p><code>ns: policy-reporter</code> · every cluster (<code>platform-services/base/</code>) · sync wave 0 (after <a href="landscape-kyverno.html">Kyverno</a> and <a href="landscape-trivy.html">Trivy</a>, the sources it reads from) — pinned in <a href="../ultraplatform.html#d=kubernetes"><code>kubernetes</code></a> <code>gitops/platform-services/</code>.</p>
 <p><a href="../ultraplatform.html#aks=eu01&amp;d=landscape-policy-reporter"><b>▶ See it in the cluster</b></a></p>
 <h2>Related</h2>
 <p><a href="landscape-kyverno.html">Kyverno — safe namespaces by default</a> · <a href="landscape-trivy.html">Trivy — continuous vulnerability scanning</a> · <a href="../ultraplatform.html#d=runbook-drift-response">cloud-vs-code drift triage</a> · <a href="landscape-index.html">🗺️ landscape</a></p>

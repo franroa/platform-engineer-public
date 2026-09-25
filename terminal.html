@@ -283,13 +283,13 @@
         <!-- session 0: work (claude + gctui panes — prefix-O cycles) -->
         <div class="sess on" id="s0">
           <div class="pane on" id="pane-claude">
-            <div class="ptitle">claude · up-network · 🌳 personal · pane 1/2 — prefix-O → gctui</div>
+            <div class="ptitle">claude · network · 🌳 personal · pane 1/2 — prefix-O → gctui</div>
             <div class="pbody" id="claude-body"></div>
             <div class="yas" id="yas">
               <span>🌳 <b>personal</b></span><span>📄 <b id="yfiles">0</b></span><span>🧠 <b>4</b></span>
               <span>⏵ <b>Opus</b></span><span class="ctx" id="yctx">▱▱▱▱ 8%</span>
               <span class="gl idle" id="gl-glyph">🦊 —</span>
-              <span class="c-dim" id="ydir">~/dev/up-network ·  main</span>
+              <span class="c-dim" id="ydir">~/dev/network ·  main</span>
             </div>
           </div>
           <div class="pane" id="pane-gctui">
@@ -321,11 +321,11 @@
         <!-- session 2: logs (2 panes) -->
         <div class="sess" id="s2">
           <div class="pane on" id="pane-logs"><div class="ptitle">logs · loki · pane 1/2 — prefix-O → alerts</div>
-            <div class="pbody" id="logs-body"><span class="ln c-dim">{namespace="up-observability"} …</span></div></div>
+            <div class="pbody" id="logs-body"><span class="ln c-dim">{namespace="observability"} …</span></div></div>
           <div class="pane" id="pane-logs2"><div class="ptitle">alerts · mimir · pane 2/2 — prefix-O → logs</div>
             <div class="pbody"><span class="ln c-mut">ALERTS · firing 1 · pending 2</span>
 <span class="ln c-err">🔥 HighErrorRate      tenant-a/api        5m</span>
-<span class="ln c-warn">⏳ PodRestartLoop     up-observability    2m</span>
+<span class="ln c-warn">⏳ PodRestartLoop     observability    2m</span>
 <span class="ln c-warn">⏳ CertExpirySoon     ingress · eu01      13d</span>
 <span class="ln"> </span>
 <span class="ln c-mut">$ amtool silence add alertname=CertExpirySoon -d 24h</span>
@@ -336,23 +336,23 @@
         <div class="sess" id="s3">
           <div class="pane on" id="pane-sbx">
             <div class="ptitle">claude · docker sandbox 🐳 · pane 1/2 — prefix-O → inspect</div>
-            <div class="pbody" id="sbx-body"><span class="ln c-user">❯ sbx run claude ~/dev/up-dep-bumps</span>
+            <div class="pbody" id="sbx-body"><span class="ln c-user">❯ sbx run claude ~/dev/dep-bumps</span>
 <span class="ln c-dim">✻ sandbox from template image · mounts: project + profile + vault (pre-declared)</span>
 <span class="ln c-mut">🐳 hardening: --cap-drop ALL · no-new-privileges · network: sbx-net · creds TTL 55m</span>
 <span class="ln"> </span>
 <span class="ln c-tool">⏺ Bash(npm audit fix) — contained; host filesystem not visible</span>
 <span class="ln c-ok">☑ todo · bump 3 vulnerable transitive deps</span>
-<span class="ln c-dim">⎿ results come back as a git remote: git fetch sandbox-up-dep-bumps</span></div>
+<span class="ln c-dim">⎿ results come back as a git remote: git fetch sandbox-dep-bumps</span></div>
             <div class="yas"><span>🐳 <b>sandbox</b></span><span>🌳 <b>personal</b></span><span>📄 <b>6/9</b></span><span>🧠 <b>2</b></span><span>⏵ <b>Sonnet</b></span><span class="ctx">▰▱▱▱ 23%</span></div>
           </div>
           <div class="pane" id="pane-sbx2"><div class="ptitle">sbx · inspect · pane 2/2 — prefix-O → claude</div>
-            <div class="pbody"><span class="ln c-mut">$ sbx inspect up-dep-bumps</span>
+            <div class="pbody"><span class="ln c-mut">$ sbx inspect dep-bumps</span>
 <span class="ln c-ok">CapDrop: ALL · SecurityOpt: no-new-privileges</span>
 <span class="ln c-dim">Mounts: project rw · profile ro · vault rw</span>
 <span class="ln c-dim">Network: sbx-net · egress via proxy only</span>
 <span class="ln c-warn">Creds: federated, expire in 42m</span>
 <span class="ln"> </span>
-<span class="ln c-mut">$ git fetch sandbox-up-dep-bumps</span>
+<span class="ln c-mut">$ git fetch sandbox-dep-bumps</span>
 <span class="ln c-ok">✓ 3 commits — review on the host, merge when green</span></div></div>
         </div>
 
@@ -363,9 +363,9 @@
             <div class="pbody"><span class="ln c-user">❯ claude "onboard tenant wingtip: namespace + route + SSO sidecar"</span>
 <span class="ln c-dim">✻ a new tenant is three files and one MR — the gateway is never touched</span>
 <span class="ln"> </span>
-<span class="ln c-tool">⏺ Write(up-namespaces/namespaces/wingtip.yml)     <span class="c-dim">tenant: wingtip · clusters: eu01 us01</span></span>
-<span class="ln c-tool">⏺ Write(up-gateway/routes/wingtip-shop.yaml)      <span class="c-dim">HTTPRoute · parentRef shared-gateway → :4180</span></span>
-<span class="ln c-tool">⏺ Write(up-gateway/workloads/wingtip-shop.yaml)   <span class="c-dim">app :8080 + oauth2-proxy sidecar :4180</span></span>
+<span class="ln c-tool">⏺ Write(namespaces/namespaces/wingtip.yml)     <span class="c-dim">tenant: wingtip · clusters: eu01 us01</span></span>
+<span class="ln c-tool">⏺ Write(gateway/routes/wingtip-shop.yaml)      <span class="c-dim">HTTPRoute · parentRef shared-gateway → :4180</span></span>
+<span class="ln c-tool">⏺ Write(gateway/workloads/wingtip-shop.yaml)   <span class="c-dim">app :8080 + oauth2-proxy sidecar :4180</span></span>
 <span class="ln c-tool">⏺ Bash(gctui run validate) — plan → OPA gate → exit 0</span>
 <span class="ln c-ok">☑ todo · MR ready: feat/tenant-wingtip</span>
 <span class="ln c-dim">⎿ ONE shared gateway per cluster — tenants attach routes, they don't add doors</span></div>
@@ -385,7 +385,7 @@
         <div class="sess" id="s5">
           <div class="pane on" id="pane-chaos">
             <div class="ptitle">litmus · gateway pod-kill · pane 1/2 — prefix-O → probe</div>
-            <div class="pbody"><span class="ln c-user">❯ kubectl apply -f up-gateway/chaos/gateway-pod-kill.yaml</span>
+            <div class="pbody"><span class="ln c-user">❯ kubectl apply -f gateway/chaos/gateway-pod-kill.yaml</span>
 <span class="ln c-dim">✻ the scary one, on purpose: kill the ONE gateway's pods while users watch</span>
 <span class="ln"> </span>
 <span class="ln c-mut">chaosengine.litmuschaos.io/gateway-pod-kill created</span>
@@ -394,7 +394,7 @@
 <span class="ln c-err">✂ traefik-7d4b9-m9qwl killed</span><span class="ln c-ok">↻ rescheduled (zone-2 replica kept serving)</span>
 <span class="ln"> </span>
 <span class="ln c-ok">☑ verdict: Pass — steady-state hypothesis held for the full 120s</span>
-<span class="ln c-dim">⎿ a failed probe here is a design bug filed against up-gateway — not an incident</span></div>
+<span class="ln c-dim">⎿ a failed probe here is a design bug filed against gateway — not an incident</span></div>
           </div>
           <div class="pane" id="pane-chaos2"><div class="ptitle">probe · through the gateway · pane 2/2 — prefix-O → litmus</div>
             <div class="pbody"><span class="ln c-mut">$ watch -n1 curl -so /dev/null -w '%{http_code}' https://status.internal.nimbus.example/healthz</span>
@@ -503,7 +503,7 @@
     ['c-tool','⏺ Bash(curl -s localhost:8787/live | jq .views)',900],
     ['c-mut','  ⎿ "Helm Charts": { repos: [] }   ← empty, repo name mismatch',800],
     ['c-ok','☑ todo · diagnose why the view is empty',600,{todo:1}],
-    ['c-tool','⏺ Edit(config/platform.config.json)  up-charts → up-helm-charts',900],
+    ['c-tool','⏺ Edit(config/platform.config.json)  charts → helm-charts',900],
     ['c-ok','☑ todo · fix the view mapping',600,{todo:1}],
     ['c-tool','⏺ Bash(gctui run validate)',400,{ci:'run'}],
     ['spin','  ⟳ validate — running locally…',1600],
@@ -558,7 +558,7 @@
     const remote=GC.mode==='remote';
     let h='<div class="gtabs"><span class="gtab'+(remote?'':' on')+'">Local</span>'
       +'<span class="gtab'+(remote?' on':'')+'">Remote</span>'
-      +'<span class="gwho">up-network ·  fix/helm-charts-view'+(remote?' · !42':'')+'</span></div>';
+      +'<span class="gwho">network ·  fix/helm-charts-view'+(remote?' · !42':'')+'</span></div>';
     h+='<div class="gflow">';
     GC.stages.forEach((st,si)=>{
       if(si)h+='<span class="garr">→</span>';
@@ -621,7 +621,7 @@
     red();setInterval(red,23000);},11000);
 
   // ---------- logs session filler ----------
-  const LOGS=['level=info msg="scrape ok" job=up-grafana','level=info msg="apply complete" repo=up-network',
+  const LOGS=['level=info msg="scrape ok" job=grafana','level=info msg="apply complete" repo=network',
     'level=warn msg="rate limited, backing off" src=gitlab','level=info msg="namespace synced" ns=tenant-a'];
   setInterval(()=>{const b=$('logs-body');const ln=document.createElement('span');ln.className='ln '+(Math.random()<.2?'c-warn':'c-dim');
     ln.textContent=new Date().toISOString().slice(11,19)+' '+LOGS[Math.floor(Math.random()*LOGS.length)];
@@ -680,7 +680,7 @@
         files:'📄 6/9 · 🧠 2', branch:'chore/dep-bumps', last:'⏺ Bash(npm audit fix) — inside the sandbox'}},
     {n:'tenant-onboard',  g:'A', ctx:34, m:'sonnet',s:4, act:'1m',
      d:{ticket:'UP-161 · tenant-onb', task:'Onboard tenant wingtip — namespace claim + HTTPRoute + SSO sidecar', todos:'2/3 done',
-        files:'📄 3/5 · 🧠 2', branch:'feat/tenant-wingtip', last:'⏺ Write(up-gateway/routes/wingtip-shop.yaml)'}},
+        files:'📄 3/5 · 🧠 2', branch:'feat/tenant-wingtip', last:'⏺ Write(gateway/routes/wingtip-shop.yaml)'}},
     {n:'gw-chaos-drill',  g:'A', ctx:18, m:'haiku', s:5, act:'3m',
      d:{ticket:'UP-163 · gw-chaos', task:'Monthly gateway pod-kill rehearsal — PDB is the hypothesis, the probe is the proof', todos:'1/1 done',
         files:'📄 2/2 · 🧠 1', branch:'chore/gw-chaos-drill', last:'⏺ Bash(kubectl apply -f chaos/gateway-pod-kill.yaml) — verdict: Pass'}},

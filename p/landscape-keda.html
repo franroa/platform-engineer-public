@@ -139,7 +139,7 @@ footer{padding:34px 24px;border-top:1px solid var(--line);text-align:center;colo
 <h2>What I'd tell you before adopting</h2>
 <ol><li>Pick the metric that <i>causes</i> work (lag, depth), not one that correlates with it.</li><li>Set <code>minReplicaCount</code> consciously — zero is a feature AND a cold-start bill.</li><li>KEDA replaces your HPA definition, not your resource requests — right-size pods first.</li></ol>
 <h2>Where it runs</h2>
-<p><code>ns: keda</code> · every cluster (<code>platform-services/base/</code>) · sync wave −1 · chart <code>keda 2.16.1</code> — pinned in <a href="../ultraplatform.html#d=kubernetes"><code>up-kubernetes</code></a> <code>gitops/platform-services/</code>. Placement is a reviewed property of the cluster class, not a deploy-time decision: ScaledObjects on queues/streams for every tenant, including scale-to-zero.</p>
+<p><code>ns: keda</code> · every cluster (<code>platform-services/base/</code>) · sync wave −1 · chart <code>keda 2.16.1</code> — pinned in <a href="../ultraplatform.html#d=kubernetes"><code>kubernetes</code></a> <code>gitops/platform-services/</code>. Placement is a reviewed property of the cluster class, not a deploy-time decision: ScaledObjects on queues/streams for every tenant, including scale-to-zero.</p>
 <p><a href="../ultraplatform.html#aks=eu01&amp;d=landscape-keda"><b>▶ See it in the cluster</b></a></p>
 <h2>Related</h2>
 <p><a href="blog-kubernetes.html">Multi-tenant Kubernetes</a> · <a href="blog-golden-path.html">The golden path</a> · <a href="landscape-index.html">🗺️ landscape</a></p>

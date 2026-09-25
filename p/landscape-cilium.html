@@ -145,7 +145,7 @@ footer{padding:34px 24px;border-top:1px solid var(--line);text-align:center;colo
 <ol><li><b>Don't duplicate the NSG's job at this layer.</b> NSGs fence the VNet/subnet; Cilium fences</li></ol>
 <p>   pod-to-pod inside it. Confusing the two layers means gaps at the seam, not extra safety.</p>
 <h2>Where it runs</h2>
-<p>Configured in the AKS <code>cluster</code> Terraform module (<code>up-kubernetes</code>) as the platform's CNI — every cluster, from creation, no sync wave (it exists before GitOps starts). Hubble's observability data flows into the standard <a href="landscape-grafana.html">Grafana</a> hub.</p>
+<p>Configured in the AKS <code>cluster</code> Terraform module (<code>kubernetes</code>) as the platform's CNI — every cluster, from creation, no sync wave (it exists before GitOps starts). Hubble's observability data flows into the standard <a href="landscape-grafana.html">Grafana</a> hub.</p>
 <p><a href="../ultraplatform.html#aks=eu01&amp;d=landscape-cilium"><b>▶ See it in the cluster</b></a></p>
 <h2>Related</h2>
 <p><a href="../ultraplatform.html#d=kubernetes">Kubernetes (AKS) — the compute plane</a> · <a href="../ultraplatform.html#d=res-nsg">Network Security Group</a> · <a href="landscape-grafana.html">Grafana — one pane, run once</a> · <a href="landscape-index.html">🗺️ landscape</a></p>

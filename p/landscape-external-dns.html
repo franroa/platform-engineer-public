@@ -140,7 +140,7 @@ footer{padding:34px 24px;border-top:1px solid var(--line);text-align:center;colo
 <ol><li>Set <code>--txt-owner-id</code> per cluster from day one — ownership collisions are painful later.</li><li>Start with <code>--policy=upsert-only</code>; move to <code>sync</code> (deletes) once you trust the scoping.</li><li>Treat the zones as platform scope: created by terraform, written by controllers, never</li></ol>
 <p>   edited by hand.</p>
 <h2>Where it runs</h2>
-<p><code>ns: external-dns</code> · every cluster (<code>platform-services/base/</code>) · sync wave −1 · chart <code>external-dns 1.15.0</code> — pinned in <a href="../ultraplatform.html#d=kubernetes"><code>up-kubernetes</code></a> <code>gitops/platform-services/</code>. Placement is a reviewed property of the cluster class, not a deploy-time decision: watches the HTTPRoutes tenants create and reconciles the platform DNS zone.</p>
+<p><code>ns: external-dns</code> · every cluster (<code>platform-services/base/</code>) · sync wave −1 · chart <code>external-dns 1.15.0</code> — pinned in <a href="../ultraplatform.html#d=kubernetes"><code>kubernetes</code></a> <code>gitops/platform-services/</code>. Placement is a reviewed property of the cluster class, not a deploy-time decision: watches the HTTPRoutes tenants create and reconciles the platform DNS zone.</p>
 <p><a href="../ultraplatform.html#aks=eu01&amp;d=landscape-external-dns"><b>▶ See it in the cluster</b></a></p>
 <h2>Related</h2>
 <p><a href="../ultraplatform.html#d=network-hub-spoke">Hub-and-spoke network</a> · <a href="landscape-helm.html">Helm</a> · <a href="landscape-index.html">🗺️ landscape</a></p>

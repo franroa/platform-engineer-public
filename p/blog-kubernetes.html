@@ -143,7 +143,7 @@ footer{padding:34px 24px;border-top:1px solid var(--line);text-align:center;colo
 <h2>Why "as code" is the point</h2>
 <p>Every layer above is a file in a repo with an owner and a pipeline:</p>
 <ul><li>tenant onboarding = one YAML in the tenants repo → groups, RG, namespaces, defaults;</li><li>app deployment = a <a href="../ultraplatform.html#d=res-helm-release">Helm release</a> composed from the platform's</li></ul>
-<p>  <a href="../ultraplatform.html#d=up-helm-charts">chart library</a> — apps ship a <code>values.yaml</code>, not 400 lines of manifests;</p>
+<p>  <a href="../ultraplatform.html#d=helm-charts">chart library</a> — apps ship a <code>values.yaml</code>, not 400 lines of manifests;</p>
 <ul><li>the guardrails (quotas, network policy, WAF attach) ride inside the charts and the cluster</li></ul>
 <p>  services, so tenants inherit them by construction.</p>
 <p>The alternative — tenancy by portal clicks — rots in weeks and audits in tears.</p>

@@ -142,7 +142,7 @@ footer{padding:34px 24px;border-top:1px solid var(--line);text-align:center;colo
 <p>   the wire format can't.</p>
 <ol><li>Sample at the edge deliberately; unsampled traces are a cost story you'll meet later.</li><li>Put the collector config in the platform repos — it is infrastructure, not app config.</li></ol>
 <h2>Where it runs</h2>
-<p><code>ns: observability</code> · every cluster (<code>platform-services/base/</code>) · sync wave −1 · chart <code>opentelemetry-collector 0.110.0</code> — pinned in <a href="../ultraplatform.html#d=kubernetes"><code>up-kubernetes</code></a> <code>gitops/platform-services/</code>. Placement is a reviewed property of the cluster class, not a deploy-time decision: one collector per cluster (daemonset + gateway); tenants instrument once against OTLP.</p>
+<p><code>ns: observability</code> · every cluster (<code>platform-services/base/</code>) · sync wave −1 · chart <code>opentelemetry-collector 0.110.0</code> — pinned in <a href="../ultraplatform.html#d=kubernetes"><code>kubernetes</code></a> <code>gitops/platform-services/</code>. Placement is a reviewed property of the cluster class, not a deploy-time decision: one collector per cluster (daemonset + gateway); tenants instrument once against OTLP.</p>
 <p><a href="../ultraplatform.html#aks=eu01&amp;d=landscape-opentelemetry"><b>▶ See it in the cluster</b></a></p>
 <h2>Related</h2>
 <p><a href="blog-otel-operator.html">Instrumentation as a platform default</a> · <a href="blog-grafana-cloud.html">Grafana Cloud</a> · <a href="landscape-index.html">🗺️ landscape</a></p>

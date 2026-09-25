@@ -18,7 +18,7 @@
   try {
     if ('serviceWorker' in navigator && navigator.serviceWorker.getRegistrations) {
       navigator.serviceWorker.getRegistrations().then(function (rs) { rs.forEach(function (r) { r.unregister(); }); });
-      if (window.caches && caches.keys) caches.keys().then(function (ks) { ks.forEach(function (k) { if (/^up-portfolio/.test(k)) caches.delete(k); }); });
+      if (window.caches && caches.keys) caches.keys().then(function (ks) { ks.forEach(function (k) { if (/^portfolio/.test(k)) caches.delete(k); }); });
     }
   } catch (e) {}
 
@@ -40,7 +40,7 @@
   function configured() { return /^G-[A-Z0-9]{6,}$/.test(GA_ID) && GA_ID !== 'G-XXXXXXXXXX'; }
   if (!configured()) return;                                      // no real id yet → no-op (banner/GA)
 
-  var KEY = 'up-analytics-consent';                               // 'granted' | 'denied'
+  var KEY = 'analytics-consent';                               // 'granted' | 'denied'
   function get() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
   function set(v) { try { localStorage.setItem(KEY, v); } catch (e) {} }
 

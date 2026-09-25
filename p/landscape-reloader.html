@@ -140,7 +140,7 @@ footer{padding:34px 24px;border-top:1px solid var(--line);text-align:center;colo
 <ol><li>It's a stop-gap by design — apps that hot-reload config don't need it; most apps aren't</li></ol>
 <p>   those apps.</p>
 <h2>Where it runs</h2>
-<p><code>ns: reloader</code> · every cluster (<code>platform-services/base/</code>) · sync wave −1 · chart <code>reloader 1.2.0</code> — pinned in <a href="../ultraplatform.html#d=kubernetes"><code>up-kubernetes</code></a> <code>gitops/platform-services/</code>. Placement is a reviewed property of the cluster class, not a deploy-time decision: closes the loop on rotated secrets: rotation restarts the pods that mount them.</p>
+<p><code>ns: reloader</code> · every cluster (<code>platform-services/base/</code>) · sync wave −1 · chart <code>reloader 1.2.0</code> — pinned in <a href="../ultraplatform.html#d=kubernetes"><code>kubernetes</code></a> <code>gitops/platform-services/</code>. Placement is a reviewed property of the cluster class, not a deploy-time decision: closes the loop on rotated secrets: rotation restarts the pods that mount them.</p>
 <p><a href="../ultraplatform.html#aks=eu01&amp;d=landscape-reloader"><b>▶ See it in the cluster</b></a></p>
 <h2>Related</h2>
 <p><a href="landscape-external-secrets.html">External Secrets</a> · <a href="landscape-helm.html">Helm</a> · <a href="landscape-index.html">🗺️ landscape</a></p>
